@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f9fcff;
+  --primary: #081f5c; /* Untuk warna biru freelinkd */
+  --secondary: #ff6f00; /* Untuk warna pendukung seperti btn, dan warna pelengkap */
+  --alternative: #efefef; /* Untuk warna search bar dan alternatif */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), sans-serif;
+}
