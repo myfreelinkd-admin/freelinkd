@@ -59,7 +59,7 @@ export default function Sidebar() {
   };
 
   const navItems = [
-    { name: "Dashboard", href: "/freelancer/dashboard", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     {
       name: "Manage Users",
       href: "/admin/user-management",
@@ -203,7 +203,7 @@ export default function Sidebar() {
 }
 
 function ProfileAvatar({ collapsed = false }: { collapsed?: boolean }) {
-  const fullName = "Freelancer";
+  const fullName = "Admin";
   const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
   const profileSrc = "/assets/img/profile.jpg";
   const [imgError, setImgError] = useState(false);

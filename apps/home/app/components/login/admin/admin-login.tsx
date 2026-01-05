@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import LoginBackground from "../design/background";
+import { sanitizeInput } from "../../../utils/sanitize";
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -19,12 +21,12 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen w-full flex bg-white overflow-hidden">
+    <div className="h-screen w-full flex bg-white overflow-hidden">
       {/* Left Side: Image Section */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-gray-50">
         <div className="absolute inset-0 z-10 bg-black/5"></div>
         <Image
-          src="/assets/img/featured.jpg" // Using an existing image as placeholder
+          src="/assets/img/featured.jpg"
           alt="Admin Workspace"
           fill
           className="object-cover"
@@ -33,8 +35,9 @@ export default function AdminLogin() {
       </div>
 
       {/* Right Side: Login Form Section */}
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-start pt-[15vh] p-8 md:p-16 lg:p-24 relative">
-        <div className="w-full max-w-md space-y-12">
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-start pt-[12vh] p-8 md:p-16 lg:p-24 relative">
+        <LoginBackground />
+        <div className="w-full max-w-md space-y-12 relative z-10">
           {/* Logo Section */}
           <div className="flex flex-col items-center text-center space-y-6">
             <div className="relative flex items-center justify-center">
@@ -60,7 +63,7 @@ export default function AdminLogin() {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(sanitizeInput(e.target.value))}
                   placeholder="Email"
                   className="block w-full px-8 py-5 bg-white border-2 border-gray-200 rounded-full text-(--primary) placeholder-gray-400 focus:outline-none focus:border-(--primary) transition-all duration-300 font-medium text-lg shadow-sm"
                 />
@@ -95,7 +98,7 @@ export default function AdminLogin() {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(sanitizeInput(e.target.value))}
                   placeholder="Password"
                   className="block w-full px-8 py-5 bg-white border-2 border-gray-200 rounded-full text-(--primary) placeholder-gray-400 focus:outline-none focus:border-(--primary) transition-all duration-300 font-medium text-lg shadow-sm"
                 />
@@ -103,9 +106,13 @@ export default function AdminLogin() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
                   >
-                    <ArrowRight className="w-6 h-6 text-gray-400" />
+                    {showPassword ? (
+                      <EyeOff className="w-6 h-6 text-gray-400" />
+                    ) : (
+                      <Eye className="w-6 h-6 text-gray-400" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -155,24 +162,13 @@ export default function AdminLogin() {
                   : "opacity-0 translate-y-4 pointer-events-none"
               }`}
             >
-              <button className="w-full py-5 bg-(--primary) hover:bg-(--primary)/95 text-white rounded-full font-bold text-xl transition-all duration-300 shadow-xl shadow-(--primary)/20 hover:shadow-(--primary)/30 active:scale-[0.98] flex items-center justify-center gap-3 group cursor-pointer">
+              <button className="w-full py-5 bg-(--secondary) hover:bg-(--secondary)/95 text-white rounded-full font-bold text-xl transition-all duration-300 shadow-xl shadow-(--secondary)/20 hover:shadow-(--secondary)/30 active:scale-[0.98] flex items-center justify-center gap-3 group cursor-pointer">
                 Sign In
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </div>
-
-          {/* Footer Info */}
-          <div className="pt-8 text-center">
-            <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">
-              &copy; 2026 Freelinkd Admin Portal. All rights reserved.
-            </p>
-          </div>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-(--secondary)/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-(--primary)/5 rounded-full blur-3xl -ml-32 -mb-32"></div>
       </div>
     </div>
   );

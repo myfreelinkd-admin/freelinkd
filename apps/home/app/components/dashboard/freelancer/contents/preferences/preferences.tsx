@@ -205,7 +205,7 @@ export default function Preferences() {
             </div>
 
             <div className="flex flex-col gap-3 max-w-xs mx-auto w-full">
-              <button className="flex items-center justify-center gap-2 w-full py-3 bg-(--primary) text-white rounded-xl text-sm font-bold hover:bg-(--primary)/90 transition-all cursor-pointer">
+              <button className="flex items-center justify-center gap-2 w-full py-3 bg-(--secondary) text-white rounded-xl text-sm font-bold hover:bg-(--secondary)/90 transition-all cursor-pointer">
                 <Upload className="w-4 h-4" /> Upload Photo
               </button>
               <button className="flex items-center justify-center gap-2 w-full py-3 bg-red-50 text-red-500 rounded-xl text-sm font-bold hover:bg-red-100 transition-all cursor-pointer">
@@ -274,7 +274,7 @@ export default function Preferences() {
 
         <div className="h-12 w-px bg-gray-200 mx-2"></div>
 
-        <button className="flex items-center gap-4 px-8 py-4 bg-(--primary) text-white rounded-2xl font-bold shadow-lg shadow-(--primary)/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
+        <button className="flex items-center gap-4 px-8 py-4 bg-(--secondary) text-white rounded-2xl font-bold shadow-lg shadow-(--secondary)/20 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer">
           <span className="text-lg">Save Changes</span>
           <div className="flex items-center justify-center w-9 h-9 rounded-full border-2 border-white/50">
             <Save className="w-5 h-5 text-white" />

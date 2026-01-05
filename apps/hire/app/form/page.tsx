@@ -12,6 +12,7 @@ export interface FormData {
   email: string;
   phone: string;
   jobTitle: string;
+  skills: string;
   projectDescription: string;
   additionalRequirements: string;
   dueTime: string;
@@ -34,6 +35,7 @@ export default function FormPage() {
     email: "",
     phone: "",
     jobTitle: "",
+    skills: "",
     projectDescription: "",
     additionalRequirements: "",
     dueTime: "",

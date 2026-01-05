@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Button } from "@repo/ui/button";
+import { sanitizeInput } from "../../utils/sanitize";
 
 interface ProfesionalInfoData {
   skills?: string;
@@ -25,7 +26,7 @@ export default function ProfesionalInfo({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target as HTMLInputElement;
-    updateFormData({ [name]: value });
+    updateFormData({ [name]: sanitizeInput(value) });
   };
 
   const handleFile = (file: File | null) => {

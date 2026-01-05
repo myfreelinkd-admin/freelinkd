@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { sanitizeInput } from "../../utils/sanitize";
 
 interface PersonalInfoData {
   name: string;
@@ -22,7 +23,9 @@ export default function PersonalInfo({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target as HTMLInputElement;
-    updateFormData({ [name]: value } as Partial<PersonalInfoData>);
+    updateFormData({
+      [name]: sanitizeInput(value),
+    } as Partial<PersonalInfoData>);
   };
 
   return (

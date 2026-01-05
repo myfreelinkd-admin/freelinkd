@@ -145,7 +145,7 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
                 </div>
 
                 <div className="flex flex-col gap-2 min-w-35">
-                  <button className="w-full py-3 bg-(--primary) text-white rounded-2xl text-sm font-bold hover:bg-(--primary)/90 transition-all shadow-lg shadow-(--primary)/10 cursor-pointer">
+                  <button className="w-full py-3 bg-(--secondary) text-white rounded-2xl text-sm font-bold hover:bg-(--secondary)/90 transition-all shadow-lg shadow-(--secondary)/10 cursor-pointer">
                     Accept Project
                   </button>
                   <button className="w-full py-3 bg-white text-(--primary) border border-gray-200 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all cursor-pointer">

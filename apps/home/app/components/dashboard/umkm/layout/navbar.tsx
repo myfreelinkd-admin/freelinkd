@@ -6,13 +6,29 @@ import SearchBar from "./search-bar";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const timeoutId = setTimeout(() => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) {
+        setGreeting("Good Morning");
+      } else if (hour >= 12 && hour < 18) {
+        setGreeting("Good Afternoon");
+      } else {
+        setGreeting("Good Evening");
+      }
+    }, 0);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   const toggleSidebar = () => {
@@ -57,8 +73,8 @@ export default function Navbar() {
           <div className="h-8 w-px bg-gray-200 mx-2"></div>
 
           <div className="hidden md:block text-right">
-            <p className="text-sm font-bold text-(--primary)">Welcome back,</p>
-            <p className="text-xs text-gray-500">UMKM Dashboard</p>
+            <p className="text-sm font-bold text-(--primary)">{greeting},</p>
+            <p className="text-xs text-gray-500">UMKM</p>
           </div>
         </div>
       </div>

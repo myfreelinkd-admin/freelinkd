@@ -9,6 +9,7 @@ interface ReviewPageProps {
     email: string;
     phone: string;
     jobTitle: string;
+    skills: string;
     projectDescription: string;
     additionalRequirements: string;
     dueTime: string;
@@ -111,6 +112,14 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   </p>
                   <p className="text-gray-900 font-semibold mt-1">
                     {data.jobTitle}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Skills
+                  </p>
+                  <p className="text-gray-900 font-semibold mt-1">
+                    {data.skills}
                   </p>
                 </div>
                 <div>

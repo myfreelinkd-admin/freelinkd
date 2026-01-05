@@ -2,6 +2,7 @@
 
 import { Button } from "@repo/ui/button";
 import { FormData } from "../../form/page";
+import { sanitizeInput } from "../../utils/sanitize";
 
 interface FirstPageProps {
   onNext?: () => void;
@@ -23,7 +24,7 @@ export default function FirstPage({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    updateFormData({ [name]: value });
+    updateFormData({ [name]: sanitizeInput(value) });
   };
 
   return (
@@ -110,6 +111,20 @@ export default function FirstPage({
                 required
                 className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
                 placeholder="Enter Job Title (e.g. UI/UX Design)"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-bold mb-2">
+                Skills <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="skills"
+                value={formData.skills}
+                onChange={handleChange}
+                required
+                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                placeholder="Enter required skills (e.g. React, Figma, Python)"
               />
             </div>
             <div>

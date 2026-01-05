@@ -7,11 +7,20 @@ import SearchBar from "./search-bar";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const hour = new Date().getHours();
+  const greeting =
+    hour >= 5 && hour < 12
+      ? "Good Morning"
+      : hour >= 12 && hour < 18
+        ? "Good Afternoon"
+        : "Good Evening";
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -57,8 +66,13 @@ export default function Navbar() {
           <div className="h-8 w-px bg-gray-200 mx-2"></div>
 
           <div className="hidden md:block text-right">
-            <p className="text-sm font-bold text-(--primary)">Welcome back,</p>
-            <p className="text-xs text-gray-500">Admin Page</p>
+            <p
+              className="text-sm font-bold text-(--primary)"
+              suppressHydrationWarning
+            >
+              {greeting},
+            </p>
+            <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>
       </div>

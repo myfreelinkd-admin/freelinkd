@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   Search,
   Filter,
-  Sparkles,
 } from "lucide-react";
 
 interface Event {
@@ -108,8 +107,8 @@ export default function Events() {
           <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-bold text-(--primary) hover:bg-gray-50 transition-all cursor-pointer">
             <Filter className="w-4 h-4" /> Filters
           </button>
-          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-(--primary) rounded-2xl text-sm font-bold text-white hover:bg-(--primary)/90 transition-all shadow-lg shadow-(--primary)/10 cursor-pointer">
-            <Sparkles className="w-4 h-4" /> Recommended
+          <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-(--secondary) rounded-2xl text-sm font-bold text-white hover:bg-(--secondary)/90 transition-all shadow-lg shadow-(--secondary)/10 cursor-pointer">
+            Recommended
           </button>
         </div>
       </div>
@@ -181,7 +180,7 @@ export default function Events() {
                 {!event.isJoined ? (
                   <button
                     onClick={() => handleJoin(event.id)}
-                    className="w-full py-4 bg-(--alternative) hover:bg-(--primary) hover:text-white text-(--primary) rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 group/btn cursor-pointer"
+                    className="w-full py-4 bg-(--alternative) hover:bg-(--secondary) hover:text-white text-(--primary) rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 group/btn cursor-pointer"
                   >
                     Join Event
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />

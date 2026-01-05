@@ -20,7 +20,7 @@ export default function Group() {
             Get a new information in community
           </p>
         </div>
-        <button className="p-3 rounded-xl bg-(--alternative)/30 text-gray-400 group-hover:bg-(--primary) group-hover:text-white transition-all cursor-pointer">
+        <button className="p-3 rounded-xl bg-(--alternative)/30 text-gray-400 group-hover:bg-(--secondary) group-hover:text-white transition-all cursor-pointer">
           <ArrowRight className="w-5 h-5" />
         </button>
       </div>

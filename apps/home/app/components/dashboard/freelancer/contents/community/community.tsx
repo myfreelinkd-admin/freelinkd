@@ -88,7 +88,7 @@ export default function Community() {
           </button>
         </div>
 
-        <button className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-(--primary) text-white rounded-2xl text-sm font-bold hover:bg-(--primary)/90 transition-all shadow-lg shadow-(--primary)/10 cursor-pointer group">
+        <button className="w-full md:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-(--secondary) text-white rounded-2xl text-sm font-bold hover:bg-(--secondary)/90 transition-all shadow-lg shadow-(--secondary)/10 cursor-pointer group">
           <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
           Create Community
         </button>
@@ -174,7 +174,7 @@ export default function Community() {
           Start your own community and lead the conversation with like-minded
           freelancers.
         </p>
-        <button className="px-8 py-4 bg-white border border-gray-200 rounded-2xl text-sm font-bold text-(--primary) hover:bg-(--primary) hover:text-white hover:border-(--primary) transition-all shadow-sm cursor-pointer">
+        <button className="px-8 py-4 bg-white border border-gray-200 rounded-2xl text-sm font-bold text-(--primary) hover:bg-(--secondary) hover:text-white hover:border-(--secondary) transition-all shadow-sm cursor-pointer">
           Start a New Community
         </button>
       </div>

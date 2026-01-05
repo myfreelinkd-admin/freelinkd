@@ -20,7 +20,9 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Bottom Section: Freelancer List */}
-          <PreviewFreelancer />
+          <div className="mt-8">
+            <PreviewFreelancer />
+          </div>
         </main>
       </div>
     </div>

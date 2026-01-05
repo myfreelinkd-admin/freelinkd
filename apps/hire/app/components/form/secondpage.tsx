@@ -6,6 +6,7 @@ import { DatePicker } from "./ux/callendar";
 import ReviewSection from "./reviewpage";
 import PickFreelancer, { Freelancer } from "./pickfreelancer";
 import { FormData } from "../../form/page";
+import { sanitizeInput } from "../../utils/sanitize";
 
 interface SecondPageProps {
   onBack?: () => void;
@@ -31,7 +32,7 @@ export default function SecondPage({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    updateFormData({ [name]: value });
+    updateFormData({ [name]: sanitizeInput(value) });
   };
 
   const handleDateChange = (date: string) => {

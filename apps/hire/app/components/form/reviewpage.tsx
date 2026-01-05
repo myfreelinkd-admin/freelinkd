@@ -47,6 +47,10 @@ export default function ReviewSection({ data }: ReviewSectionProps) {
             <p className="text-gray-900 font-medium">{data.jobTitle}</p>
           </div>
           <div>
+            <p className="text-sm font-bold text-gray-500">Skills</p>
+            <p className="text-gray-900 font-medium">{data.skills}</p>
+          </div>
+          <div>
             <p className="text-sm font-bold text-gray-500">
               Project Description
             </p>

@@ -41,7 +41,7 @@ export default function PreviewFreelancer() {
             Overview of all registered freelancers on the platform.
           </p>
         </div>
-        <button className="px-6 py-2.5 bg-(--alternative) hover:bg-(--primary) hover:text-white text-(--primary) rounded-xl text-sm font-bold transition-all cursor-pointer">
+        <button className="px-6 py-2.5 bg-(--alternative) hover:bg-(--secondary) hover:text-white text-(--primary) rounded-xl text-sm font-bold transition-all cursor-pointer">
           View All Freelancers
         </button>
       </div>
