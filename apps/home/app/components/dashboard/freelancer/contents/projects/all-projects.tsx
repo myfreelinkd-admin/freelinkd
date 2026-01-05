@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  MoreHorizontal,
   Clock,
   CheckCircle2,
   XCircle,
@@ -9,6 +8,7 @@ import {
   DollarSign,
   Calendar,
 } from "lucide-react";
+import ProjectActionButton from "./ui/action-button";
 
 interface Project {
   id: number;
@@ -175,9 +175,7 @@ export default function AllProjects({ filter }: { filter?: string }) {
                     </span>
                   </td>
                   <td className="px-4 py-5 bg-(--alternative)/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-gray-100 text-right">
-                    <button className="p-2.5 hover:bg-white rounded-xl transition-all text-gray-400 hover:text-(--primary) shadow-sm border border-transparent hover:border-gray-100 cursor-pointer">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
+                    <ProjectActionButton status={project.status} />
                   </td>
                 </tr>
               ))}

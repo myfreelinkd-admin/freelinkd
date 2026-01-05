@@ -8,7 +8,6 @@ import {
   Search,
   Filter,
   Globe,
-  MessageSquare,
 } from "lucide-react";
 
 interface Community {
@@ -160,23 +159,6 @@ export default function Community() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Empty State / CTA for Creating */}
-      <div className="bg-(--alternative)/30 rounded-[40px] p-12 text-center border-2 border-dashed border-gray-200 mt-12">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-6">
-          <MessageSquare className="w-8 h-8 text-(--secondary)" />
-        </div>
-        <h2 className="text-2xl font-bold text-(--primary) mb-2">
-          Can&apos;t find your niche?
-        </h2>
-        <p className="text-gray-500 mb-8 max-w-md mx-auto">
-          Start your own community and lead the conversation with like-minded
-          freelancers.
-        </p>
-        <button className="px-8 py-4 bg-white border border-gray-200 rounded-2xl text-sm font-bold text-(--primary) hover:bg-(--secondary) hover:text-white hover:border-(--secondary) transition-all shadow-sm cursor-pointer">
-          Start a New Community
-        </button>
       </div>
     </div>
   );

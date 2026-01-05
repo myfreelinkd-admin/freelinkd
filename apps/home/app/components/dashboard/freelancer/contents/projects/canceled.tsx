@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  MoreHorizontal,
-  Calendar,
-  AlertCircle,
-  MessageSquare,
-} from "lucide-react";
+import { Calendar, AlertCircle } from "lucide-react";
+import ProjectActionButton from "./ui/action-button";
 
 const canceledProjects = [
   {
@@ -73,14 +69,7 @@ export default function CanceledProjects() {
                     </div>
                   </td>
                   <td className="px-4 py-5 bg-red-50/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-red-100 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button className="p-2.5 bg-white hover:bg-gray-50 rounded-xl transition-all text-gray-400 shadow-sm border border-gray-100 cursor-pointer group/btn">
-                        <MessageSquare className="w-4 h-4 group-hover:text-(--primary) transition-colors" />
-                      </button>
-                      <button className="p-2.5 hover:bg-white rounded-xl transition-all text-gray-400 hover:text-(--primary) shadow-sm border border-transparent hover:border-gray-100 cursor-pointer">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <ProjectActionButton status="Canceled" />
                   </td>
                 </tr>
               ))}

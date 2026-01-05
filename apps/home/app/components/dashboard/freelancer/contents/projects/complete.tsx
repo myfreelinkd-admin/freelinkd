@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  MoreHorizontal,
-  DollarSign,
-  Calendar,
-  Star,
-  Download,
-} from "lucide-react";
+import { DollarSign, Calendar, Star, Download } from "lucide-react";
+import ProjectActionButton from "./ui/action-button";
 
 const completedProjects = [
   {
@@ -90,9 +85,7 @@ export default function CompleteProjects() {
                       <button className="p-2.5 bg-white hover:bg-green-50 rounded-xl transition-all text-green-600 shadow-sm border border-green-100 cursor-pointer group/btn">
                         <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
                       </button>
-                      <button className="p-2.5 hover:bg-white rounded-xl transition-all text-gray-400 hover:text-(--primary) shadow-sm border border-transparent hover:border-gray-100 cursor-pointer">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
+                      <ProjectActionButton status="Complete" />
                     </div>
                   </td>
                 </tr>
