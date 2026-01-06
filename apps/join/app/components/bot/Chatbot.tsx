@@ -1,44 +1,36 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
-import { useChatbotLogic } from "./LogicBot";
+import { useChatbotLogic, FormAssistData } from "./LogicBot";
 import GreetingsBot from "./GreetingsBot";
 import MobileBot from "./MobileBot";
 import ChatBackground from "./ChatBackground";
 import { Bot, X, Send } from "lucide-react";
 
-const Chatbot = () => {
-  const pathname = usePathname();
-  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
+interface ChatbotProps {
+  onFormFill?: (data: Partial<FormAssistData>) => void;
+}
 
+const Chatbot: React.FC<ChatbotProps> = ({ onFormFill }) => {
+  const pathname = usePathname();
   const {
     isOpen,
     isHovered,
     inputValue,
     messages,
     messagesEndRef,
+    isTyping,
     toggleChat,
     handleMouseEnter,
     handleMouseLeave,
     handleInputChange,
     sendMessage,
-  } = useChatbotLogic();
+  } = useChatbotLogic(onFormFill);
 
-  // Detect scroll position to show/hide chatbot
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = window.innerHeight * 0.8;
-      setIsScrolledPastHero(window.scrollY > heroHeight);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const allowedPaths = ["/", "/feature"];
+  // Show chatbot only on the main page, feature page, and form page
+  // Exclude from admin, freelancer, umkm panels and login/register pages
+  const allowedPaths = ["/", "/feature", "/form"];
   const isAllowed = allowedPaths.includes(pathname);
 
   if (!isAllowed) return null;
@@ -46,26 +38,19 @@ const Chatbot = () => {
   return (
     <>
       {/* Mobile Full Screen View */}
-      {isScrolledPastHero && (
-        <MobileBot
-          isOpen={isOpen}
-          onClose={toggleChat}
-          messages={messages}
-          inputValue={inputValue}
-          onInputChange={handleInputChange}
-          onSendMessage={sendMessage}
-          messagesEndRef={messagesEndRef}
-        />
-      )}
+      <MobileBot
+        isOpen={isOpen}
+        onClose={toggleChat}
+        messages={messages}
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onSendMessage={sendMessage}
+        messagesEndRef={messagesEndRef}
+        isTyping={isTyping}
+      />
 
       {/* Desktop Container */}
-      <div
-        className={`fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4 font-sans transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          isScrolledPastHero
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-20 scale-90 pointer-events-none"
-        }`}
-      >
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4 font-sans">
         {/* Desktop Chat Window */}
         {isOpen && (
           <div className="hidden md:flex flex-col w-95 h-137.5 bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-in-up border border-gray-100 mb-2">
@@ -105,7 +90,7 @@ const Chatbot = () => {
                     className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm ${
+                      className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm shadow-sm whitespace-pre-line ${
                         msg.sender === "user"
                           ? "bg-(--primary) text-white rounded-tr-none"
                           : "bg-white text-gray-800 border border-gray-100 rounded-tl-none"
@@ -123,6 +108,24 @@ const Chatbot = () => {
                     </div>
                   </div>
                 ))}
+
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-white text-gray-800 border border-gray-100 rounded-tl-none px-4 py-3 rounded-2xl shadow-sm">
+                      <div className="flex space-x-2">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.2s" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0.4s" }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </div>
             </div>
@@ -135,11 +138,12 @@ const Chatbot = () => {
                   value={inputValue}
                   onChange={handleInputChange}
                   placeholder="Type your message..."
-                  className="flex-1 border border-gray-200 bg-gray-50 rounded-full px-4 py-2.5 outline-none focus:border-(--primary) focus:ring-1 focus:ring-(--primary) transition-all text-sm"
+                  disabled={isTyping}
+                  className="flex-1 border border-gray-200 bg-gray-50 rounded-full px-4 py-2.5 outline-none focus:border-(--primary) focus:ring-1 focus:ring-(--primary) transition-all text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                 />
                 <button
                   type="submit"
-                  disabled={!inputValue.trim()}
+                  disabled={!inputValue.trim() || isTyping}
                   className="w-10 h-10 bg-(--primary) text-white rounded-full flex items-center justify-center hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm cursor-pointer"
                 >
                   <Send size={18} />

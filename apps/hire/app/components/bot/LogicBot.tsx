@@ -9,8 +9,6 @@ export interface Message {
   timestamp: Date;
 }
 
-const STORAGE_KEY = "chatbot_history";
-
 export const useChatbotLogic = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -25,18 +23,14 @@ export const useChatbotLogic = () => {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Clear history from localStorage on initial mount (which happens on refresh/first visit)
+  // Clear history from localStorage on initial mount (refresh)
   useEffect(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("chatbot_history");
   }, []);
 
   // Sync messages to localStorage whenever they change
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-    } catch (error) {
-      console.error("Failed to save chatbot history:", error);
-    }
+    localStorage.setItem("chatbot_history", JSON.stringify(messages));
   }, [messages]);
 
   const toggleChat = () => setIsOpen((prev) => !prev);

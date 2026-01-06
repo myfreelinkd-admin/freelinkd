@@ -154,7 +154,7 @@ export default function ProjectChatModal({
             </div>
           </div>
           <span className="text-[10px] px-2 py-1 bg-white rounded-md text-blue-600 font-bold border border-blue-100">
-            On Going
+            Process
           </span>
         </div>
 

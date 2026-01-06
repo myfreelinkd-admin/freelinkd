@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
 import { useChatbotLogic } from "./LogicBot";
 import GreetingsBot from "./GreetingsBot";
@@ -10,8 +10,6 @@ import { Bot, X, Send } from "lucide-react";
 
 const Chatbot = () => {
   const pathname = usePathname();
-  const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
-
   const {
     isOpen,
     isHovered,
@@ -25,19 +23,8 @@ const Chatbot = () => {
     sendMessage,
   } = useChatbotLogic();
 
-  // Detect scroll position to show/hide chatbot
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroHeight = window.innerHeight * 0.8;
-      setIsScrolledPastHero(window.scrollY > heroHeight);
-    };
-
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+  // Show chatbot only on the main page and feature page
+  // Exclude from admin, freelancer, umkm panels and login/register pages
   const allowedPaths = ["/", "/feature"];
   const isAllowed = allowedPaths.includes(pathname);
 
@@ -46,26 +33,18 @@ const Chatbot = () => {
   return (
     <>
       {/* Mobile Full Screen View */}
-      {isScrolledPastHero && (
-        <MobileBot
-          isOpen={isOpen}
-          onClose={toggleChat}
-          messages={messages}
-          inputValue={inputValue}
-          onInputChange={handleInputChange}
-          onSendMessage={sendMessage}
-          messagesEndRef={messagesEndRef}
-        />
-      )}
+      <MobileBot
+        isOpen={isOpen}
+        onClose={toggleChat}
+        messages={messages}
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onSendMessage={sendMessage}
+        messagesEndRef={messagesEndRef}
+      />
 
       {/* Desktop Container */}
-      <div
-        className={`fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4 font-sans transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-          isScrolledPastHero
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-20 scale-90 pointer-events-none"
-        }`}
-      >
+      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-4 font-sans">
         {/* Desktop Chat Window */}
         {isOpen && (
           <div className="hidden md:flex flex-col w-95 h-137.5 bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-in-up border border-gray-100 mb-2">

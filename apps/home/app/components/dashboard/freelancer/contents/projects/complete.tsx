@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, Calendar, Star, Download } from "lucide-react";
+import { DollarSign, Calendar, Star } from "lucide-react";
 import ProjectActionButton from "./ui/action-button";
 
 const completedProjects = [
@@ -82,9 +82,6 @@ export default function CompleteProjects() {
                   </td>
                   <td className="px-4 py-5 bg-green-50/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-green-100 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <button className="p-2.5 bg-white hover:bg-green-50 rounded-xl transition-all text-green-600 shadow-sm border border-green-100 cursor-pointer group/btn">
-                        <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                      </button>
                       <ProjectActionButton status="Complete" />
                     </div>
                   </td>

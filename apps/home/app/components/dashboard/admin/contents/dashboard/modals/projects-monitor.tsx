@@ -73,7 +73,7 @@ export default function ProjectsMonitor({
         <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
           <div>
             <h2 className="text-2xl font-bold text-(--primary)">
-              Monitor Ongoing Jobs
+              Monitor Process Jobs
             </h2>
             <p className="text-sm text-gray-400 mt-1">
               Track progress of active projects across the platform.

@@ -172,8 +172,8 @@ export default function ProjectDetailModal({
 
         {/* Footer Action */}
         <div className="p-8 border-t border-gray-100 bg-white flex justify-end gap-3">
-          {project.status === "On going" && (
-            <Tooltip content="Update Progress">
+          {project.status === "Process" && (
+            <Tooltip content="Update Progress" position="top">
               <button className="p-3.5 bg-(--primary) text-white rounded-2xl font-bold text-sm hover:bg-blue-900 transition-all shadow-lg shadow-blue-200 flex items-center justify-center cursor-pointer">
                 <TrendingUp className="w-5 h-5" />
               </button>

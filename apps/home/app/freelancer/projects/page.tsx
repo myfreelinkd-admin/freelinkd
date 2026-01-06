@@ -15,7 +15,7 @@ export default function ProjectsPage() {
     { id: "all", label: "All", icon: LayoutGrid, color: "text-(--primary)" },
     {
       id: "ongoing",
-      label: "On going",
+      label: "Process",
       icon: Activity,
       color: "text-blue-600",
     },
@@ -80,7 +80,7 @@ export default function ProjectsPage() {
           {/* Content Sections */}
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {activeTab === "all" && <AllProjects />}
-            {activeTab === "ongoing" && <AllProjects filter="On going" />}
+            {activeTab === "ongoing" && <AllProjects filter="Process" />}
             {activeTab === "complete" && <CompleteProjects />}
             {activeTab === "canceled" && <CanceledProjects />}
           </div>

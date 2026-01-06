@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Unbounded } from "next/font/google";
 import "./globals.css";
+import Chatbot from "./components/bot/Chatbot";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${poppins.variable} ${unbounded.variable} antialiased`}>
         {children}
+        <Chatbot />
       </body>
     </html>
   );

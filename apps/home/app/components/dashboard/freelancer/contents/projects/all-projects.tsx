@@ -16,7 +16,7 @@ interface Project {
   client: string;
   date: string;
   amount: string;
-  status: "On going" | "Complete" | "Canceled";
+  status: "Process" | "Complete" | "Canceled";
   progress: number;
 }
 
@@ -27,7 +27,7 @@ const projectsData: Project[] = [
     client: "TechFlow Solutions",
     date: "15 Jan 2026",
     amount: "Rp 5.000.000",
-    status: "On going",
+    status: "Process",
     progress: 75,
   },
   {
@@ -36,7 +36,7 @@ const projectsData: Project[] = [
     client: "Sagawa Group",
     date: "20 Jan 2026",
     amount: "Rp 8.500.000",
-    status: "On going",
+    status: "Process",
     progress: 40,
   },
   {
@@ -77,7 +77,7 @@ export default function AllProjects({ filter }: { filter?: string }) {
     switch (status) {
       case "Complete":
         return "bg-green-500/10 text-green-600 border-green-200";
-      case "On going":
+      case "Process":
         return "bg-blue-500/10 text-blue-600 border-blue-200";
       case "Canceled":
         return "bg-red-500/10 text-red-600 border-red-200";
@@ -90,7 +90,7 @@ export default function AllProjects({ filter }: { filter?: string }) {
     switch (status) {
       case "Complete":
         return <CheckCircle2 className="w-3 h-3 mr-1.5" />;
-      case "On going":
+      case "Process":
         return <Activity className="w-3 h-3 mr-1.5" />;
       case "Canceled":
         return <XCircle className="w-3 h-3 mr-1.5" />;

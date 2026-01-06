@@ -1,6 +1,7 @@
 "use client";
 
-import { MoreHorizontal, Clock, Layout, CheckCircle2 } from "lucide-react";
+import { Clock, Layout, CheckCircle2 } from "lucide-react";
+import ButtonProjects from "./ui/button-projects";
 
 const ongoingProjects = [
   {
@@ -36,7 +37,7 @@ export default function ProjectsPreview() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-xl font-bold text-(--primary) flex items-center gap-2">
-              <Layout className="w-5 h-5 text-(--secondary)" /> Ongoing Projects
+              <Layout className="w-5 h-5 text-(--secondary)" /> Process Projects
             </h2>
             <p className="text-sm text-gray-400 mt-1">
               Track your current work progress and upcoming deadlines.
@@ -108,9 +109,14 @@ export default function ProjectsPreview() {
                     </div>
                   </td>
                   <td className="px-4 py-4 bg-(--alternative)/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-gray-100 text-right">
-                    <button className="p-2 hover:bg-white rounded-lg transition-colors text-gray-400 hover:text-(--primary) shadow-sm border border-transparent hover:border-gray-100">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
+                    <ButtonProjects
+                      isFirst={project.id === ongoingProjects[0].id}
+                      isLast={
+                        project.id ===
+                        ongoingProjects[ongoingProjects.length - 1].id
+                      }
+                      totalItems={ongoingProjects.length}
+                    />
                   </td>
                 </tr>
               ))}
