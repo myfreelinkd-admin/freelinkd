@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Breadcrumbs from "../components/form/layout/breadcrumb";
 import Header from "../components/form/layout/header";
 import PersonalInfo from "../components/form/personal-info";
 import ProfesionalInfo from "../components/form/profesional-info";
 import Review from "../components/form/review";
 import Results from "../components/form/results";
+import { onFormFillEvent } from "../utils/assistant-join";
 
 interface FormData {
   name: string;
@@ -32,6 +33,34 @@ export default function FormPage() {
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));
   };
+
+  // Listen for form fill events from chatbot
+  useEffect(() => {
+    const cleanup = onFormFillEvent((data) => {
+      updateFormData(data);
+
+      // Visual feedback: scroll to top and highlight
+      if (typeof window !== "undefined") {
+        // Scroll to top first
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Add a small delay then scroll to personal info section
+        setTimeout(() => {
+          const personalSection = document.querySelector(
+            '[data-section="personal-info"]'
+          );
+          if (personalSection) {
+            personalSection.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 300);
+      }
+    });
+
+    return cleanup;
+  }, []);
 
   const handleEdit = (section: "personal" | "project" | "professional") => {
     setShowReview(false);

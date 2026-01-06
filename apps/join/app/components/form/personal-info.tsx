@@ -29,7 +29,10 @@ export default function PersonalInfo({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto py-12 px-4">
+    <div
+      className="w-full max-w-3xl mx-auto py-12 px-4"
+      data-section="personal-info"
+    >
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           Tell Us About Yourself

@@ -1,19 +1,21 @@
 "use client";
 
 import React from "react";
-import { usePathname } from "next/navigation";
 import { useChatbotLogic, FormAssistData } from "./LogicBot";
 import GreetingsBot from "./GreetingsBot";
 import MobileBot from "./MobileBot";
 import ChatBackground from "./ChatBackground";
 import { Bot, X, Send } from "lucide-react";
+import { dispatchFormFillEvent } from "../../utils/assistant-join";
 
 interface ChatbotProps {
   onFormFill?: (data: Partial<FormAssistData>) => void;
 }
 
-const Chatbot: React.FC<ChatbotProps> = ({ onFormFill }) => {
-  const pathname = usePathname();
+const Chatbot: React.FC<ChatbotProps> = () => {
+  const handleFormFill = (data: Partial<FormAssistData>) => {
+    dispatchFormFillEvent(data);
+  };
   const {
     isOpen,
     isHovered,
@@ -26,14 +28,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ onFormFill }) => {
     handleMouseLeave,
     handleInputChange,
     sendMessage,
-  } = useChatbotLogic(onFormFill);
-
-  // Show chatbot only on the main page, feature page, and form page
-  // Exclude from admin, freelancer, umkm panels and login/register pages
-  const allowedPaths = ["/", "/feature", "/form"];
-  const isAllowed = allowedPaths.includes(pathname);
-
-  if (!isAllowed) return null;
+  } = useChatbotLogic(handleFormFill);
 
   return (
     <>
