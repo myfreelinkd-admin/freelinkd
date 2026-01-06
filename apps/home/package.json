@@ -9,7 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@datastax/astra-db-ts": "^2.1.2",
     "@repo/ui": "*",
+    "@supabase/supabase-js": "^2.89.0",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.2",
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -19,9 +23,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

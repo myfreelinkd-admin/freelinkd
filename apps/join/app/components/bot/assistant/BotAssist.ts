@@ -28,12 +28,8 @@ interface ParsedData {
 
 const ASSIST_STORAGE_KEY = "form_assist_history";
 
-/**
- * Parse user input in the format:
- * Name., Address., Phone., Email., Skills., Experience., Portfolio URL
- *
- * Example: Alvin., Tebet Jakarta., 08123456789., alvin89@gmail.com., Figma & React., Saya bekerja untuk perusahaan teknologi., https://materismkn31.vercel.app/
- */
+//  Parse user input in the format:
+
 export const parseFormData = (input: string): ParsedData => {
   try {
     // Split by period followed by comma or just period at the end
