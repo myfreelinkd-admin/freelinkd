@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} ${unbounded.variable} antialiased`}>
+    <html lang="en" className={`${poppins.variable} ${unbounded.variable}`}>
+      <body className="antialiased">
         {children}
         <Chatbot />
       </body>

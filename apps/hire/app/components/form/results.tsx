@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@repo/ui/button";
+import { jobApiService } from "@/app/api/services/jobService";
 
 interface ReviewPageProps {
   data: {
@@ -28,15 +29,53 @@ interface ReviewPageProps {
 
 export default function ReviewPage({ data }: ReviewPageProps) {
   const [orderId, setOrderId] = useState("ORD-GENERATING...");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
-    const generatedId =
-      "ORD-" + Math.random().toString(36).substring(2, 11).toUpperCase();
-    const timer = setTimeout(() => {
-      setOrderId(generatedId);
-    }, 0);
-    return () => clearTimeout(timer);
-  }, []);
+    // Submit to database when component mounts
+    const submitToDatabase = async () => {
+      setIsSubmitting(true);
+      setSubmitError(null);
+
+      try {
+        const response = await jobApiService.createJob({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          jobTitle: data.jobTitle,
+          skills: data.skills,
+          projectDescription: data.projectDescription,
+          additionalRequirements: data.additionalRequirements,
+          dueTime: data.dueTime,
+          deadlineDate: data.deadlineDate,
+          budgetFrom: data.budgetFrom,
+          budgetTo: data.budgetTo,
+          uploadDocument: data.uploadDocument?.name || "",
+          selectedFreelancer: data.selectedFreelancer,
+        });
+
+        if (response.success && response.data?.id) {
+          setOrderId(`ORD-${response.data.id.substring(0, 8).toUpperCase()}`);
+        } else {
+          throw new Error("Failed to create job");
+        }
+      } catch (error) {
+        console.error("Error submitting job:", error);
+        setSubmitError(
+          error instanceof Error ? error.message : "Failed to submit job"
+        );
+        // Fallback to generated ID on error
+        const generatedId =
+          "ORD-" + Math.random().toString(36).substring(2, 11).toUpperCase();
+        setOrderId(generatedId);
+      } finally {
+        setIsSubmitting(false);
+      }
+    };
+
+    submitToDatabase();
+  }, [data]);
 
   const submissionDate = new Date().toLocaleDateString(undefined, {
     weekday: "long",
@@ -50,12 +89,22 @@ export default function ReviewPage({ data }: ReviewPageProps) {
       <div className="space-y-10">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Submission Confirmed
+            {isSubmitting ? "Submitting..." : "Submission Confirmed"}
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Your hiring request has been logged successfully. An email
-            confirmation will be sent after admin review (within 48 hours).
+            {isSubmitting
+              ? "Please wait while we process your request..."
+              : "Your hiring request has been logged successfully. An email confirmation will be sent after admin review (within 48 hours)."}
           </p>
+          {submitError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm">{submitError}</p>
+              <p className="text-gray-500 text-xs mt-1">
+                Don't worry, your form data is saved locally. Please try again
+                later.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Application Summary */}
