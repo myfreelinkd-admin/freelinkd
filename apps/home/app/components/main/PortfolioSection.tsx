@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { motion } from "motion/react";
 
 export default function PortfolioSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -107,7 +108,13 @@ export default function PortfolioSection() {
     <section id="portfolio" className="py-12 md:py-20 bg-(--background)">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-10 md:mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Portfolio Freelancer
           </h2>
@@ -116,10 +123,16 @@ export default function PortfolioSection() {
             project showcases their skills, creativity, and dedication to
             delivering exceptional results.
           </p>
-        </div>
+        </motion.div>
 
         {/* Carousel Container */}
-        <div className="relative group">
+        <motion.div 
+          className="relative group"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           {/* Navigation Buttons */}
           <button
             onClick={() => scroll("left")}
@@ -144,9 +157,11 @@ export default function PortfolioSection() {
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {portfolios.map((item, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="min-w-[85vw] md:min-w-95 bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 snap-center flex flex-col overflow-hidden border border-gray-100"
+                whileHover={{ y: -5 }}
+                transition={{ duration: 0.3 }}
               >
                 {/* Image Container */}
                 <div className="h-56 overflow-hidden bg-gray-100 relative">
@@ -177,7 +192,7 @@ export default function PortfolioSection() {
                     {item.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
@@ -196,7 +211,7 @@ export default function PortfolioSection() {
               }}
             ></div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

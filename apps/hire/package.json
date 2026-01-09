@@ -9,12 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@datastax/astra-db-ts": "^2.1.2",
     "@repo/ui": "*",
     "@supabase/supabase-js": "^2.89.0",
     "fuse.js": "^7.1.0",
-    "@datastax/astra-db-ts": "^2.1.2",
     "lucide-react": "^0.562.0",
     "mongodb": "^7.0.0",
+    "motion": "^12.24.7",
     "next": "16.1.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"

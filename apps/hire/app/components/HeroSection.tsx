@@ -3,18 +3,41 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, PlayCircle, Star } from "lucide-react";
+import { motion } from "motion/react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 export default function HeroSection() {
   return (
     <section className="relative w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
       {/* Text Content */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-20 py-12 lg:py-0 bg-(--background) z-10">
-        <div className="max-w-xl flex flex-col gap-8 animate-fade-in-up lg:-mt-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit">
+        <motion.div 
+          className="max-w-xl flex flex-col gap-8 lg:-mt-16"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit">
             <Star className="w-4 h-4 fill-current" />
             <span>Results-Driven Talent</span>
-          </div>
-          <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
+          </motion.div>
+          
+          <motion.h1 variants={itemVariants} className="text-5xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
             Unlock Your <br />
             <span className="relative inline-block">
               Business
@@ -33,15 +56,15 @@ export default function HeroSection() {
             </span>{" "}
             <br />
             Potential
-          </h1>
+          </motion.h1>
 
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <motion.p variants={itemVariants} className="text-lg text-gray-600 leading-relaxed">
             Access a curated network of vetted professionals to deliver
             measurable results fast. Expert talent, flexible terms, clear
             outcomes.
-          </p>
+          </motion.p>
 
-          <div className="flex flex-wrap gap-4">
+          <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
             {/* Post a Project */}
             <Link
               href="/form"
@@ -65,10 +88,10 @@ export default function HeroSection() {
                 How it Works
               </span>
             </Link>
-          </div>
+          </motion.div>
 
           {/* Partners */}
-          <div className="flex items-center gap-4 text-sm text-gray-500">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 text-sm text-gray-500">
             <div className="flex -space-x-3">
               {[
                 { name: "Sagawa", logo: "/assets/img/sagawa_logo.svg" },
@@ -93,12 +116,17 @@ export default function HeroSection() {
               </div>
             </div>
             <p>Trusted by 1000+ Companies</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Right Image */}
-      <div className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen">
+      <motion.div 
+        className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
         <Image
           src="/assets/img/hire.jpg"
           alt="Professional working on laptop"
@@ -110,7 +138,12 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-linear-to-r from-(--background) via-transparent to-transparent lg:block hidden" />
 
         {/* Floating Card Overlay */}
-        <div className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 animate-fade-in-up delay-200 max-w-xs">
+        <motion.div 
+          className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-(--primary)/10 flex items-center justify-center text-(--primary)">
               <svg
@@ -137,8 +170,8 @@ export default function HeroSection() {
               </p>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

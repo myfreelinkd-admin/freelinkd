@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import Breadcrumbs from "../components/form/layout/breadcrumb";
 import Header from "../components/form/layout/header";
 import PersonalInfo from "../components/form/personal-info";
@@ -86,39 +87,63 @@ export default function FormPage() {
         />
 
         <div className="mt-6">
-          {!showReview && !showResults ? (
-            <>
-              <PersonalInfo
-                formData={formData}
-                updateFormData={updateFormData}
-              />
-              <ProfesionalInfo
-                formData={formData}
-                updateFormData={updateFormData}
-                onNext={() => setShowReview(true)}
-              />
-            </>
-          ) : showResults ? (
-            <Results
-              data={{
-                ...formData,
-                resume: formData.resume
-                  ? { name: formData.resume.name }
-                  : undefined,
-              }}
-            />
-          ) : (
-            <Review
-              data={{
-                ...formData,
-                resume: formData.resume
-                  ? { name: formData.resume.name }
-                  : undefined,
-              }}
-              onEdit={handleEdit}
-              onSubmit={() => setShowResults(true)}
-            />
-          )}
+          <AnimatePresence mode="wait">
+            {!showReview && !showResults ? (
+              <motion.div
+                key="form-input"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <PersonalInfo
+                  formData={formData}
+                  updateFormData={updateFormData}
+                />
+                <ProfesionalInfo
+                  formData={formData}
+                  updateFormData={updateFormData}
+                  onNext={() => setShowReview(true)}
+                />
+              </motion.div>
+            ) : showResults ? (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Results
+                  data={{
+                    ...formData,
+                    resume: formData.resume
+                      ? { name: formData.resume.name }
+                      : undefined,
+                  }}
+                />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="review"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Review
+                  data={{
+                    ...formData,
+                    resume: formData.resume
+                      ? { name: formData.resume.name }
+                      : undefined,
+                  }}
+                  onEdit={handleEdit}
+                  onSubmit={() => setShowResults(true)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </main>

@@ -1,6 +1,7 @@
 "use client";
 
 import { ThumbsUp, HeartHandshake, BrainCircuit, Bot } from "lucide-react";
+import { motion } from "motion/react";
 
 const features = [
   {
@@ -29,6 +30,21 @@ const features = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
 export default function AboutSection() {
   return (
     <section
@@ -36,7 +52,13 @@ export default function AboutSection() {
       className="w-full py-24 px-6 lg:px-20 bg-(--background) relative overflow-hidden"
     >
       <div className="container mx-auto relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
             Our Commitment
           </h2>
@@ -45,12 +67,19 @@ export default function AboutSection() {
             projects and flexible collaboration models. Explore how we can help
             you grow.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
+              variants={itemVariants}
               className="group relative bg-white rounded-3xl p-8 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-10px_rgba(8,31,92,0.1)] transition-all duration-500 ease-in-out cursor-pointer border border-gray-100 hover:border-blue-100 flex flex-col h-full"
             >
               <div className="mb-8 relative">
@@ -69,9 +98,9 @@ export default function AboutSection() {
 
               {/* Bottom Accent */}
               <div className="mt-8 w-12 h-1 bg-gray-100 group-hover:w-full group-hover:bg-(--primary) transition-all duration-500 rounded-full" />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

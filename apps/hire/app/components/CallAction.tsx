@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { motion } from "motion/react";
 
 export default function CallAction() {
   return (
@@ -33,21 +34,45 @@ export default function CallAction() {
       </div>
 
       <div className="container mx-auto relative z-10">
-        <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8">
+        <motion.div 
+          className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, staggerChildren: 0.2 }}
+        >
           {/* Headline */}
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded">
+          <motion.h2 
+            className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             Post It. Build It. <span className="text-[#ff6f00]">Ship It.</span>
-          </h2>
+          </motion.h2>
 
           {/* Sub-headline */}
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed">
+          <motion.p 
+            className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             No ghosting. No fluff. Just skilled humans who{" "}
             <br className="hidden md:block" />
             actually deliver.
-          </p>
+          </motion.p>
 
           {/* Button */}
-          <div className="flex justify-center mb-12 animate-fade-in-up delay-300">
+          <motion.div 
+            className="flex justify-center mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <Link
               href="/form"
               className="group relative px-10 py-5 font-bold rounded-[10px_25px_10px_25px] overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(255,111,0,0.4)] cursor-pointer border border-[#ff6f00] bg-[#ff6f00]"
@@ -58,8 +83,8 @@ export default function CallAction() {
                 <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-2" />
               </span>
             </Link>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

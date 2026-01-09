@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { motion } from "motion/react";
 
 interface StatItemProps {
   target: number;
@@ -99,7 +100,13 @@ export default function CallAction() {
       </div>
 
       <div className="container mx-auto relative z-10 text-center">
-        <div className="max-w-4xl mx-auto mb-16 animate-fade-in-up flex flex-col items-center gap-8">
+        <motion.div 
+          className="max-w-4xl mx-auto mb-16 flex flex-col items-center gap-8"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded">
             Freelance. Flex.
             <span className="text-[#ff6f00]"> Repeat.</span>
@@ -108,18 +115,30 @@ export default function CallAction() {
             Turn your skills into real impact and your side hustle into a
             career.
           </p>
-        </div>
+        </motion.div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16 animate-fade-in-up delay-200">
+        <motion.div 
+          className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
           <StatItem target={2000} label="Freelancers" suffix="+" />
           <StatItem target={500} label="SMEs Joined" suffix="+" />
           <StatItem target={5000} label="Projects" suffix="+" />
           <StatItem target={4.5} label="Rating" suffix="" />
-        </div>
+        </motion.div>
 
         {/* CTA Button */}
-        <div className="flex justify-center mb-12 animate-fade-in-up delay-300">
+        <motion.div 
+          className="flex justify-center mb-12"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <Link
             href="/form"
             className="group relative px-10 py-5 font-bold rounded-[10px_25px_10px_25px] overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(255,111,0,0.4)] cursor-pointer border border-[#ff6f00] bg-[#ff6f00]"
@@ -130,10 +149,16 @@ export default function CallAction() {
               <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-2" />
             </span>
           </Link>
-        </div>
+        </motion.div>
 
         {/* Terms & Conditions */}
-        <div className="pt-8 border-t border-white/10 animate-fade-in-up delay-400">
+        <motion.div 
+          className="pt-8 border-t border-white/10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
           <p className="text-blue-200/60 text-sm font-medium flex flex-wrap justify-center gap-x-4 gap-y-2">
             <span>Free to join</span>
             <span className="hidden sm:inline">•</span>
@@ -141,7 +166,7 @@ export default function CallAction() {
             <span className="hidden sm:inline">•</span>
             <span>Fair evaluation based on skill</span>
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

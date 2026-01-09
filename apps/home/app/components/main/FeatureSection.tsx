@@ -3,13 +3,20 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "motion/react";
 
 export default function FeatureSection() {
   return (
     <section id="featured" className="py-12 md:py-20 bg-(--background)">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center max-w-4xl mx-auto mb-10 md:mb-16">
+        <motion.div 
+          className="text-center max-w-4xl mx-auto mb-10 md:mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Our Featured
           </h2>
@@ -20,10 +27,16 @@ export default function FeatureSection() {
             community all designed to accelerate your professional growth and
             collaboration.
           </p>
-        </div>
+        </motion.div>
 
         {/* Featured Card */}
-        <div className="relative w-full h-87.5 md:h-125 rounded-2xl overflow-hidden group cursor-pointer shadow-xl">
+        <motion.div 
+          className="relative w-full h-87.5 md:h-125 rounded-2xl overflow-hidden group cursor-pointer shadow-xl"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
           {/* Background Image */}
           <Image
             src="/assets/img/featured.jpg"
@@ -56,7 +69,13 @@ export default function FeatureSection() {
               </div>
 
               {/* Button */}
-              <div className="shrink-0">
+              <motion.div 
+                className="shrink-0"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
                 <Link
                   href="/feature"
                   className="group bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer"
@@ -64,10 +83,10 @@ export default function FeatureSection() {
                   Get Started
                   <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

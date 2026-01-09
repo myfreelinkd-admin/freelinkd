@@ -1,6 +1,7 @@
 "use client";
 
 import { UserPlus, Search, Briefcase } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function Step() {
   const steps = [
@@ -30,7 +31,13 @@ export default function Step() {
   return (
     <section className="py-24 bg-(--background) overflow-hidden">
       <div className="container mx-auto px-6">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
             Your Path to Premium Projects
           </h2>
@@ -38,17 +45,28 @@ export default function Step() {
             Follow our simple three-step process to join our exclusive network
             of professional freelancers and start your journey today.
           </p>
-        </div>
+        </motion.div>
 
         <div className="relative">
           {/* Connecting Line (Desktop) */}
-          <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0" />
+          <motion.div 
+            className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0" 
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.2 }}
+            style={{ transformOrigin: "left" }}
+          />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
             {steps.map((step, index) => (
-              <div
+              <motion.div
                 key={step.id}
                 className="flex flex-col items-center text-center group"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
               >
                 {/* Step Number & Icon Circle */}
                 <div className="relative mb-8">
@@ -76,7 +94,7 @@ export default function Step() {
                 {index < steps.length - 1 && (
                   <div className="lg:hidden w-0.5 h-12 bg-gray-100 my-6" />
                 )}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

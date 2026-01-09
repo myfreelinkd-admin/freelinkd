@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { motion } from "motion/react";
 
 const features = [
   {
@@ -30,21 +31,55 @@ const features = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    transition: { duration: 0.5, ease: "easeOut" as const } 
+  },
+};
+
 export default function ListSection() {
   return (
     <section className="py-8 md:py-10 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-      <div className="text-center mb-8">
+      <motion.div 
+        className="text-center mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
         <p className="text-base md:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
           Your gateway to freelancing, learning, events, and community
           everything you need to grow and connect.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="h-100 md:h-125 overflow-y-auto pr-4 space-y-4 overscroll-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+      <motion.div 
+        className="h-100 md:h-125 overflow-y-auto pr-4 space-y-4 overscroll-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500"
+        variants={containerVariants}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
         {features.map((feature, index) => (
-          <div
+          <motion.div
             key={index}
+            variants={itemVariants}
             className="group relative w-full h-24 md:h-28 rounded-2xl overflow-hidden shadow-md transition-all duration-300 shrink-0"
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.2 }}
           >
             {/* Background Image */}
             <div className="absolute inset-0">
@@ -77,9 +112,9 @@ export default function ListSection() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

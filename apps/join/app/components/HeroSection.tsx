@@ -3,17 +3,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle, Star } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function HeroSection() {
   return (
     <section className="relative w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
       {/* Left Content: Text & Buttons */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-20 py-12 lg:py-0 bg-(--background) z-10">
-        <div className="max-w-xl flex flex-col gap-8 animate-fade-in-up lg:-mt-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit">
+        <motion.div 
+          className="max-w-xl flex flex-col gap-8 lg:-mt-16"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <motion.div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
             <Star className="w-4 h-4 fill-current" />
             <span>Exclusive Freelancer Network</span>
-          </div>
+          </motion.div>
 
           <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
             Unlock Your <br />
@@ -24,11 +35,14 @@ export default function HeroSection() {
                 viewBox="0 0 100 10"
                 preserveAspectRatio="none"
               >
-                <path
+                <motion.path
                   d="M0 5 Q 50 10 100 5"
                   stroke="currentColor"
                   strokeWidth="8"
                   fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 1, delay: 0.5 }}
                 />
               </svg>
             </span>{" "}
@@ -74,20 +88,28 @@ export default function HeroSection() {
               "Global Network",
               "Career Growth",
             ].map((item, index) => (
-              <div
+              <motion.div
                 key={index}
                 className="flex items-center gap-2 text-gray-600"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 + index * 0.1 }}
               >
                 <CheckCircle className="w-5 h-5 text-green-500" />
                 <span className="text-sm font-medium">{item}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Right Content: Image */}
-      <div className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen">
+      <motion.div 
+        className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+      >
         <Image
           src="/assets/img/hire.jpg"
           alt="Freelancer working professionally"
@@ -100,7 +122,12 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-linear-to-r from-(--background) via-transparent to-transparent lg:block hidden" />
 
         {/* Bottom Floating Card */}
-        <div className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 animate-fade-in-up delay-300 max-w-xs">
+        <motion.div 
+          className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+        >
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-[#081f5c]/10 flex items-center justify-center text-[#081f5c]">
               <Star className="w-6 h-6 fill-current text-yellow-500" />
@@ -112,37 +139,8 @@ export default function HeroSection() {
               <p className="text-lg font-bold text-[#081f5c]">4.9 / 5.0</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Custom Styles for Animations */}
-      <style jsx global>{`
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
-        }
-        @keyframes bounce-slow {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
-        }
-      `}</style>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

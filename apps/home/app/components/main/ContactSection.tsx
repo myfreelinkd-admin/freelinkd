@@ -1,6 +1,7 @@
 "use client";
 
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function ContactSection() {
   const contactInfo = [
@@ -39,7 +40,13 @@ export default function ContactSection() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 md:mb-10">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-8 md:mb-10"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Get in Touch
           </h2>
@@ -47,11 +54,17 @@ export default function ContactSection() {
             Ready to start your project? We&#39;d love to hear from you. Send us
             a message and we&#39;ll respond as soon as possible.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:gap-8 items-stretch">
           {/* Map Container */}
-          <div className="w-full h-64 lg:h-auto min-h-75 lg:min-h-87.5 rounded-3xl overflow-hidden shadow-lg border border-gray-100 relative group">
+          <motion.div 
+            className="w-full h-64 lg:h-auto min-h-75 lg:min-h-87.5 rounded-3xl overflow-hidden shadow-lg border border-gray-100 relative group"
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.3254202957505!2d106.83053821081567!3d-6.22074956090159!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3f6ddce3efd%3A0xea6830e6c82c7a18!2sPlaza%20Festival!5e0!3m2!1sen!2sid!4v1766498937676!5m2!1sen!2sid"
               width="100%"
@@ -61,10 +74,16 @@ export default function ContactSection() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
-          </div>
+          </motion.div>
 
           {/* Contact Info Card */}
-          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 flex flex-col justify-center h-full">
+          <motion.div 
+            className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 flex flex-col justify-center h-full"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6 text-center lg:text-left">
               Contact Information
             </h3>
@@ -74,11 +93,11 @@ export default function ContactSection() {
                 <a
                   key={index}
                   href={item.href}
-                  target={
-                    item.icon === Globe || item.icon === MapPin
-                      ? "_blank"
-                      : undefined
-                  }
+            target={
+              item.icon === Globe || item.icon === MapPin
+                ? "_blank"
+                : undefined
+            }
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 group p-3 rounded-2xl hover:bg-gray-50 transition-all duration-300 border border-transparent hover:border-gray-100"
                 >
@@ -96,7 +115,7 @@ export default function ContactSection() {
                 </a>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

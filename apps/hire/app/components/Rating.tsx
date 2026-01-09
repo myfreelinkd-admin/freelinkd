@@ -1,6 +1,22 @@
 "use client";
 
 import { Star } from "lucide-react";
+import { motion } from "motion/react";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 interface RatingCardProps {
   name: string;
@@ -16,7 +32,10 @@ const RatingCard = ({
   rating,
 }: RatingCardProps) => {
   return (
-    <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col h-full transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 group cursor-default">
+    <motion.div
+      variants={itemVariants} 
+      className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col h-full transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 group cursor-default"
+    >
       <div className="flex items-center gap-4 mb-6">
         <div className="w-12 h-12 rounded-full bg-[#081f5c] shrink-0" />
         <div>
@@ -50,7 +69,7 @@ const RatingCard = ({
           {rating.toFixed(1)}
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -83,7 +102,13 @@ export default function RatingSection() {
     <section className="w-full py-20 px-6 lg:px-20 bg-(--background) overflow-hidden">
       <div className="container mx-auto">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <motion.div 
+          className="text-center max-w-3xl mx-auto mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
           <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
             SME&apos;s Rating
           </h2>
@@ -92,21 +117,33 @@ export default function RatingSection() {
             projects and flexible collaboration models. Explore how we can help
             you grow.
           </p>
-        </div>
+        </motion.div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           {ratings.map((item, index) => (
             <RatingCard key={index} {...item} />
           ))}
-        </div>
+        </motion.div>
 
         {/* Carousel Indicator */}
-        <div className="flex justify-center mt-12">
+        <motion.div 
+          className="flex justify-center mt-12"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
           <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full w-1/3 bg-gray-400 rounded-full animate-pulse" />
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

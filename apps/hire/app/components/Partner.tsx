@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "motion/react";
 
 const partners = [
   {
@@ -33,17 +34,29 @@ export default function Partner() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center gap-12">
           {/* Section Header */}
-          <div className="text-center space-y-2">
+          <motion.div 
+            className="text-center space-y-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-sm font-bold tracking-[0.2em] text-[#ff6f00] uppercase">
               Trusted By
             </h2>
             <h2 className="text-4xl font-bold text-[#081f5c]">
               Our Strategic Partners
             </h2>
-          </div>
+          </motion.div>
 
           {/* Partners Grid */}
-          <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-70 hover:opacity-100 transition-opacity duration-500">
+          <motion.div 
+            className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-70 hover:opacity-100 transition-opacity duration-500"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 0.7, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             {partners.map((partner) => (
               <Link
                 key={partner.name}
@@ -66,7 +79,7 @@ export default function Partner() {
                 </div>
               </Link>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
