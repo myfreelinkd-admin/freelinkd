@@ -9,6 +9,7 @@ import ProfesionalInfo from "../components/form/profesional-info";
 import Review from "../components/form/review";
 import Results from "../components/form/results";
 import { onFormFillEvent } from "../utils/assistant-join";
+import { submitFreelancerForm } from "../utils/freelancer-api";
 
 interface FormData {
   name: string;
@@ -30,9 +31,42 @@ export default function FormPage() {
   });
   const [showReview, setShowReview] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));
+  };
+
+  // Handler untuk submit form ke AstraDB
+  const handleFormSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await submitFreelancerForm({
+        name: formData.name,
+        address: formData.address,
+        email: formData.email,
+        phone: formData.phone,
+        skills: formData.skills,
+        professionalExperience: formData.professionalExperience,
+        portfolioUrl: formData.portfolioUrl,
+        resumeFileName: formData.resume?.name,
+      });
+
+      if (response.success) {
+        setShowResults(true);
+      } else {
+        setSubmitError(response.message || "Failed to submit application");
+        console.error("Submit error:", response.errors);
+      }
+    } catch (error) {
+      setSubmitError("An unexpected error occurred. Please try again.");
+      console.error("Submit exception:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Listen for form fill events from chatbot
@@ -139,7 +173,9 @@ export default function FormPage() {
                       : undefined,
                   }}
                   onEdit={handleEdit}
-                  onSubmit={() => setShowResults(true)}
+                  onSubmit={handleFormSubmit}
+                  isSubmitting={isSubmitting}
+                  submitError={submitError}
                 />
               </motion.div>
             )}

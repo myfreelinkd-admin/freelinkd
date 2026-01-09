@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@repo/ui/button";
 import { jobApiService } from "@/app/api/services/jobService";
 
@@ -31,10 +31,21 @@ export default function ReviewPage({ data }: ReviewPageProps) {
   const [orderId, setOrderId] = useState("ORD-GENERATING...");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  
+  // Flag to prevent double submission (React StrictMode runs effects twice)
+  const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double submission
+    if (hasSubmittedRef.current) {
+      return;
+    }
+    
     // Submit to database when component mounts
     const submitToDatabase = async () => {
+      // Mark as submitted immediately to prevent race conditions
+      hasSubmittedRef.current = true;
+      
       setIsSubmitting(true);
       setSubmitError(null);
 
@@ -75,7 +86,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
     };
 
     submitToDatabase();
-  }, [data]);
+  }, []); // Empty dependency array - only run once on mount
 
   const submissionDate = new Date().toLocaleDateString(undefined, {
     weekday: "long",

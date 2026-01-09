@@ -4,7 +4,12 @@
  */
 
 // AstraDB Connection
-export { getAstraDB, AstraDBClient } from "./db/astradb";
+export {
+  getAstraDB,
+  AstraDBClient,
+  ASTRA_KEYSPACES,
+} from "./db/astradb";
+export type { AstraKeyspaceName } from "./db/astradb";
 
 // Supabase Connection
 export { getSupabase, SupabaseClientManager } from "./db/supabase";

@@ -6,6 +6,7 @@ import { DataAPIClient } from "@datastax/astra-db-ts";
 interface AstraDBConfig {
   token: string;
   endpoint: string;
+  keyspace: string;
 }
 
 // Minimal interface for the parts of the Astra DB object used in this file
@@ -16,6 +17,9 @@ interface AstraDBDatabase {
   dropCollection(collectionName: string): Promise<unknown>;
   command(command: unknown): Promise<unknown>;
 }
+
+// Keyspace untuk freelancer form
+const FREELANCER_KEYSPACE = "freelancer";
 
 //  AstraDB Client Singleton Class
 
@@ -28,7 +32,10 @@ class AstraDBClient {
   private constructor(config: AstraDBConfig) {
     this.config = config;
     this.client = new DataAPIClient(this.config.token);
-    this.db = this.client.db(this.config.endpoint) as AstraDBDatabase;
+    // Menggunakan keyspace yang dispesifikasikan
+    this.db = this.client.db(this.config.endpoint, {
+      keyspace: this.config.keyspace,
+    }) as AstraDBDatabase;
   }
 
   //  Get singleton instance of AstraDB client
@@ -37,6 +44,7 @@ class AstraDBClient {
     if (!AstraDBClient.instance) {
       const token = process.env.ASTRA_DB_APPLICATION_TOKEN;
       const endpoint = process.env.ASTRA_DB_API_ENDPOINT;
+      const keyspace = process.env.ASTRA_DB_KEYSPACE || FREELANCER_KEYSPACE;
 
       if (!token || !endpoint) {
         throw new Error(
@@ -44,7 +52,8 @@ class AstraDBClient {
         );
       }
 
-      AstraDBClient.instance = new AstraDBClient({ token, endpoint });
+      console.log(`Connecting to AstraDB with keyspace: ${keyspace}`);
+      AstraDBClient.instance = new AstraDBClient({ token, endpoint, keyspace });
     }
 
     return AstraDBClient.instance;

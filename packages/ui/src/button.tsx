@@ -7,6 +7,7 @@ interface ButtonProps {
   className?: string;
   appName?: string;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export const Button = ({
@@ -14,11 +15,13 @@ export const Button = ({
   className = "",
   appName,
   onClick,
+  disabled = false,
 }: ButtonProps) => {
   const defaultStyles =
     "bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-12 rounded-[10px_20px_10px_20px] text-xl transition-colors duration-200";
 
   const handleClick = () => {
+    if (disabled) return;
     if (onClick) {
       onClick();
     } else if (appName) {
@@ -27,7 +30,11 @@ export const Button = ({
   };
 
   return (
-    <button className={`${defaultStyles} ${className}`} onClick={handleClick}>
+    <button 
+      className={`${defaultStyles} ${className} ${disabled ? "opacity-50 cursor-not-allowed" : ""}`} 
+      onClick={handleClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   );
