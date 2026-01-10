@@ -22,7 +22,17 @@ const transporter = nodemailer.createTransport({
 export async function sendFreelancerAcceptanceEmail(
   data: FreelancerAcceptanceEmailData
 ): Promise<void> {
-  const logoPath = path.join(process.cwd(), "public/assets/freelinkd-logo.svg");
+  const fs = require("fs");
+  let logoPath = path.join(process.cwd(), "public/assets/freelinkd-logo.svg");
+  
+  if (!fs.existsSync(logoPath)) {
+     const altPath = path.join(process.cwd(), "apps/home/public/assets/freelinkd-logo.svg");
+     if (fs.existsSync(altPath)) {
+        logoPath = altPath;
+     } else {
+        console.warn("Logo file not found at:", logoPath);
+     }
+  }
 
   const currentYear = new Date().getFullYear();
 
@@ -56,7 +66,7 @@ export async function sendFreelancerAcceptanceEmail(
                     <div style="margin-bottom: 25px;">
                       <img src="cid:freelinkd-logo"
                            alt="Freelinkd"
-                           style="height: 50px; width: auto; filter: brightness(0) invert(1);">
+                           style="height: 50px; width: auto;">
                     </div>
                     <h1 style="color: #ffffff; margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
                       Welcome Aboard!
@@ -64,17 +74,6 @@ export async function sendFreelancerAcceptanceEmail(
                     <p style="color: rgba(255,255,255,0.85); margin: 15px 0 0 0; font-size: 16px; font-weight: 400;">
                       Your journey as a Freelinkd Talent begins now
                     </p>
-                  </td>
-                </tr>
-
-                <!-- Success Badge -->
-                <tr>
-                  <td style="padding: 0 40px;">
-                    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); margin: -30px auto 0; padding: 15px 30px; border-radius: 50px; display: inline-block; text-align: center; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);">
-                      <span style="color: #ffffff; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                        ✓ Application Approved
-                      </span>
-                    </div>
                   </td>
                 </tr>
 
@@ -254,15 +253,11 @@ export async function sendFreelancerAcceptanceEmailById(
 
     await sendFreelancerAcceptanceEmail(emailData);
   } catch (error) {
-    console.error("❌ Error sending freelancer acceptance email by ID:", error);
+    console.error("Error sending freelancer acceptance email by ID:", error);
     throw error;
   }
 }
 
-/**
- * Create Freelancer Account in Database
- * Creates a new freelancer account with default password
- */
 async function createFreelancerAccount(freelancerData: any): Promise<void> {
   const db = getAstraDB();
   const collection = db.getCollectionFromKeyspace(
@@ -270,31 +265,26 @@ async function createFreelancerAccount(freelancerData: any): Promise<void> {
     "data_freelancer"
   ) as any;
 
-  // Default password hash (should be generated properly in production)
   const defaultPassword = "FreelinkdTalent";
 
   const accountData = {
     name: freelancerData.name,
     email: freelancerData.email,
     phone: freelancerData.phone || "",
-    password: defaultPassword, // In production, use bcrypt hash
+    password: defaultPassword,
     skills: freelancerData.skills || "",
     address: freelancerData.address || "",
     status: "active",
     rank: "Classic",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    formId: freelancerData._id, // Reference to original form
+    formId: freelancerData._id,
   };
 
   await collection.insertOne(accountData);
-  console.log("✅ Freelancer account created for:", freelancerData.email);
+  console.log("Freelancer account created for:", freelancerData.email);
 }
 
-/**
- * Update Freelancer Form Status
- * Updates the status in freelancer_form collection
- */
 async function updateFreelancerFormStatus(
   freelancerId: string,
   status: string

@@ -1,9 +1,3 @@
-/**
- * Database Connection Testing Script
- * Tests connectivity to AstraDB, MongoDB, and Supabase
- */
-
-// Load environment variables from .env file
 import { config } from "dotenv";
 import { resolve } from "path";
 

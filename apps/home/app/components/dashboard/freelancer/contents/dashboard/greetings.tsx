@@ -1,11 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, Star, Medal, Search } from "lucide-react";
 import ProjectModals from "./modals/project-modals";
 
 export default function Greetings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [userData, setUserData] = useState<{
+    name: string;
+    joinedDate: string;
+    rank: string;
+    skills: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.id) {
+            const response = await fetch(`/api/freelancer/profile?id=${parsedUser.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.data) {
+                setUserData(data.data);
+              }
+            }
+          }
+        }
+      } catch (error) {
+         console.error("Failed to fetch dashboard user data", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -18,7 +50,7 @@ export default function Greetings() {
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-(--primary) tracking-tight">
               Welcome Back,{" "}
-              <span className="text-(--secondary)">Freelancer 1</span>
+              <span className="text-(--secondary)">{userData?.name || "Freelancer"}</span>
             </h1>
             <p className="text-gray-400 mt-1 font-medium">
               Have a Nice Day! Let&apos;s find your next big project today.
@@ -33,10 +65,10 @@ export default function Greetings() {
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
-                  Today
+                  Joined On
                 </p>
                 <p className="text-sm font-bold text-(--primary)">
-                  Wed, 21 Oct 2025
+                  {userData?.joinedDate || "Recent"}
                 </p>
               </div>
             </div>
@@ -50,7 +82,7 @@ export default function Greetings() {
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
                   Rank
                 </p>
-                <p className="text-sm font-bold text-(--primary)">Bronze</p>
+                <p className="text-sm font-bold text-(--primary)">{userData?.rank || "Bronze"}</p>
               </div>
             </div>
 
@@ -63,8 +95,8 @@ export default function Greetings() {
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
                   Expertise
                 </p>
-                <p className="text-sm font-bold text-(--primary)">
-                  Web Dev, Mobile Dev
+                <p className="text-sm font-bold text-(--primary) truncate max-w-[120px]" title={userData?.skills}>
+                  {userData?.skills || "Not Specified"}
                 </p>
               </div>
             </div>

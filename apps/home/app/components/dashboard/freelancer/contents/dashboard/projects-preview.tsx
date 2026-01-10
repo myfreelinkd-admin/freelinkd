@@ -1,36 +1,57 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Clock, Layout, CheckCircle2 } from "lucide-react";
 import ButtonProjects from "./ui/button-projects";
 
-const ongoingProjects = [
-  {
-    id: 1,
-    name: "E-Commerce Dashboard UI Kit",
-    client: "TechFlow Solutions",
-    deadline: "15 Jan 2026",
-    progress: 75,
-    status: "In Progress",
-  },
-  {
-    id: 2,
-    name: "Mobile App Branding & Identity",
-    client: "Sagawa Group",
-    deadline: "20 Jan 2026",
-    progress: 40,
-    status: "In Progress",
-  },
-  {
-    id: 3,
-    name: "Real Estate Landing Page",
-    client: "AWA Construction",
-    deadline: "10 Jan 2026",
-    progress: 90,
-    status: "Review",
-  },
-];
+interface Project {
+  id: string | number;
+  name: string;
+  client: string;
+  deadline: string;
+  progress: number;
+  status: string;
+}
 
 export default function ProjectsPreview() {
+  const [ongoingProjects, setOngoingProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        let queryParams = "";
+        
+        if (storedUser) {
+           const parsedUser = JSON.parse(storedUser);
+           if (parsedUser.id) {
+             // Pass freelancerId if your backend logic supports/needs it
+             // Current backend implementation check for it.
+             // We can also just fetch all 'process' if that is the strict requirement regardless of user
+             queryParams = `?freelancerId=${parsedUser.id}`;
+           }
+        }
+
+        const response = await fetch(`/api/freelancer/projects/process${queryParams}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setOngoingProjects(data.data);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-8">
@@ -43,12 +64,17 @@ export default function ProjectsPreview() {
               Track your current work progress and upcoming deadlines.
             </p>
           </div>
-          <button className="text-sm font-bold text-(--secondary) hover:underline cursor-pointer">
+          <Link href="/freelancer/projects" className="text-sm font-bold text-(--secondary) hover:underline cursor-pointer">
             View All Projects
-          </button>
+          </Link>
         </div>
 
         <div className="overflow-x-auto">
+          {loading ? (
+             <div className="text-center py-8 text-gray-400">Loading projects...</div>
+          ) : ongoingProjects.length === 0 ? (
+             <div className="text-center py-8 text-gray-400">No projects in process.</div>
+          ) : (
           <table className="w-full text-left border-separate border-spacing-y-3">
             <thead>
               <tr className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">
@@ -122,6 +148,7 @@ export default function ProjectsPreview() {
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
     </div>

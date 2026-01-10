@@ -1,34 +1,68 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { DollarSign, Calendar, Star } from "lucide-react";
 import ProjectActionButton from "./ui/action-button";
 
-const completedProjects = [
-  {
-    id: 3,
-    name: "Real Estate Landing Page",
-    client: "AWA Construction",
-    date: "10 Jan 2026",
-    amount: "Rp 3.200.000",
-    rating: 5,
-    review: "Excellent work, very responsive!",
-  },
-  {
-    id: 5,
-    name: "Social Media Content Design",
-    client: "Creative Studio",
-    date: "28 Dec 2025",
-    amount: "Rp 2.500.000",
-    rating: 4.8,
-    review: "Great design sense.",
-  },
-];
+interface Project {
+  id: string;
+  name: string;
+  client: string;
+  clientEmail?: string;
+  date: string; // Finished date
+  amount: string;
+  rating?: number;
+  review?: string;
+  status: string;
+    description?: string;
+    assignedDate?: string;
+    deadlineDuration?: string;
+}
 
 export default function CompleteProjects() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        let queryParams = "?status=Complete";
+        
+        if (storedUser) {
+           const parsedUser = JSON.parse(storedUser);
+           if (parsedUser.id) {
+             queryParams += `&freelancerId=${parsedUser.id}`;
+           }
+        }
+
+        const response = await fetch(`/api/freelancer/projects${queryParams}`);
+        if (response.ok) {
+           const data = await response.json();
+           if (data.success) {
+             setProjects(data.data);
+           }
+        }
+      } catch (error) {
+        console.error("Failed to fetch completed projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-8">
         <div className="overflow-x-auto">
+          {loading ? (
+             <div className="text-center py-8 text-gray-400">Loading projects...</div>
+          ) : projects.length === 0 ? (
+             <div className="text-center py-8 text-gray-400">No completed projects found.</div>
+          ) : (
           <table className="w-full text-left border-separate border-spacing-y-3">
             <thead>
               <tr className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">
@@ -40,7 +74,7 @@ export default function CompleteProjects() {
               </tr>
             </thead>
             <tbody>
-              {completedProjects.map((project) => (
+              {projects.map((project) => (
                 <tr
                   key={project.id}
                   className="group hover:bg-green-50/30 transition-colors"
@@ -76,19 +110,20 @@ export default function CompleteProjects() {
                     <div className="flex items-center gap-1">
                       <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                       <span className="text-sm font-bold text-(--primary)">
-                        {project.rating}
+                        {project.rating || "N/A"}
                       </span>
                     </div>
                   </td>
                   <td className="px-4 py-5 bg-green-50/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-green-100 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <ProjectActionButton status="Complete" />
+                      <ProjectActionButton status="Complete" project={project} />
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
     </div>

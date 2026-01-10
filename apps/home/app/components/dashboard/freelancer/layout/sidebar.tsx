@@ -14,9 +14,58 @@ import {
   UserRound,
 } from "lucide-react";
 
+interface UserData {
+  name: string;
+  photoUrl: string;
+  freelancerId: string;
+}
+
+function ProfileAvatar({ collapsed = false, userData }: { collapsed?: boolean; userData?: UserData | null }) {
+  const fullName = userData?.name || "Freelancer";
+  const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
+  
+  // Use fetched photoUrl or fallback
+  // Handle case where photoUrl might be from uploads (need /api prefix?) or external
+  // Assuming API returns a usable URL or we use default
+  const profileSrc = userData?.photoUrl || "/assets/img/profile.jpg";
+  
+  const [imgError, setImgError] = useState(false);
+
+  const sizeClass = collapsed ? "w-10 h-10" : "w-11 h-11";
+
+  // Reset error when source changes
+  useEffect(() => {
+    setImgError(false);
+  }, [profileSrc]);
+
+  return (
+    <div
+      className={`${sizeClass} rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-white/10 transition-all duration-300 bg-white/5`}
+    >
+      {!imgError ? (
+        <Image
+          src={profileSrc}
+          alt="Freelancer Profile"
+          className={`object-cover ${sizeClass}`}
+          width={collapsed ? 40 : 44}
+          height={collapsed ? 40 : 44}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div
+          className={`${sizeClass} flex items-center justify-center bg-(--secondary) text-white font-bold text-lg shadow-inner`}
+        >
+          {initial}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -49,6 +98,34 @@ export default function Sidebar() {
         onToggle as EventListener
       );
     };
+  }, []);
+
+  // Fetch USER DATA
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // Try getting from storage first to get ID
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.id) {
+            const response = await fetch(`/api/freelancer/profile?id=${parsedUser.id}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.success && data.data) {
+                setUserData(data.data);
+              }
+            }
+          }
+        }
+      } catch (error) {
+         console.error("Failed to fetch user data", error);
+      }
+    };
+
+    fetchUserData();
   }, []);
 
   const isActive = (href: string) => {
@@ -160,13 +237,13 @@ export default function Sidebar() {
           <div
             className={`flex items-center gap-3 ${collapsed ? "justify-center" : "px-2"}`}
           >
-            <ProfileAvatar collapsed={collapsed} />
+            <ProfileAvatar collapsed={collapsed} userData={userData} />
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm truncate">
-                  Freelancer
+                  {userData?.name || "Freelancer"}
                 </p>
-                <p className="text-white/50 text-xs truncate">@freelancerID</p>
+                <p className="text-white/50 text-xs truncate">{userData?.freelancerId ? `@${userData.freelancerId}` : "@freelancerID"}</p>
               </div>
             )}
           </div>
@@ -183,37 +260,5 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
-  );
-}
-
-function ProfileAvatar({ collapsed = false }: { collapsed?: boolean }) {
-  const fullName = "Freelancer";
-  const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
-  const profileSrc = "/assets/img/profile.jpg";
-  const [imgError, setImgError] = useState(false);
-
-  const sizeClass = collapsed ? "w-10 h-10" : "w-11 h-11";
-
-  return (
-    <div
-      className={`${sizeClass} rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-white/10 transition-all duration-300 bg-white/5`}
-    >
-      {!imgError ? (
-        <Image
-          src={profileSrc}
-          alt="Freelancer Profile"
-          className={`object-cover ${sizeClass}`}
-          width={collapsed ? 40 : 44}
-          height={collapsed ? 40 : 44}
-          onError={() => setImgError(true)}
-        />
-      ) : (
-        <div
-          className={`${sizeClass} flex items-center justify-center bg-(--secondary) text-white font-bold text-lg shadow-inner`}
-        >
-          {initial}
-        </div>
-      )}
-    </div>
   );
 }

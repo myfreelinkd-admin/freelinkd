@@ -15,43 +15,60 @@ import ProjectChatModal from "../ux/modals-chat";
 import ProjectRatingModal from "../ux/modals-rating";
 
 interface ProjectActionButtonProps {
-  status: "Process" | "Complete" | "Canceled";
+  status: string;
+  onViewDetails?: () => void;
+  // We can pass project data in if we want to handle modals here, 
+  // but if we lift state up to AllProjects, we might just use callbacks.
+  // However, ActionButton currently renders the Modals.
+  // We should modify ActionButton to accept 'project' prop and use it in modals.
+  project?: any; 
 }
 
 export default function ProjectActionButton({
   status,
+  onViewDetails,
+  project
 }: ProjectActionButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
 
-  // Dummy data based on the image provided
-  const dummyProject = {
-    name: "UI/UX Design",
-    status: status === "Canceled" ? "Cancelled" : status,
-    priority: "Normal",
+  // Use passed project or fallback (though fallback shouldn't be needed with real data)
+  // Maps API data to Modal expected format
+  const mappedProject = project ? {
+    name: project.name,
+    status: status === "Canceled" ? "Cancelled" : status, // Modal matches "Cancelled"
+    priority: "Normal", // API doesn't have it yet, default
     client: {
-      name: "Sagawa Group",
-      email: "admin@sagawagroup.id",
+      name: project.client,
+      email: project.clientEmail || "client@example.com",
     },
-    budget: "1.000.000 - 2.000.000",
+    budget: project.amount,
     deadline: {
-      date: "2025-11-12",
-      duration: "2 week",
+      date: project.date, // or deadline
+      duration: project.deadlineDuration || "N/A",
     },
-    description: "y", // As seen in the image
-    assignedDate: "01 Nov 2025",
-    rating: {
-      score: 4.8,
-      review:
-        "Hasil kerja sangat memuaskan! Desain yang dibuat sangat modern dan sesuai dengan brief yang kami berikan. Komunikasi juga sangat lancar. Sangat merekomendasikan freelancer ini untuk proyek UI/UX.",
-      date: "12 Nov 2025",
-    },
+    description: project.description || "No description",
+    assignedDate: project.assignedDate || "N/A",
+    rating: project.rating ? {
+       score: project.rating,
+       review: project.review || "No review",
+       date: "N/A" // Date of review not in project list usually
+    } : undefined
+  } : undefined;
+
+  const handleOpenDetail = () => {
+    if (onViewDetails) {
+        onViewDetails();
+    } else {
+        setIsModalOpen(true);
+    }
   };
 
   const getActions = () => {
     switch (status) {
       case "Complete":
+      case "Completed":
         return [
           {
             label: "View Project",
@@ -71,6 +88,7 @@ export default function ProjectActionButton({
           },
         ];
       case "Canceled":
+      case "Cancelled":
         return [
           {
             label: "Chat with UMKM",
@@ -89,13 +107,14 @@ export default function ProjectActionButton({
           },
         ];
       case "Process":
+      case "In Progress":
       default:
         return [
           {
             label: "View Detail",
             icon: <Eye className="w-4 h-4" />,
             color: "text-(--primary)",
-            onClick: () => setIsModalOpen(true),
+            onClick: handleOpenDetail, // Use callback if provided, else local modal
             tooltipPosition: "bottom" as const,
             tooltipAlign: "start" as const,
           },
@@ -144,23 +163,31 @@ export default function ProjectActionButton({
         ))}
       </div>
 
+      {mappedProject && (
       <ProjectDetailModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        project={dummyProject}
+        project={mappedProject}
       />
+      )}
 
-      <ProjectChatModal
+      {/* Chat modal logic if needed */}
+       <ProjectChatModal
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
-        project={dummyProject}
-      />
+        project={mappedProject || { 
+            name: "Project", 
+            client: { name: "Client", status: "offline" } 
+        }}
+      /> 
 
+      {mappedProject && (
       <ProjectRatingModal
         isOpen={isRatingModalOpen}
         onClose={() => setIsRatingModalOpen(false)}
-        project={dummyProject}
+        project={mappedProject}
       />
+      )}
     </>
   );
 }

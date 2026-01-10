@@ -1,5 +1,4 @@
-"use client";
-
+import { useState, useEffect } from "react";
 import {
   Clock,
   CheckCircle2,
@@ -9,100 +8,105 @@ import {
   Calendar,
 } from "lucide-react";
 import ProjectActionButton from "./ui/action-button";
+import ProjectDetailModal from "./ux/modals-detail";
 
 interface Project {
-  id: number;
+  id: string;
   name: string;
   client: string;
+  clientEmail?: string;
   date: string;
   amount: string;
-  status: "Process" | "Complete" | "Canceled";
+  status: string;
   progress: number;
+  description?: string;
+  assignedDate?: string;
+  deadlineDuration?: string;
+  rating?: number;
 }
 
-const projectsData: Project[] = [
-  {
-    id: 1,
-    name: "E-Commerce Dashboard UI Kit",
-    client: "TechFlow Solutions",
-    date: "15 Jan 2026",
-    amount: "Rp 5.000.000",
-    status: "Process",
-    progress: 75,
-  },
-  {
-    id: 2,
-    name: "Mobile App Branding & Identity",
-    client: "Sagawa Group",
-    date: "20 Jan 2026",
-    amount: "Rp 8.500.000",
-    status: "Process",
-    progress: 40,
-  },
-  {
-    id: 3,
-    name: "Real Estate Landing Page",
-    client: "AWA Construction",
-    date: "10 Jan 2026",
-    amount: "Rp 3.200.000",
-    status: "Complete",
-    progress: 100,
-  },
-  {
-    id: 4,
-    name: "Corporate Website Redesign",
-    client: "Global Finance",
-    date: "05 Jan 2026",
-    amount: "Rp 12.000.000",
-    status: "Canceled",
-    progress: 15,
-  },
-  {
-    id: 5,
-    name: "Social Media Content Design",
-    client: "Creative Studio",
-    date: "28 Dec 2025",
-    amount: "Rp 2.500.000",
-    status: "Complete",
-    progress: 100,
-  },
-];
-
 export default function AllProjects({ filter }: { filter?: string }) {
-  const filteredProjects = filter
-    ? projectsData.filter((p) => p.status === filter)
-    : projectsData;
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        let queryParams = "";
+        
+        if (storedUser) {
+           const parsedUser = JSON.parse(storedUser);
+           if (parsedUser.id) {
+             queryParams += `?freelancerId=${parsedUser.id}`;
+           }
+        }
+        
+        // Add filter if provided (e.g. from parent tab if strict, but this component receives filter prop)
+        // Actually this component filters locally in the original code. 
+        // But better to filter on API if the list is huge. 
+        // Original code: const filteredProjects = filter ? ... : ...
+        // If I use the general API, I can pass status.
+        // However, "All Projects" tab usually expects everything. `filter` prop is passed likely by parent tabs?
+        // Let's stick to local filtering if the API returns all, OR pass status if filter is set.
+        // But wait, if I want "Process" only for "Process" projects, I should call API with status=Process.
+        // If `filter` is passed, I'll use it in query.
+        
+        if (filter) {
+            queryParams += queryParams ? `&status=${filter}` : `?status=${filter}`;
+        }
+
+        const response = await fetch(`/api/freelancer/projects${queryParams}`);
+        if (response.ok) {
+           const data = await response.json();
+           if (data.success) {
+             setProjects(data.data);
+           }
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, [filter]);
 
   const getStatusStyle = (status: string) => {
-    switch (status) {
-      case "Complete":
-        return "bg-green-500/10 text-green-600 border-green-200";
-      case "Process":
-        return "bg-blue-500/10 text-blue-600 border-blue-200";
-      case "Canceled":
-        return "bg-red-500/10 text-red-600 border-red-200";
-      default:
-        return "bg-gray-500/10 text-gray-600 border-gray-200";
-    }
+    // Navigate case insensitivity or standard values
+    const s = status.toLowerCase();
+    if (s === "complete" || s === "completed") return "bg-green-500/10 text-green-600 border-green-200";
+    if (s === "process" || s === "in progress") return "bg-blue-500/10 text-blue-600 border-blue-200";
+    if (s === "canceled" || s === "cancelled") return "bg-red-500/10 text-red-600 border-red-200";
+    return "bg-gray-500/10 text-gray-600 border-gray-200";
   };
 
   const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "Complete":
-        return <CheckCircle2 className="w-3 h-3 mr-1.5" />;
-      case "Process":
-        return <Activity className="w-3 h-3 mr-1.5" />;
-      case "Canceled":
-        return <XCircle className="w-3 h-3 mr-1.5" />;
-      default:
-        return <Clock className="w-3 h-3 mr-1.5" />;
-    }
+    const s = status.toLowerCase();
+    if (s === "complete" || s === "completed") return <CheckCircle2 className="w-3 h-3 mr-1.5" />;
+    if (s === "process" || s === "in progress") return <Activity className="w-3 h-3 mr-1.5" />;
+    if (s === "canceled" || s === "cancelled") return <XCircle className="w-3 h-3 mr-1.5" />;
+    return <Clock className="w-3 h-3 mr-1.5" />;
+  };
+
+  const handleOpenDetail = (project: Project) => {
+      setSelectedProject(project);
+      setIsDetailModalOpen(true);
   };
 
   return (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="p-8">
         <div className="overflow-x-auto">
+          {loading ? (
+             <div className="text-center py-8 text-gray-400">Loading projects...</div>
+          ) : projects.length === 0 ? (
+             <div className="text-center py-8 text-gray-400">No projects found.</div>
+          ) : (
           <table className="w-full text-left border-separate border-spacing-y-3">
             <thead>
               <tr className="text-gray-400 text-[10px] uppercase tracking-widest font-bold">
@@ -115,7 +119,7 @@ export default function AllProjects({ filter }: { filter?: string }) {
               </tr>
             </thead>
             <tbody>
-              {filteredProjects.map((project) => (
+              {projects.map((project) => (
                 <tr
                   key={project.id}
                   className="group hover:bg-(--alternative)/30 transition-colors"
@@ -175,14 +179,43 @@ export default function AllProjects({ filter }: { filter?: string }) {
                     </span>
                   </td>
                   <td className="px-4 py-5 bg-(--alternative)/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-gray-100 text-right">
-                    <ProjectActionButton status={project.status} />
+                    <ProjectActionButton 
+                        status={project.status} 
+                        // onViewDetails={() => handleOpenDetail(project)} // We can let ActionButton handle it or lift state. 
+                        // Since I kept Modals in ActionButton in previous step (simplest rewrite), I pass project prop.
+                        project={project}
+                    />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          )}
         </div>
       </div>
+      
+      {/* Detail Modal */}
+      {selectedProject && (
+        <ProjectDetailModal 
+            isOpen={isDetailModalOpen}
+            onClose={() => setIsDetailModalOpen(false)}
+            project={{
+                name: selectedProject.name,
+                status: selectedProject.status,
+                client: {
+                    name: selectedProject.client,
+                    email: selectedProject.clientEmail || "client@example.com"
+                },
+                budget: selectedProject.amount,
+                deadline: {
+                    date: selectedProject.date,
+                    duration: selectedProject.deadlineDuration || "N/A"
+                },
+                description: selectedProject.description || "No description provided.",
+                assignedDate: selectedProject.assignedDate || "N/A"
+            }}
+        />
+      )}
     </div>
   );
 }
