@@ -21,13 +21,17 @@ interface ProjectActionButtonProps {
   // but if we lift state up to AllProjects, we might just use callbacks.
   // However, ActionButton currently renders the Modals.
   // We should modify ActionButton to accept 'project' prop and use it in modals.
-  project?: any; 
+  project?: any;
+  projectId?: string;
+  userId?: string;
 }
 
 export default function ProjectActionButton({
   status,
   onViewDetails,
-  project
+  project,
+  projectId,
+  userId
 }: ProjectActionButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
@@ -175,6 +179,8 @@ export default function ProjectActionButton({
        <ProjectChatModal
         isOpen={isChatModalOpen}
         onClose={() => setIsChatModalOpen(false)}
+        projectId={projectId || project?.id || "unknown"}
+        userId={userId || "unknown"}
         project={mappedProject || { 
             name: "Project", 
             client: { name: "Client", status: "offline" } 
