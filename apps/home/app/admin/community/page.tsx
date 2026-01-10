@@ -1,10 +1,11 @@
 "use client";
 
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import AdminManageCommunity from "@/app/components/dashboard/admin/contents/community/community";
 
-export default function AdminCommunityPage() {
+function CommunityContent() {
   return (
     <div className="flex h-screen bg-[#f9fcff] overflow-hidden">
       <Sidebar />
@@ -15,5 +16,13 @@ export default function AdminCommunityPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminCommunityPage() {
+  return (
+    <AdminLayoutWrapper>
+      <CommunityContent />
+    </AdminLayoutWrapper>
   );
 }

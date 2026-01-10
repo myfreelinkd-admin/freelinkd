@@ -24,6 +24,7 @@ export const ASTRA_KEYSPACES = {
   FREELANCER: "freelancer",
   CHATBOT: "chatbot",
   REPORT: "report",
+  UMKM: "umkm",
 } as const;
 
 export type AstraKeyspaceName =
@@ -40,6 +41,7 @@ class AstraDBClient {
   private dbFreelancer: AstraDBDatabase | null = null;
   private dbChatbot: AstraDBDatabase | null = null;
   private dbReport: AstraDBDatabase | null = null;
+  private dbUmkm: AstraDBDatabase | null = null;
 
   // Default database (for backward compatibility)
   private defaultDb: AstraDBDatabase;
@@ -105,6 +107,14 @@ class AstraDBClient {
         }
         return this.dbReport;
 
+      case ASTRA_KEYSPACES.UMKM:
+        if (!this.dbUmkm) {
+          this.dbUmkm = this.client.db(this.config.endpoint, {
+            keyspace: ASTRA_KEYSPACES.UMKM,
+          }) as AstraDBDatabase;
+        }
+        return this.dbUmkm;
+
       default:
         return this.defaultDb;
     }
@@ -129,6 +139,13 @@ class AstraDBClient {
    */
   public getReportDB(): AstraDBDatabase {
     return this.getDatabase(ASTRA_KEYSPACES.REPORT);
+  }
+
+  /**
+   * Get the UMKM keyspace database
+   */
+  public getUmkmDB(): AstraDBDatabase {
+    return this.getDatabase(ASTRA_KEYSPACES.UMKM);
   }
 
   /**

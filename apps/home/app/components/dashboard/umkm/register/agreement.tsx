@@ -82,7 +82,7 @@ export default function Agreement({ onAgree, isAgreed = false }: AgreementProps)
     <div className="w-full max-w-2xl mx-auto">
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#081f5c] to-[#0a2a7a] p-6 text-white">
+        <div className="bg-linear-to-r from-[#081f5c] to-[#0a2a7a] p-6 text-white">
           <h3 className="text-xl font-bold flex items-center gap-2">
             <Shield className="w-6 h-6" />
             Terms & Agreements

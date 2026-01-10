@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import FreelancerManagement from "@/app/components/dashboard/admin/contents/manage-user/freelancer";
 import UMKMManagement from "@/app/components/dashboard/admin/contents/manage-user/umkm";
 import { UserRound, Building2 } from "lucide-react";
 
-export default function UserManagementPage() {
+function UserManagementContent() {
   const [activeTab, setActiveTab] = useState("freelancer");
 
   const tabs = [
@@ -84,5 +85,13 @@ export default function UserManagementPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function UserManagementPage() {
+  return (
+    <AdminLayoutWrapper>
+      <UserManagementContent />
+    </AdminLayoutWrapper>
   );
 }

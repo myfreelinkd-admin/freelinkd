@@ -1,10 +1,11 @@
 "use client";
 
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import AdminManageProjects from "@/app/components/dashboard/admin/project/manage-projects";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 
-export default function AdminJobsPage() {
+function JobsContent() {
   return (
     <div className="flex bg-gray-50/50 min-h-screen">
       <Sidebar />
@@ -15,5 +16,13 @@ export default function AdminJobsPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminJobsPage() {
+  return (
+    <AdminLayoutWrapper>
+      <JobsContent />
+    </AdminLayoutWrapper>
   );
 }

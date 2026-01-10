@@ -1,3 +1,6 @@
+"use client";
+
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import Greetings from "@/app/components/dashboard/admin/contents/dashboard/greetings";
@@ -5,7 +8,7 @@ import PreviewCommunity from "@/app/components/dashboard/admin/contents/dashboar
 import PreviewEvent from "@/app/components/dashboard/admin/contents/dashboard/preview-event";
 import PreviewFreelancer from "@/app/components/dashboard/admin/contents/dashboard/preview-freelancer";
 
-export default function AdminDashboardPage() {
+function DashboardContent() {
   return (
     <div className="min-h-screen flex bg-(--background)">
       <Sidebar />
@@ -26,5 +29,13 @@ export default function AdminDashboardPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminDashboardPage() {
+  return (
+    <AdminLayoutWrapper>
+      <DashboardContent />
+    </AdminLayoutWrapper>
   );
 }

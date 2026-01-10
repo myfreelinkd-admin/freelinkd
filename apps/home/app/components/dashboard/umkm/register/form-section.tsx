@@ -1,26 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Eye, EyeOff, Building2, Loader2, Phone } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Building2,
+  Loader2,
+  Phone,
+  User,
+  Mail,
+  Lock,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { sanitizeInput } from "@/app/utils/sanitize";
-
-// Business type options for UMKM
-const BUSINESS_TYPES = [
-  "Retail & E-commerce",
-  "Food & Beverage",
-  "Fashion & Apparel",
-  "Health & Beauty",
-  "Technology & IT Services",
-  "Professional Services",
-  "Creative & Design",
-  "Education & Training",
-  "Manufacturing",
-  "Agriculture",
-  "Transportation & Logistics",
-  "Other",
-] as const;
+import { Dropdown } from "@repo/ui/dropdown";
+import { BUSINESS_TYPES } from "@/app/utils/business_type";
+import AgreementModal from "./agreement-modal";
 
 interface FormData {
   username: string;
@@ -49,6 +46,7 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showAgreementModal, setShowAgreementModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -124,7 +122,7 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
 
         const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || !data.success) {
           throw new Error(data.error || "Registration failed");
         }
       }
@@ -139,6 +137,11 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
         confirmPassword: "",
         agreedToTerms: false,
       });
+
+      // Redirect to login page after 2 seconds
+      setTimeout(() => {
+        window.location.href = "/umkm/login";
+      }, 2000);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -182,26 +185,32 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
       <form onSubmit={handleSubmit} className="space-y-5">
         {/* Username Field */}
         <div className="relative group">
+          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+            <User className="w-5 h-5 text-gray-400" />
+          </div>
           <input
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
             placeholder="Username"
-            className="block w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
+            className="block w-full pl-14 pr-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
             disabled={loading}
           />
         </div>
 
         {/* Email Field */}
         <div className="relative group">
+          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+            <Mail className="w-5 h-5 text-gray-400" />
+          </div>
           <input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Email"
-            className="block w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
+            className="block w-full pl-14 pr-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
             disabled={loading}
           />
         </div>
@@ -223,52 +232,40 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
         </div>
 
         {/* Business Type Field */}
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-            <Building2 className="w-5 h-5 text-gray-400" />
-          </div>
-          <select
-            name="businessType"
+        <div
+          className={`relative group ${loading ? "opacity-70 pointer-events-none" : ""}`}
+        >
+          <Dropdown
+            options={BUSINESS_TYPES.map((type) => ({
+              label: type,
+              value: type,
+            }))}
+            placeholder="Business Type"
             value={formData.businessType}
-            onChange={handleChange}
-            className="block w-full pl-14 pr-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm appearance-none cursor-pointer"
-            disabled={loading}
-          >
-            <option value="" disabled>
-              Business Type
-            </option>
-            {BUSINESS_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-6 flex items-center pointer-events-none">
-            <svg
-              className="w-4 h-4 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
+            onSelect={(option) => {
+              setFormData((prev) => ({
+                ...prev,
+                businessType: option.value,
+              }));
+            }}
+            leftIcon={<Building2 className="w-5 h-5" />}
+            buttonClassName="block w-full pl-6 pr-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm flex items-center justify-between text-left cursor-pointer hover:border-[#081f5c]"
+            menuPosition="top"
+          />
         </div>
 
         {/* Password Field */}
         <div className="relative group">
+          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+            <Lock className="w-5 h-5 text-gray-400" />
+          </div>
           <input
             type={showPassword ? "text" : "password"}
             name="password"
             value={formData.password}
             onChange={handleChange}
             placeholder="Password"
-            className="block w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
+            className="block w-full pl-14 pr-12 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
             disabled={loading}
           />
           <div className="absolute inset-y-0 right-4 flex items-center">
@@ -289,13 +286,16 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
 
         {/* Confirm Password Field */}
         <div className="relative group">
+          <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+            <Lock className="w-5 h-5 text-gray-400" />
+          </div>
           <input
             type={showConfirmPassword ? "text" : "password"}
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
             placeholder="Confirm Password"
-            className="block w-full px-6 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
+            className="block w-full pl-14 pr-12 py-4 bg-white border-2 border-gray-200 rounded-full text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#081f5c] transition-all duration-300 font-medium shadow-sm"
             disabled={loading}
           />
           <div className="absolute inset-y-0 right-4 flex items-center">
@@ -330,19 +330,21 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
             className="text-sm text-gray-600 cursor-pointer"
           >
             I agree to the{" "}
-            <Link
-              href="/terms"
-              className="text-[#081f5c] font-semibold hover:underline"
+            <button
+              type="button"
+              onClick={() => setShowAgreementModal(true)}
+              className="text-[#081f5c] font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer inline"
             >
               Terms and Conditions
-            </Link>{" "}
+            </button>{" "}
             and{" "}
-            <Link
-              href="/privacy"
-              className="text-[#081f5c] font-semibold hover:underline"
+            <button
+              type="button"
+              onClick={() => setShowAgreementModal(true)}
+              className="text-[#081f5c] font-semibold hover:underline bg-transparent border-none p-0 cursor-pointer inline"
             >
               Privacy Policy
-            </Link>
+            </button>
           </label>
         </div>
 
@@ -380,6 +382,15 @@ export default function FormSection({ onSubmit }: FormSectionProps) {
           </p>
         </div>
       </form>
+
+      <AgreementModal
+        isOpen={showAgreementModal}
+        onClose={() => setShowAgreementModal(false)}
+        onAccept={() => {
+          setFormData((prev) => ({ ...prev, agreedToTerms: true }));
+          setShowAgreementModal(false);
+        }}
+      />
     </div>
   );
 }

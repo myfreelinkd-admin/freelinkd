@@ -1,8 +1,11 @@
+"use client";
+
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import EventsManagement from "@/app/components/dashboard/admin/event/events-section";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 
-export default function AdminEventsPage() {
+function EventsContent() {
   return (
     <div className="flex min-h-screen bg-[#f9fcff]">
       <Sidebar />
@@ -13,5 +16,13 @@ export default function AdminEventsPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function AdminEventsPage() {
+  return (
+    <AdminLayoutWrapper>
+      <EventsContent />
+    </AdminLayoutWrapper>
   );
 }

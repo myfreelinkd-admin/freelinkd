@@ -1,10 +1,11 @@
 "use client";
 
+import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-layout-wrapper";
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import PreferencesAdmin from "@/app/components/dashboard/admin/preferences/preferences-admin";
 
-export default function PreferencesPage() {
+function PreferencesContent() {
   return (
     <div className="flex bg-gray-50/50 min-h-screen">
       <Sidebar />
@@ -15,5 +16,13 @@ export default function PreferencesPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function PreferencesPage() {
+  return (
+    <AdminLayoutWrapper>
+      <PreferencesContent />
+    </AdminLayoutWrapper>
   );
 }

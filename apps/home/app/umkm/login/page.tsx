@@ -1,7 +1,5 @@
+import FormSection from "@/app/components/dashboard/umkm/login/form-section";
+
 export default function UMKMLoginPage() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">UMKM Login - Coming Soon</h1>
-    </div>
-  );
+  return <FormSection />;
 }
