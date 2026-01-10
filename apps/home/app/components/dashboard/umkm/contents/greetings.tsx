@@ -1,8 +1,46 @@
 "use client";
 
 import { Building2, Calendar, CheckCircle2, PlusCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface UmkmUser {
+  id: string;
+  username: string;
+  email: string;
+  profile?: {
+    nama_umkm: string;
+    industry: string;
+    created_at?: string;
+  };
+}
 
 export default function Greetings() {
+  const [user, setUser] = useState<UmkmUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const storedUser =
+      sessionStorage.getItem("umkm_user") || localStorage.getItem("umkm_user");
+
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Failed to parse user data:", error);
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  // Format joined date
+  const joinedDate = user?.profile?.created_at
+    ? new Date(user.profile.created_at).toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
+      })
+    : "Recently";
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
       {/* Left Section: Welcome & Business Info */}
@@ -14,7 +52,9 @@ export default function Greetings() {
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-(--primary) tracking-tight">
               Welcome Back,{" "}
-              <span className="text-(--secondary)">Sagawa Group</span>
+              <span className="text-(--secondary)">
+                {loading ? "..." : user?.username || user?.profile?.nama_umkm || "Sagawa Group"}
+              </span>
             </h1>
             <p className="text-gray-400 mt-1 font-medium">
               Have a Nice Day! Let&apos;s grow your business today.
@@ -30,7 +70,9 @@ export default function Greetings() {
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
                   Industry
                 </p>
-                <p className="text-sm font-bold text-(--primary)">Franchise</p>
+                <p className="text-sm font-bold text-(--primary)">
+                  {loading ? "..." : user?.profile?.industry || "Franchise"}
+                </p>
               </div>
             </div>
 
@@ -42,7 +84,7 @@ export default function Greetings() {
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
                   Joined Since
                 </p>
-                <p className="text-sm font-bold text-(--primary)">Jul 2025</p>
+                <p className="text-sm font-bold text-(--primary)">{joinedDate}</p>
               </div>
             </div>
 

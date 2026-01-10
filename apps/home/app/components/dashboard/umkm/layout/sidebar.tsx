@@ -3,14 +3,62 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Settings2, LogOut, ChevronRight } from "lucide-react";
+import Swal from "sweetalert2";
+
+interface UserProfile {
+  name: string;
+  email: string;
+  image?: string;
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [user, setUser] = useState<UserProfile>({
+    name: "UMKM User",
+    email: "loading...",
+  });
 
   useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const storedUser =
+          sessionStorage.getItem("umkm_user") || localStorage.getItem("umkm_user");
+
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.email) {
+            // Fetch fresh data from AstraDB via API
+            const res = await fetch(`/api/umkm/profile?email=${parsedUser.email}`);
+            const data = await res.json();
+
+            if (data.success) {
+              setUser({
+                name: data.data.profile.nama_umkm || parsedUser.username || "UMKM User",
+                email: data.data.email || parsedUser.email,
+                image: data.data.profile.profile_image,
+              });
+            } else {
+               // Fallback to storage if API fails
+               setUser({
+                name: parsedUser.username || "UMKM User",
+                email: parsedUser.email,
+                image: parsedUser.profile?.profile_image
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    }
+
+    fetchUserData();
+
+    // Sidebar collapse logic
     if (typeof document === "undefined") return;
     const root = document.documentElement;
 
@@ -29,19 +77,48 @@ export default function Sidebar() {
     }
 
     const onToggle = () => update();
-    root.addEventListener(
-      "sidebar-collapsed-change",
-      onToggle as EventListener
-    );
+    root.addEventListener("sidebar-collapsed-change", onToggle as EventListener);
 
     return () => {
       if (obs) obs.disconnect();
-      root.removeEventListener(
-        "sidebar-collapsed-change",
-        onToggle as EventListener
-      );
+      root.removeEventListener("sidebar-collapsed-change", onToggle as EventListener);
     };
   }, []);
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Logout?",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#FF6F00",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, logout!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sessionStorage.removeItem("umkm_user");
+        localStorage.removeItem("umkm_user");
+        router.replace("/umkm/login");
+        
+        // Show success toast briefly
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Logged out successfully"
+        });
+      }
+    });
+  };
 
   const isActive = (href: string) => {
     if (!pathname) return false;
@@ -141,14 +218,18 @@ export default function Sidebar() {
           <div
             className={`flex items-center gap-3 ${collapsed ? "justify-center" : "px-2"}`}
           >
-            <ProfileAvatar collapsed={collapsed} />
+            <ProfileAvatar 
+               collapsed={collapsed} 
+               name={user.name}
+               image={user.image}
+            />
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm truncate">
-                  Sagawa Group
+                  {user.name}
                 </p>
                 <p className="text-white/50 text-xs truncate">
-                  umkm@atmint.com
+                  {user.email}
                 </p>
               </div>
             )}
@@ -156,6 +237,7 @@ export default function Sidebar() {
 
           {/* Logout Button */}
           <button
+            onClick={handleLogout}
             className={`flex items-center gap-4 w-full px-4 py-3 rounded-xl text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200 group cursor-pointer ${
               collapsed ? "justify-center" : ""
             }`}
@@ -169,21 +251,32 @@ export default function Sidebar() {
   );
 }
 
-function ProfileAvatar({ collapsed = false }: { collapsed?: boolean }) {
-  const fullName = "Sagawa Group";
-  const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
-  const profileSrc = "/assets/img/profile.jpg";
+function ProfileAvatar({ 
+  collapsed = false, 
+  name, 
+  image 
+}: { 
+  collapsed?: boolean;
+  name: string;
+  image?: string;
+}) {
+  const initial = name?.trim()?.charAt(0)?.toUpperCase() || "U";
   const [imgError, setImgError] = useState(false);
 
   const sizeClass = collapsed ? "w-10 h-10" : "w-11 h-11";
+
+  // Reset error when image url changes
+  useEffect(() => {
+    setImgError(false);
+  }, [image]);
 
   return (
     <div
       className={`${sizeClass} rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-white/10 transition-all duration-300 bg-white/5`}
     >
-      {!imgError ? (
+      {image && !imgError ? (
         <Image
-          src={profileSrc}
+          src={image}
           alt="UMKM Profile"
           className={`object-cover ${sizeClass}`}
           width={collapsed ? 40 : 44}
