@@ -7,6 +7,7 @@ import SearchBar from "./search-bar";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [greeting, setGreeting] = useState("");
+  const [username, setUsername] = useState("UMKM");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,20 +15,32 @@ export default function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
 
-    const timeoutId = setTimeout(() => {
-      const hour = new Date().getHours();
-      if (hour >= 5 && hour < 12) {
-        setGreeting("Good Morning");
-      } else if (hour >= 12 && hour < 18) {
-        setGreeting("Good Afternoon");
-      } else {
-        setGreeting("Good Evening");
+    // Initial greeting
+    const updateGreeting = () => {
+       const hour = new Date().getHours();
+       if (hour >= 5 && hour < 12) {
+         setGreeting("Good Morning");
+       } else if (hour >= 12 && hour < 18) {
+         setGreeting("Good Afternoon");
+       } else {
+         setGreeting("Good Evening");
+       }
+    };
+    updateGreeting();
+
+    // Fetch username from storage
+    const storedUser = sessionStorage.getItem("umkm_user") || localStorage.getItem("umkm_user");
+    if (storedUser) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUsername(user.username || user.profile?.nama_umkm || "UMKM");
+      } catch (e) {
+        console.error("Failed to parse user data", e);
       }
-    }, 0);
+    }
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timeoutId);
     };
   }, []);
 
@@ -74,7 +87,7 @@ export default function Navbar() {
 
           <div className="hidden md:block text-right">
             <p className="text-sm font-bold text-(--primary)">{greeting},</p>
-            <p className="text-xs text-gray-500">UMKM</p>
+            <p className="text-xs text-gray-500">{username}</p>
           </div>
         </div>
       </div>
