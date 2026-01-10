@@ -16,6 +16,8 @@ import {
   Award,
   Download,
   Check,
+  Eye,
+  FileText,
 } from "lucide-react";
 
 export interface UserData {
@@ -34,6 +36,8 @@ export interface UserData {
   phone?: string;
   website?: string;
   bio?: string;
+  portfolioUrl?: string;
+  resumeFileName?: string;
 }
 
 interface ViewUserModalProps {
@@ -243,8 +247,11 @@ export default function ViewUserModal({
                 Portfolio & Resume
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.portfolioUrl ? (
                 <a
-                  href="#"
+                  href={data.portfolioUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-100 ring-2 ring-transparent hover:ring-orange-50 transition-all duration-300 group w-full cursor-pointer"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-orange-100 transition-all duration-300">
@@ -254,27 +261,74 @@ export default function ViewUserModal({
                     <p className="font-bold text-[#081f5c] text-sm group-hover:text-orange-600 transition-colors">
                       Portfolio Website
                     </p>
-                    <p className="text-xs text-slate-400 font-medium cursor-pointer">
-                      behance.net/portfolio
+                    <p className="text-xs text-slate-400 font-medium cursor-pointer truncate max-w-40">
+                      {data.portfolioUrl}
                     </p>
                   </div>
                 </a>
-                <a
-                  href="#"
-                  className="flex items-center gap-4 p-4 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 ring-2 ring-transparent hover:ring-blue-50 transition-all duration-300 group w-full cursor-pointer"
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 group-hover:bg-blue-100 transition-all duration-300">
+                ) : (
+                <div className="flex items-center gap-4 p-4 rounded-3xl bg-gray-50 border border-gray-100 w-full opacity-60">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center">
+                    <Globe className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-500 text-sm">
+                      No Portfolio
+                    </p>
+                    <p className="text-xs text-slate-400 font-medium">
+                      Not provided
+                    </p>
+                  </div>
+                </div>
+                )}
+                {data.resumeFileName ? (
+                <div className="flex items-center gap-3 p-4 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 w-full group">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-100 transition-all duration-300 shrink-0">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-[#081f5c] text-sm truncate">
+                      Resume Document
+                    </p>
+                    <p className="text-xs text-slate-400 font-medium truncate">
+                      {data.resumeFileName.split('/').pop() || 'Resume.pdf'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={data.resumeFileName}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all cursor-pointer"
+                      title="View Resume"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </a>
+                    <a
+                      href={data.resumeFileName}
+                      download
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-600 hover:text-white transition-all cursor-pointer"
+                      title="Download"
+                    >
+                      <Download className="w-4 h-4" />
+                    </a>
+                  </div>
+                </div>
+                ) : (
+                <div className="flex items-center gap-4 p-4 rounded-3xl bg-gray-50 border border-gray-100 w-full opacity-60">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-100 text-gray-400 flex items-center justify-center">
                     <Download className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#081f5c] text-sm group-hover:text-blue-600 transition-colors">
-                      Download Resume
+                    <p className="font-bold text-gray-500 text-sm">
+                      No Resume
                     </p>
                     <p className="text-xs text-slate-400 font-medium">
-                      PDF, 2.4 MB
+                      Not provided
                     </p>
                   </div>
-                </a>
+                </div>
+                )}
               </div>
             </div>
           ) : (

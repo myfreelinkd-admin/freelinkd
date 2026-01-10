@@ -19,11 +19,15 @@ interface PendingFreelancer {
   id: string | number;
   name: string;
   email: string;
+  phone?: string;
   role: string;
   location: string;
   appliedDate: string;
   status: string;
   portfolioUrl?: string;
+  resumeFileName?: string;
+  bio?: string;
+  professionalExperience?: string;
 }
 
 export default function FreelancerPending() {
@@ -58,14 +62,131 @@ export default function FreelancerPending() {
     setIsModalOpen(true);
   };
 
-  const handleApprove = () => {
-    console.log("Approved", selectedUser?.name);
-    setIsModalOpen(false);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isRejecting, setIsRejecting] = useState(false);
+
+  const handleApprove = async () => {
+    if (!selectedUser) return;
+    
+    setIsApproving(true);
+    try {
+      const res = await fetch("/api/admin/freelancer/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ freelancerId: selectedUser.id }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        console.log("Approved:", selectedUser.name);
+        setPendingFreelancers(prev => prev.filter(f => f.id !== selectedUser.id));
+        setIsModalOpen(false);
+        setSelectedUser(null);
+      } else {
+        console.error("Failed to approve:", data.message);
+        alert("Failed to approve freelancer: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error approving freelancer:", error);
+      alert("Error approving freelancer");
+    } finally {
+      setIsApproving(false);
+    }
   };
 
-  const handleReject = () => {
-    console.log("Rejected", selectedUser?.name);
-    setIsModalOpen(false);
+  const handleReject = async () => {
+    if (!selectedUser) return;
+    
+    setIsRejecting(true);
+    try {
+      const res = await fetch("/api/admin/freelancer/reject", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          freelancerId: selectedUser.id,
+          reason: "Application does not meet requirements"
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        console.log("Rejected:", selectedUser.name);
+        setPendingFreelancers(prev => prev.filter(f => f.id !== selectedUser.id));
+        setIsModalOpen(false);
+        setSelectedUser(null);
+      } else {
+        console.error("Failed to reject:", data.message);
+        alert("Failed to reject freelancer: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error rejecting freelancer:", error);
+      alert("Error rejecting freelancer");
+    } finally {
+      setIsRejecting(false);
+    }
+  };
+
+  // Handle approve directly from table (without opening modal)
+  const handleApproveFromTable = async (user: PendingFreelancer) => {
+    setSelectedUser(user);
+    setIsApproving(true);
+    try {
+      const res = await fetch("/api/admin/freelancer/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ freelancerId: user.id }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        console.log("✅ Approved:", user.name);
+        setPendingFreelancers(prev => prev.filter(f => f.id !== user.id));
+        setSelectedUser(null);
+      } else {
+        console.error("Failed to approve:", data.message);
+        alert("Failed to approve freelancer: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error approving freelancer:", error);
+      alert("Error approving freelancer");
+    } finally {
+      setIsApproving(false);
+    }
+  };
+
+  // Handle reject directly from table (without opening modal)
+  const handleRejectFromTable = async (user: PendingFreelancer) => {
+    setSelectedUser(user);
+    setIsRejecting(true);
+    try {
+      const res = await fetch("/api/admin/freelancer/reject", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          freelancerId: user.id,
+          reason: "Application does not meet requirements"
+        }),
+      });
+      
+      const data = await res.json();
+      
+      if (data.success) {
+        console.log("❌ Rejected:", user.name);
+        setPendingFreelancers(prev => prev.filter(f => f.id !== user.id));
+        setSelectedUser(null);
+      } else {
+        console.error("Failed to reject:", data.message);
+        alert("Failed to reject freelancer: " + data.message);
+      }
+    } catch (error) {
+      console.error("Error rejecting freelancer:", error);
+      alert("Error rejecting freelancer");
+    } finally {
+      setIsRejecting(false);
+    }
   };
 
   return (
@@ -170,16 +291,28 @@ export default function FreelancerPending() {
                         <Eye className="w-5 h-5" />
                       </button>
                       <button
-                        className="w-10 h-10 flex items-center justify-center text-green-500 hover:bg-green-50 hover:shadow-md rounded-xl transition-all cursor-pointer border border-transparent hover:border-green-100"
+                        onClick={() => handleApproveFromTable(user)}
+                        disabled={isApproving}
+                        className="w-10 h-10 flex items-center justify-center text-green-500 hover:bg-green-50 hover:shadow-md rounded-xl transition-all cursor-pointer border border-transparent hover:border-green-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Approve"
                       >
-                        <Check className="w-5 h-5" />
+                        {isApproving && selectedUser?.id === user.id ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <Check className="w-5 h-5" />
+                        )}
                       </button>
                       <button
-                        className="w-10 h-10 flex items-center justify-center text-red-400 hover:text-red-500 hover:bg-red-50 hover:shadow-md rounded-xl transition-all cursor-pointer border border-transparent hover:border-red-100"
+                        onClick={() => handleRejectFromTable(user)}
+                        disabled={isRejecting}
+                        className="w-10 h-10 flex items-center justify-center text-red-400 hover:text-red-500 hover:bg-red-50 hover:shadow-md rounded-xl transition-all cursor-pointer border border-transparent hover:border-red-100 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Reject"
                       >
-                        <X className="w-5 h-5" />
+                        {isRejecting && selectedUser?.id === user.id ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <X className="w-5 h-5" />
+                        )}
                       </button>
                     </div>
                   </td>
@@ -217,7 +350,7 @@ export default function FreelancerPending() {
               ? {
                   ...selectedUser,
                   joinedDate: selectedUser.appliedDate,
-                  status: "Pending", // Ensure status is Pending to hide rank in modal
+                  status: "Pending",
                 }
               : null
           }

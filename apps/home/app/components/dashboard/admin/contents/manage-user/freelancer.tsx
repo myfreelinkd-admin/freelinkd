@@ -18,6 +18,9 @@ type Freelancer = {
   phone?: string;
   bio?: string;
   website?: string;
+  portfolioUrl?: string;
+  resumeFileName?: string;
+  professionalExperience?: string;
 };
 
 export default function FreelancerManagement() {

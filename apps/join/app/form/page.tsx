@@ -44,6 +44,30 @@ export default function FormPage() {
     setSubmitError(null);
 
     try {
+      let resumeUrl = "";
+
+      // Upload resume file first if exists
+      if (formData.resume) {
+        const uploadFormData = new FormData();
+        uploadFormData.append("file", formData.resume);
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        });
+
+        const uploadResult = await uploadResponse.json();
+
+        if (uploadResult.success) {
+          resumeUrl = uploadResult.data.url;
+          console.log("✅ Resume uploaded:", resumeUrl);
+        } else {
+          console.error("Failed to upload resume:", uploadResult.message);
+          // Continue without resume if upload fails
+        }
+      }
+
+      // Submit form with resume URL
       const response = await submitFreelancerForm({
         name: formData.name,
         address: formData.address,
@@ -52,7 +76,7 @@ export default function FormPage() {
         skills: formData.skills,
         professionalExperience: formData.professionalExperience,
         portfolioUrl: formData.portfolioUrl,
-        resumeFileName: formData.resume?.name,
+        resumeFileName: resumeUrl || formData.resume?.name, // Use URL if available
       });
 
       if (response.success) {

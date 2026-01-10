@@ -17,14 +17,20 @@ export async function GET() {
       id: user._id.toString(),
       name: user.name || user.username || user.fullname || "Unknown",
       email: user.email,
-      role: user.job_title || user.role || "Freelancer",
-      location: user.location || user.city || "Jakarta, ID", // Default or fetched
+      role: user.job_title || user.skills || user.role || "Freelancer",
+      location: user.location || user.address || user.city || "Jakarta, ID",
       status: user.status || "Active",
-      rank: user.rank || "Classic", // Default rank
-      joinedDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A",
+      rank: user.rank || "Classic",
+      joinedDate: user.joinedDate ? new Date(user.joinedDate).toLocaleDateString() : user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A",
       phone: user.phone || "",
-      bio: user.bio || "",
+      bio: user.bio || user.professionalExperience || "",
       website: user.website || "",
+      portfolioUrl: user.portfolioUrl || "",
+      // Convert /uploads/resumes/xxx.pdf to /api/uploads/resumes/xxx.pdf for Admin access
+      resumeFileName: user.resumeFileName
+        ? user.resumeFileName.replace("/uploads/resumes/", "/api/uploads/resumes/")
+        : "",
+      professionalExperience: user.professionalExperience || "",
     }));
 
     return NextResponse.json({

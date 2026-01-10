@@ -25,7 +25,10 @@ export async function GET() {
       appliedDate: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A",
       status: user.status || "pending",
       portfolioUrl: user.portfolioUrl || "",
-      resumeFileName: user.resumeFileName || "",
+      // Convert /uploads/resumes/xxx.pdf to /api/uploads/resumes/xxx.pdf for Admin access
+      resumeFileName: user.resumeFileName 
+        ? user.resumeFileName.replace("/uploads/resumes/", "/api/uploads/resumes/") 
+        : "",
       professionalExperience: user.professionalExperience || "",
       bio: user.professionalExperience || "", // Map experience as bio for modal
     }));
