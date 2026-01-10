@@ -112,7 +112,6 @@ export default function FirstPage({
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || skillSuggestions.length === 0) {
-      // Allow adding custom skill with Enter
       if (e.key === "Enter" && skillInput.trim()) {
         e.preventDefault();
         if (!selectedSkills.includes(skillInput.trim())) {

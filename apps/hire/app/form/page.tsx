@@ -21,12 +21,13 @@ export interface FormData {
   budgetFrom: string;
   budgetTo: string;
   uploadDocument: File | null;
+  jobStatus: "general" | "assigned";
   selectedFreelancer?: {
     id: string;
     name: string;
     skills: string;
     matchPercentage: number;
-  };
+  } | null;
 }
 
 export default function FormPage() {
@@ -44,6 +45,8 @@ export default function FormPage() {
     budgetFrom: "",
     budgetTo: "",
     uploadDocument: null,
+    jobStatus: "assigned",
+    selectedFreelancer: null,
   });
 
   const totalSteps = 3;

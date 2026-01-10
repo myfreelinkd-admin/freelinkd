@@ -18,12 +18,13 @@ interface ReviewPageProps {
     budgetFrom: string;
     budgetTo: string;
     uploadDocument: File | null;
+    jobStatus: "general" | "assigned";
     selectedFreelancer?: {
       id: string;
       name: string;
       skills: string;
       matchPercentage: number;
-    };
+    } | null;
   };
 }
 
@@ -32,18 +33,14 @@ export default function ReviewPage({ data }: ReviewPageProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   
-  // Flag to prevent double submission (React StrictMode runs effects twice)
   const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
-    // Prevent double submission
     if (hasSubmittedRef.current) {
       return;
     }
     
-    // Submit to database when component mounts
     const submitToDatabase = async () => {
-      // Mark as submitted immediately to prevent race conditions
       hasSubmittedRef.current = true;
       
       setIsSubmitting(true);
@@ -63,7 +60,8 @@ export default function ReviewPage({ data }: ReviewPageProps) {
           budgetFrom: data.budgetFrom,
           budgetTo: data.budgetTo,
           uploadDocument: data.uploadDocument?.name || "",
-          selectedFreelancer: data.selectedFreelancer,
+          status: data.jobStatus,
+          selectedFreelancer: data.selectedFreelancer || undefined,
         });
 
         if (response.success && response.data?.id) {
@@ -76,7 +74,6 @@ export default function ReviewPage({ data }: ReviewPageProps) {
         setSubmitError(
           error instanceof Error ? error.message : "Failed to submit job"
         );
-        // Fallback to generated ID on error
         const generatedId =
           "ORD-" + Math.random().toString(36).substring(2, 11).toUpperCase();
         setOrderId(generatedId);
@@ -86,7 +83,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
     };
 
     submitToDatabase();
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   const submissionDate = new Date().toLocaleDateString(undefined, {
     weekday: "long",
@@ -240,12 +237,35 @@ export default function ReviewPage({ data }: ReviewPageProps) {
               </div>
             </div>
 
-            {/* Selected Freelancer */}
-            {data.selectedFreelancer && (
-              <div className="bg-[#081f5c] text-white rounded-2xl p-6 shadow-lg">
-                <h3 className="text-lg font-bold mb-4 border-b border-white/20 pb-2">
-                  Selected Freelancer
-                </h3>
+            {/* Job Status & Freelancer Assignment */}
+            <div className={`rounded-2xl p-6 shadow-lg ${
+              data.jobStatus === "general" 
+                ? "bg-blue-600 text-white" 
+                : "bg-[#081f5c] text-white"
+            }`}>
+              <h3 className="text-lg font-bold mb-4 border-b border-white/20 pb-2">
+                {data.jobStatus === "general" ? "Job Status" : "Selected Freelancer"}
+              </h3>
+              
+              {data.jobStatus === "general" ? (
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="text-xl font-bold">Open to All Freelancers</h4>
+                    <p className="text-sm opacity-70 mt-1">
+                      This job will be visible to all freelancers with matching skills.
+                    </p>
+                    <p className="text-sm mt-2">
+                      Required Skills: {data.skills || "Any"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="bg-white/10 px-4 py-2 rounded-2xl">
+                      <p className="text-sm font-bold">Status</p>
+                      <p className="text-xl font-black">GENERAL</p>
+                    </div>
+                  </div>
+                </div>
+              ) : data.selectedFreelancer ? (
                 <div className="flex justify-between items-center">
                   <div>
                     <h4 className="text-xl font-bold">
@@ -267,8 +287,12 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm opacity-70">No freelancer selected yet</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

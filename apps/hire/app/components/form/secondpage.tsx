@@ -82,7 +82,23 @@ export default function SecondPage({
         skills: freelancer.skills,
         matchPercentage: freelancer.matchPercentage,
       },
+      jobStatus: "assigned",
     });
+  };
+
+  const handleModeChange = (mode: "match" | "random") => {
+    if (mode === "random") {
+      // When switching to "Open to All" mode, clear freelancer and set status to general
+      updateFormData({
+        jobStatus: "general",
+        selectedFreelancer: null,
+      });
+    } else {
+      // When switching to "Skill Match" mode, keep status as assigned (user will select)
+      updateFormData({
+        jobStatus: "assigned",
+      });
+    }
   };
 
   return (
@@ -267,7 +283,9 @@ export default function SecondPage({
         {/* Choose Freelancer Section */}
         <PickFreelancer
           onSelect={handleFreelancerSelect}
+          onModeChange={handleModeChange}
           selectedId={formData.selectedFreelancer?.id}
+          requiredSkills={formData.skills}
         />
 
         {/* Submit Button */}

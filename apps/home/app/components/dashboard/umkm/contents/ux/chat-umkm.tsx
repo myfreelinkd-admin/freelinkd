@@ -13,16 +13,16 @@ import {
   Loader2,
   WifiOff,
 } from "lucide-react";
-import { useProjectChat, UIMessage } from "../../../../../chat/connection/ably";
+import { useProjectChat, UIMessage } from "../../../../chat/connection/ably";
 
-interface ProjectChatModalProps {
+interface UMKMChatModalProps {
   isOpen: boolean;
   onClose: () => void;
   projectId: string; // Required for Ably room
-  userId: string;    // Current freelancer's ID
+  userId: string;    // Current UMKM user's ID
   project?: {
     name: string;
-    client: {
+    freelancer: {
       name: string;
       avatar?: string;
       status?: "online" | "offline";
@@ -30,13 +30,13 @@ interface ProjectChatModalProps {
   };
 }
 
-export default function ProjectChatModal({
+export default function UMKMChatModal({
   isOpen,
   onClose,
   projectId,
   userId,
   project,
-}: ProjectChatModalProps) {
+}: UMKMChatModalProps) {
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -79,13 +79,13 @@ export default function ProjectChatModal({
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-(--primary) font-bold text-lg border-2 border-white shadow-sm">
-                {project.client.name.charAt(0)}
+                {project.freelancer.name.charAt(0)}
               </div>
               <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
             </div>
             <div>
               <h2 className="text-lg font-bold text-(--primary)">
-                {project.client.name}
+                {project.freelancer.name}
               </h2>
               <div className="flex items-center gap-2 text-xs text-gray-500">
                 {isConnected ? (

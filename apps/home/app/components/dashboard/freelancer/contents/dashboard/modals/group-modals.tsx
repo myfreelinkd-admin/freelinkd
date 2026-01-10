@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   X,
   Camera,
@@ -15,49 +15,108 @@ import {
 interface GroupModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-// Dummy data for freelancers to invite
-const availableFreelancers = [
-  { id: 1, name: "Sarah Jenkins", role: "UI Designer", avatar: "S" },
-  { id: 2, name: "Mike Ross", role: "Frontend Dev", avatar: "M" },
-  { id: 3, name: "Jessica Pearson", role: "Project Manager", avatar: "J" },
-  { id: 4, name: "Harvey Specter", role: "Backend Dev", avatar: "H" },
-  { id: 5, name: "Louis Litt", role: "QA Engineer", avatar: "L" },
-  { id: 6, name: "Rachel Zane", role: "Paralegal", avatar: "R" },
-  { id: 7, name: "Donna Paulsen", role: "Executive Assistant", avatar: "D" },
-];
+// Dummy data removed, using API
 
-export default function GroupModal({ isOpen, onClose }: GroupModalProps) {
+export default function GroupModal({ isOpen, onClose, onSuccess }: GroupModalProps) {
   const [groupName, setGroupName] = useState("");
   const [maxMembers, setMaxMembers] = useState(5);
-  const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<(string | number)[]>([]); // allow strings for real IDs
   const [searchQuery, setSearchQuery] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  
+  const [freelancers, setFreelancers] = useState<any[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+        fetchFreelancers();
+    }
+  }, [isOpen, searchQuery]);
+
+  const fetchFreelancers = async () => {
+     setLoadingUsers(true);
+     try {
+         const res = await fetch(`/api/freelancer/list?q=${searchQuery}`);
+         const data = await res.json();
+         if (data.success) {
+             setFreelancers(data.data);
+         }
+     } catch (err) {
+         console.error(err);
+     } finally {
+         setLoadingUsers(false);
+     }
+  };
 
   if (!isOpen) return null;
 
-  const toggleMember = (id: number) => {
+  const toggleMember = (id: string | number) => {
     if (selectedMembers.includes(id)) {
       setSelectedMembers(selectedMembers.filter((m) => m !== id));
     } else {
       if (selectedMembers.length < maxMembers - 1) {
-        // -1 because you are the owner
         setSelectedMembers([...selectedMembers, id]);
       }
     }
   };
 
-  const filteredFreelancers = availableFreelancers.filter(
-    (f) =>
-      f.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      f.role.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleCreateGroup = async () => {
+    if (!groupName.trim()) return;
+    setIsCreating(true);
+
+    try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        let ownerId = "";
+        
+        if (storedUser) {
+           const parsedUser = JSON.parse(storedUser);
+           ownerId = parsedUser.id;
+        }
+
+        if (!ownerId) {
+            alert("You must be logged in to create a group.");
+            return;
+        }
+
+        const memberIds = selectedMembers.map(id => id.toString());
+
+        const response = await fetch("/api/freelancer/group", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: groupName,
+                ownerId,
+                maxMembers,
+                members: memberIds,
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            if (onSuccess) onSuccess();
+            onClose();
+        } else {
+            alert(data.error || "Failed to create group");
+        }
+
+    } catch (error) {
+        console.error("Create group error:", error);
+        alert("An error occurred.");
+    } finally {
+        setIsCreating(false);
+    }
+  };
 
   return (
-    <div className="fixed inset-0 z-999 flex items-center justify-center p-4 md:p-8">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 w-screen h-screen">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-(--primary)/40 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
@@ -167,9 +226,11 @@ export default function GroupModal({ isOpen, onClose }: GroupModalProps) {
 
               {/* List */}
               <div className="max-h-60 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                {filteredFreelancers.length > 0 ? (
-                  filteredFreelancers.map((freelancer) => {
-                    const isSelected = selectedMembers.includes(freelancer.id);
+                {loadingUsers && freelancers.length === 0 ? (
+                    <div className="text-center py-4 text-gray-400">Loading freelancers...</div>
+                ) : freelancers.length > 0 ? (
+                  freelancers.map((freelancer) => {
+                    const isSelected = selectedMembers.includes(freelancer.id as string | number);
                     const isDisabled =
                       !isSelected && selectedMembers.length >= maxMembers - 1;
 
@@ -191,9 +252,13 @@ export default function GroupModal({ isOpen, onClose }: GroupModalProps) {
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 border-white shadow-sm ${isSelected ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"}`}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border-2 border-white shadow-sm ${isSelected ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-500"} overflow-hidden`}
                           >
-                            {freelancer.avatar}
+                            {freelancer.avatar ? (
+                                <img src={freelancer.avatar} alt={freelancer.name} className="w-full h-full object-cover" />
+                            ) : (
+                                freelancer.name.charAt(0).toUpperCase()
+                            )}
                           </div>
                           <div>
                             <p
@@ -237,14 +302,22 @@ export default function GroupModal({ isOpen, onClose }: GroupModalProps) {
             Cancel
           </button>
           <button
-            disabled={!groupName.trim()}
+            onClick={handleCreateGroup}
+            disabled={!groupName.trim() || isCreating}
             className="px-8 py-3.5 bg-(--primary) text-white rounded-2xl font-bold text-sm hover:bg-blue-900 transition-all shadow-lg shadow-blue-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <UserPlus className="w-4 h-4" />
-            Create Group
+            {isCreating ? (
+                <span>Creating...</span>
+            ) : (
+                <>
+                    <UserPlus className="w-4 h-4" />
+                    Create Group
+                </>
+            )}
           </button>
         </div>
       </div>
     </div>
   );
 }
+

@@ -6,6 +6,7 @@ import SearchBar from "./search-bar";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userName, setUserName] = useState("Freelancer");
   const [greeting] = useState(() => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return "Good Morning";
@@ -14,6 +15,37 @@ export default function Navbar() {
   });
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        let id = "";
+        
+        if (storedUser) {
+           const parsedUser = JSON.parse(storedUser);
+           id = parsedUser.id;
+           // Optimistically set name if available in storage while fetching fresh data
+           if (parsedUser.username) {
+             setUserName(parsedUser.username);
+           }
+        }
+
+        if (id) {
+            const response = await fetch(`/api/freelancer/profile?id=${id}`);
+            if (response.ok) {
+               const data = await response.json();
+               if (data.success && data.data.name) {
+                 setUserName(data.data.name);
+               }
+            }
+        }
+      } catch (error) {
+        console.error("Failed to fetch freelancer name:", error);
+      }
+    };
+
+    fetchProfile();
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -65,7 +97,7 @@ export default function Navbar() {
 
           <div className="hidden md:block text-right">
             <p className="text-sm font-bold text-(--primary)">{greeting},</p>
-            <p className="text-xs text-gray-500">Freelancer</p>
+            <p className="text-xs text-gray-500">{userName}</p>
           </div>
         </div>
       </div>
