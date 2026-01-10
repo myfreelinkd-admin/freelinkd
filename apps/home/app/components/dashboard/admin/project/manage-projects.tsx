@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutGrid,
   CheckCircle2,
@@ -18,66 +18,47 @@ import {
   User,
   Briefcase,
   TrendingUp,
+  Loader2,
 } from "lucide-react";
 import ProjectActionButton from "./ui/button";
 
-// Mock Data
-const projectsData = [
-  {
-    id: 1,
-    name: "E-Commerce Dashboard UI Kit",
-    client: { name: "TechFlow Solutions", avatar: "T", email: "contact@techflow.com" },
-    freelancer: { name: "Alex Designer", avatar: "A", email: "alex@design.com" },
-    date: "15 Jan 2026",
-    amount: "Rp 5.000.000",
-    status: "Process",
-    progress: 75,
-  },
-  {
-    id: 2,
-    name: "Mobile App Branding & Identity",
-    client: { name: "Sagawa Group", avatar: "S", email: "admin@sagawa.id" },
-    freelancer: { name: "Sarah Creative", avatar: "S", email: "sarah@creative.com" },
-    date: "20 Jan 2026",
-    amount: "Rp 8.500.000",
-    status: "Process",
-    progress: 40,
-  },
-  {
-    id: 3,
-    name: "Real Estate Landing Page",
-    client: { name: "AWA Construction", avatar: "A", email: "info@awa.com" },
-    freelancer: { name: "John Dev", avatar: "J", email: "john@dev.com" },
-    date: "10 Jan 2026",
-    amount: "Rp 3.200.000",
-    status: "Complete",
-    progress: 100,
-  },
-  {
-    id: 4,
-    name: "Corporate Website Redesign",
-    client: { name: "Global Finance", avatar: "G", email: "finance@global.com" },
-    freelancer: { name: "Mike Frontend", avatar: "M", email: "mike@web.com" },
-    date: "05 Jan 2026",
-    amount: "Rp 12.000.000",
-    status: "Canceled",
-    progress: 15,
-  },
-  {
-    id: 5,
-    name: "Social Media Content Design",
-    client: { name: "Creative Studio", avatar: "C", email: "hello@creative.com" },
-    freelancer: { name: "Lisa Art", avatar: "L", email: "lisa@art.com" },
-    date: "28 Dec 2025",
-    amount: "Rp 2.500.000",
-    status: "Complete",
-    progress: 100,
-  },
-];
+// Type definition for project data
+interface Project {
+  id: string;
+  name: string;
+  client: { name: string; avatar: string; email: string };
+  freelancer: { name: string; avatar: string; email: string };
+  date: string;
+  amount: string;
+  status: string;
+  progress: number;
+  description?: string;
+  category?: string;
+}
 
 export default function AdminManageProjects() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [projectsData, setProjectsData] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch("/api/admin/projects");
+      const data = await res.json();
+      if (data.success) {
+        setProjectsData(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch projects", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const tabs = [
     { id: "all", label: "All Projects", icon: LayoutGrid, color: "text-(--primary)" },
@@ -140,33 +121,10 @@ export default function AdminManageProjects() {
             Monitor and manage all project activities across the platform.
           </p>
         </div>
-        
-        {/* Stats Summary - New Professional Touch */}
-        <div className="flex gap-3">
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 pr-8">
-            <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Active</p>
-              <p className="text-lg font-bold text-(--primary)">12</p>
-            </div>
-          </div>
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-3 pr-8">
-            <div className="p-2 bg-green-50 rounded-xl text-green-600">
-              <TrendingUp className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Total Revenue</p>
-              <p className="text-lg font-bold text-(--primary)">$45.2k</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Controls Section */}
       <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-2 rounded-3xl border border-gray-100 shadow-sm">
-        {/* Tab Navigation */}
         {/* Tab Navigation */}
         <div className="flex items-center bg-(--alternative)/50 p-1.5 rounded-2xl border border-gray-100 gap-1 w-full lg:w-fit overflow-x-auto no-scrollbar">
           {tabs.map((tab) => {
@@ -219,7 +177,7 @@ export default function AdminManageProjects() {
       </div>
 
       {/* Projects Table */}
-      <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-4xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-8">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-separate border-spacing-y-3">
@@ -242,7 +200,7 @@ export default function AdminManageProjects() {
                       className="group hover:bg-(--alternative)/30 transition-colors"
                     >
                       <td className="px-4 py-5 bg-(--alternative)/10 first:rounded-l-3xl group-hover:bg-transparent border-y border-l border-transparent group-hover:border-gray-100 transition-all">
-                        <div className="flex flex-col max-w-[200px]">
+                        <div className="flex flex-col max-w-50">
                           <span className="font-bold text-(--primary) text-sm truncate" title={project.name}>
                             {project.name}
                           </span>
@@ -295,7 +253,7 @@ export default function AdminManageProjects() {
                       </td>
 
                       <td className="px-4 py-5 bg-(--alternative)/10 group-hover:bg-transparent border-y border-transparent group-hover:border-gray-100 transition-all">
-                        <div className="w-full max-w-[140px]">
+                        <div className="w-full max-w-35">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-[10px] font-bold text-(--primary)">
                               Task Completion

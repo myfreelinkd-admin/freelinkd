@@ -5,8 +5,10 @@ import AdminLayoutWrapper from "@/app/components/dashboard/admin/layout/admin-la
 import Sidebar from "@/app/components/dashboard/admin/layout/sidebar";
 import Navbar from "@/app/components/dashboard/admin/layout/navbar";
 import FreelancerManagement from "@/app/components/dashboard/admin/contents/manage-user/freelancer";
+import FreelancerPending from "@/app/components/dashboard/admin/contents/manage-user/pending/freelancer-pending";
 import UMKMManagement from "@/app/components/dashboard/admin/contents/manage-user/umkm";
-import { UserRound, Building2 } from "lucide-react";
+import Tooltip from "@/app/components/dashboard/admin/project/ui/tooltip";
+import { UserRound, Building2, Clock } from "lucide-react";
 
 function UserManagementContent() {
   const [activeTab, setActiveTab] = useState("freelancer");
@@ -18,6 +20,13 @@ function UserManagementContent() {
       icon: UserRound,
       color: "text-(--secondary)",
       count: "100",
+    },
+    {
+      id: "freelancer-pending",
+      label: "Pending",
+      icon: Clock,
+      color: "text-orange-500",
+      count: "4",
     },
     {
       id: "umkm",
@@ -49,30 +58,31 @@ function UserManagementContent() {
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group ${
-                    isActive
-                      ? "bg-white shadow-md shadow-gray-200/50 min-w-35"
-                      : "hover:bg-white/40 w-11"
-                  }`}
-                >
-                  <tab.icon
-                    className={`w-5 h-5 transition-colors ${
+                <Tooltip key={tab.id} content={tab.label} position="top">
+                  <button
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-300 cursor-pointer group ${
                       isActive
-                        ? tab.color
-                        : "text-gray-400 group-hover:text-(--primary)"
+                        ? "bg-white shadow-md shadow-gray-200/50 min-w-35"
+                        : "hover:bg-white/40 w-11"
                     }`}
-                  />
-                  {isActive && (
-                    <span
-                      className={`text-sm font-bold whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300 ${tab.color}`}
-                    >
-                      {tab.label}
-                    </span>
-                  )}
-                </button>
+                  >
+                    <tab.icon
+                      className={`w-5 h-5 transition-colors ${
+                        isActive
+                          ? tab.color
+                          : "text-gray-400 group-hover:text-(--primary)"
+                      }`}
+                    />
+                    {isActive && (
+                      <span
+                        className={`text-sm font-bold whitespace-nowrap animate-in fade-in slide-in-from-left-2 duration-300 ${tab.color}`}
+                      >
+                        {tab.label}
+                      </span>
+                    )}
+                  </button>
+                </Tooltip>
               );
             })}
           </div>
@@ -80,6 +90,7 @@ function UserManagementContent() {
           {/* Content Sections */}
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {activeTab === "freelancer" && <FreelancerManagement />}
+            {activeTab === "freelancer-pending" && <FreelancerPending />}
             {activeTab === "umkm" && <UMKMManagement />}
           </div>
         </main>

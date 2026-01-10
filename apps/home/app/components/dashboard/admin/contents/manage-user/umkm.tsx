@@ -1,49 +1,71 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Building2, MapPin, Trash2, Edit3 } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Search,
+  Filter,
+  Building2,
+  MapPin,
+  Trash2,
+  Edit3,
+  Eye,
+  Loader2,
+} from "lucide-react";
+import EditUserModal from "./modals/modals-edit";
+import ViewUserModal from "./modals/modals-view";
 
-const umkms = [
-  {
-    id: 1,
-    companyName: "TechNova Solutions",
-    owner: "Budi Santoso",
-    industry: "Technology",
-    location: "Jakarta, ID",
-    status: "Verified",
-    joinedDate: "Jan 15, 2024",
-  },
-  {
-    id: 2,
-    companyName: "GreenLeaf Organic",
-    owner: "Siti Aminah",
-    industry: "Agriculture",
-    location: "Malang, ID",
-    status: "Verified",
-    joinedDate: "Feb 10, 2024",
-  },
-  {
-    id: 3,
-    companyName: "CreativeFlow Studio",
-    owner: "Andi Wijaya",
-    industry: "Creative Agency",
-    location: "Bali, ID",
-    status: "Pending",
-    joinedDate: "Mar 05, 2024",
-  },
-  {
-    id: 4,
-    companyName: "UrbanBite Catering",
-    owner: "Dewi Lestari",
-    industry: "Food & Beverage",
-    location: "Bandung, ID",
-    status: "Verified",
-    joinedDate: "Apr 02, 2024",
-  },
-];
+type UMKM = {
+  id: string | number;
+  companyName: string;
+  owner: string;
+  industry: string;
+  location: string;
+  status: string;
+  joinedDate: string;
+  // Optional detailed fields
+  phone?: string;
+  website?: string;
+  bio?: string;
+  role?: string; // Sometimes needed for modal mapping
+  name?: string; // Optional alias for owner/companyName for consistent mapping
+  email?: string;
+};
 
 export default function UMKMManagement() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UMKM | null>(null);
+  const [umkms, setUmkms] = useState<UMKM[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUmkms();
+  }, []);
+
+  const fetchUmkms = async () => {
+    try {
+      const res = await fetch("/api/admin/users/umkm");
+      const data = await res.json();
+      if (data.success) {
+        setUmkms(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch UMKMs", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (user: UMKM) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleView = (user: UMKM) => {
+    setSelectedUser(user);
+    setIsViewModalOpen(true);
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -151,6 +173,14 @@ export default function UMKMManagement() {
                   <td className="px-8 py-6">
                     <div className="flex items-center justify-end gap-3">
                       <button
+                        onClick={() => handleView(umkm)}
+                        className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-white hover:shadow-md rounded-xl transition-all cursor-pointer"
+                        title="View Details"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleEdit(umkm)}
                         className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-(--secondary) hover:bg-white hover:shadow-md rounded-xl transition-all cursor-pointer"
                         title="Edit UMKM"
                       >
@@ -193,6 +223,21 @@ export default function UMKMManagement() {
           </div>
         </div>
       </div>
+
+      <EditUserModal
+        key={`edit-${selectedUser?.id}`}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        data={selectedUser}
+        type="umkm"
+      />
+      <ViewUserModal
+        key={`view-${selectedUser?.id}`}
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        data={selectedUser}
+        type="umkm"
+      />
     </div>
   );
 }

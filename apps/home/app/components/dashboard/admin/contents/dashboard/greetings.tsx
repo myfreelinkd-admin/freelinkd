@@ -1,11 +1,38 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar, UserRound, BriefcaseBusiness, Search } from "lucide-react";
 import ProjectsMonitor from "./modals/projects-monitor";
 
 export default function Greetings() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [username, setUsername] = useState("Admin");
+
+  useEffect(() => {
+    // Fetch Admin Data
+    const fetchAdminData = async () => {
+      try {
+        const storedUser = localStorage.getItem("admin_user") || sessionStorage.getItem("admin_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          
+          if (parsedUser.username) {
+             setUsername(parsedUser.username);
+          }
+
+          if (parsedUser.id) {
+            const res = await fetch(`/api/admin/profile?id=${parsedUser.id}`);
+            const data = await res.json();
+            if (data.success && data.data.username) {
+              setUsername(data.data.username);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin data", error);
+      }
+    };
+    fetchAdminData();
+  }, []);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -17,7 +44,7 @@ export default function Greetings() {
         <div>
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-(--primary) tracking-tight">
-              Welcome Back, <span className="text-(--secondary)">Atmint</span>
+              Welcome Back, <span className="text-(--secondary)">{username}</span>
             </h1>
             <p className="text-gray-400 mt-1 font-medium">
               Have a Nice Day! Here&apos;s an overview of the platform&apos;s

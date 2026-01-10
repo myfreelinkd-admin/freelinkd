@@ -1,49 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { Search, Filter, Mail, MapPin, Trash2, Edit3 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Filter, Mail, MapPin, Trash2, Edit3, Eye} from "lucide-react";
+import EditUserModal from "./modals/modals-edit";
+import ViewUserModal from "./modals/modals-view";
 
-const freelancers = [
-  {
-    id: 1,
-    name: "Alex Rivera",
-    email: "alex.r@example.com",
-    role: "UI/UX Designer",
-    location: "Jakarta, ID",
-    status: "Active",
-    rank: "Gold",
-  },
-  {
-    id: 2,
-    name: "Sarah Chen",
-    email: "sarah.c@example.com",
-    role: "Fullstack Developer",
-    location: "Singapore, SG",
-    status: "Active",
-    rank: "Platinum",
-  },
-  {
-    id: 3,
-    name: "Michael Scott",
-    email: "m.scott@example.com",
-    role: "Project Manager",
-    location: "Bandung, ID",
-    status: "Inactive",
-    rank: "Silver",
-  },
-  {
-    id: 4,
-    name: "Jessica Lee",
-    email: "jess.lee@example.com",
-    role: "Content Writer",
-    location: "Surabaya, ID",
-    status: "Active",
-    rank: "Classic",
-  },
-];
+type Freelancer = {
+  id: string | number;
+  name: string;
+  email: string;
+  role: string;
+  location: string;
+  status: string;
+  rank: string;
+  // Optional detailed fields
+  joinedDate?: string;
+  phone?: string;
+  bio?: string;
+  website?: string;
+};
 
 export default function FreelancerManagement() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<Freelancer | null>(null);
+  const [freelancers, setFreelancers] = useState<Freelancer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFreelancers();
+  }, []);
+
+  const fetchFreelancers = async () => {
+    try {
+      const res = await fetch("/api/admin/users/freelancers");
+      const data = await res.json();
+      if (data.success) {
+        setFreelancers(data.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch freelancers", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEdit = (user: Freelancer) => {
+    setSelectedUser(user);
+    setIsEditModalOpen(true);
+  };
+
+  const handleView = (user: Freelancer) => {
+    setSelectedUser(user);
+    setIsViewModalOpen(true);
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -150,6 +161,14 @@ export default function FreelancerManagement() {
                   <td className="px-8 py-6">
                     <div className="flex items-center justify-end gap-3">
                       <button
+                        onClick={() => handleView(user)}
+                        className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-blue-500 hover:bg-white hover:shadow-md rounded-xl transition-all cursor-pointer"
+                        title="View Details"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => handleEdit(user)}
                         className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-(--secondary) hover:bg-white hover:shadow-md rounded-xl transition-all cursor-pointer"
                         title="Edit User"
                       >
@@ -195,6 +214,21 @@ export default function FreelancerManagement() {
           </div>
         </div>
       </div>
+
+      <EditUserModal
+        key={`edit-${selectedUser?.id}`}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        data={selectedUser}
+        type="freelancer"
+      />
+      <ViewUserModal
+        key={`view-${selectedUser?.id}`}
+        isOpen={isViewModalOpen}
+        onClose={() => setIsViewModalOpen(false)}
+        data={selectedUser}
+        type="freelancer"
+      />
     </div>
   );
 }

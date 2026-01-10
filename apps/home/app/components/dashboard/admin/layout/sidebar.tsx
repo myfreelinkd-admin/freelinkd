@@ -16,9 +16,16 @@ import {
   UserRound,
 } from "lucide-react";
 
+interface AdminData {
+  username: string;
+  email: string;
+  photo?: string | null;
+}
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [adminData, setAdminData] = useState<AdminData | null>(null);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -43,6 +50,31 @@ export default function Sidebar() {
       "sidebar-collapsed-change",
       onToggle as EventListener
     );
+
+    // Initialize and Fetch Admin Data
+    const fetchAdminData = async () => {
+      try {
+        const storedUser = localStorage.getItem("admin_user") || sessionStorage.getItem("admin_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          
+          // Set immediate data for display
+          setAdminData(parsedUser);
+
+          // Fetch fresh data if we have an ID
+          if (parsedUser.id) {
+            const res = await fetch(`/api/admin/profile?id=${parsedUser.id}`);
+            const data = await res.json();
+            if (data.success) {
+              setAdminData(data.data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin data", error);
+      }
+    };
+    fetchAdminData();
 
     return () => {
       if (obs) obs.disconnect();
@@ -176,13 +208,19 @@ export default function Sidebar() {
           <div
             className={`flex items-center gap-3 ${collapsed ? "justify-center" : "px-2"}`}
           >
-            <ProfileAvatar collapsed={collapsed} />
+            <ProfileAvatar
+              collapsed={collapsed}
+              name={adminData?.username}
+              photo={adminData?.photo}
+            />
             {!collapsed && (
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-sm truncate">
-                  Atmint
+                  {adminData?.username || "Admin"}
                 </p>
-                <p className="text-white/50 text-xs truncate">atmint@mail.id</p>
+                <p className="text-white/50 text-xs truncate">
+                  {adminData?.email || "Loading..."}
+                </p>
               </div>
             )}
           </div>
@@ -202,22 +240,31 @@ export default function Sidebar() {
   );
 }
 
-function ProfileAvatar({ collapsed = false }: { collapsed?: boolean }) {
-  const fullName = "Admin";
-  const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
-  const profileSrc = "/assets/img/profile.jpg";
+function ProfileAvatar({
+  collapsed = false,
+  name,
+  photo,
+}: {
+  collapsed?: boolean;
+  name?: string;
+  photo?: string | null;
+}) {
+  const initial = name?.trim()?.charAt(0)?.toUpperCase() || "A";
   const [imgError, setImgError] = useState(false);
 
   const sizeClass = collapsed ? "w-10 h-10" : "w-11 h-11";
+
+  // Use photo if available and no error, otherwise fallback to initials
+  const showImage = photo && !imgError;
 
   return (
     <div
       className={`${sizeClass} rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-white/10 transition-all duration-300 bg-white/5`}
     >
-      {!imgError ? (
+      {showImage ? (
         <Image
-          src={profileSrc}
-          alt="Freelancer Profile"
+          src={photo!}
+          alt="Profile"
           className={`object-cover ${sizeClass}`}
           width={collapsed ? 40 : 44}
           height={collapsed ? 40 : 44}

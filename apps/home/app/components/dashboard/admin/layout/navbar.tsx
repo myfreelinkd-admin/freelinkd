@@ -6,6 +6,7 @@ import SearchBar from "./search-bar";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [username, setUsername] = useState("Admin");
 
   const hour = new Date().getHours();
   const greeting =
@@ -20,6 +21,31 @@ export default function Navbar() {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
+
+    // Fetch Admin Data
+    const fetchAdminData = async () => {
+      try {
+        const storedUser = localStorage.getItem("admin_user") || sessionStorage.getItem("admin_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          
+          if (parsedUser.username) {
+             setUsername(parsedUser.username);
+          }
+
+          if (parsedUser.id) {
+            const res = await fetch(`/api/admin/profile?id=${parsedUser.id}`);
+            const data = await res.json();
+            if (data.success && data.data.username) {
+              setUsername(data.data.username);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin data", error);
+      }
+    };
+    fetchAdminData();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -72,7 +98,7 @@ export default function Navbar() {
             >
               {greeting},
             </p>
-            <p className="text-xs text-gray-500">Admin</p>
+            <p className="text-xs text-gray-500">{username}</p>
           </div>
         </div>
       </div>
