@@ -81,10 +81,10 @@ export const Footer: FC = () => {
           <div className="flex">
             <p className="mr-1 text-gray-200">Phone:</p>
             <a
-              href="tel:+6282210724470"
+              href="tel:+6285717269057"
               className="transition-colors duration-300 text-gray-100 hover:text-gray-300"
             >
-              +62 822-1072-4470
+              +62 857-1726-9057
             </a>
           </div>
           <div className="flex">
