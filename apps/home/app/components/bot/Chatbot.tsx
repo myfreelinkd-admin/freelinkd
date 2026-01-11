@@ -38,7 +38,7 @@ const Chatbot = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const allowedPaths = ["/", "/feature"];
+  const allowedPaths = ["/"];
   const isAllowed = allowedPaths.includes(pathname);
 
   if (!isAllowed) return null;

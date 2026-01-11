@@ -10,14 +10,14 @@ const features = [
     description:
       "Find the perfect talent for your projects. Connect with skilled professionals ready to work.",
     image: "/assets/img/hire.jpg",
-    link: "https://hire.freelinkd.com",
+    link: "/https://hire.freelinkd.com",
   },
   {
     title: "Join Freelancer",
     description:
       "Start your freelancing journey today. Access opportunities and grow your career.",
     image: "/assets/img/join.jpg",
-    link: "https://join.freelinkd.com",
+    link: "/https://join.freelinkd.com",
   },
   {
     title: "E-learning",
@@ -103,8 +103,8 @@ export default function ListSection() {
             </div>
 
             {/* Content */}
-            <div className="absolute inset-0 flex items-center justify-between px-6 md:px-12">
-              <div className="flex flex-col justify-center h-full text-white z-10 max-w-[70%] md:max-w-[60%]">
+            <div className="absolute inset-0 flex items-center justify-between px-6 md:px-12 z-20 pointer-events-none">
+              <div className="flex flex-col justify-center h-full text-white z-10 max-w-[70%] md:max-w-[60%] pointer-events-auto">
                 <h3 className="text-xl md:text-3xl font-bold drop-shadow-lg mb-1 transition-transform duration-300 group-hover:-translate-y-1">
                   {feature.title}
                 </h3>
@@ -115,7 +115,7 @@ export default function ListSection() {
                 </div>
               </div>
 
-              <div className="z-10 opacity-100 visible">
+              <div className="z-10 opacity-100 visible pointer-events-auto">
                 <Link
                   href={feature.link}
                   target={
@@ -126,7 +126,7 @@ export default function ListSection() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-5 py-2 text-sm rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer"
+                  className="bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-5 py-2 text-sm rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer relative z-30"
                 >
                   Get Started
                 </Link>
