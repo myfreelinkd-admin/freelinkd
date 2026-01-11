@@ -6,7 +6,10 @@ interface SecondaryNavbarProps {
   href?: string;
 }
 
-export function SecondaryNavbar({ title, href = "/" }: SecondaryNavbarProps) {
+export function SecondaryNavbar({
+  title,
+  href = "https://freelinkd.com",
+}: SecondaryNavbarProps) {
   return (
     <div className="w-full bg-white text-[#081f5c] sticky top-0 z-50 border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-16 py-6 flex items-center gap-6">
