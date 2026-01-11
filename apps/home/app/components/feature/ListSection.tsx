@@ -10,14 +10,14 @@ const features = [
     description:
       "Find the perfect talent for your projects. Connect with skilled professionals ready to work.",
     image: "/assets/img/hire.jpg",
-    link: "/https://hire.freelinkd.com",
+    link: "https://hire.freelinkd.com",
   },
   {
     title: "Join Freelancer",
     description:
       "Start your freelancing journey today. Access opportunities and grow your career.",
     image: "/assets/img/join.jpg",
-    link: "/https://join.freelinkd.com",
+    link: "https://join.freelinkd.com",
   },
   {
     title: "E-learning",
