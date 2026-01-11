@@ -77,18 +77,32 @@ export default function PreferencesAdmin() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      showMessage("Invalid file type. Only JPG, PNG, GIF, and WebP are allowed", "error");
+      return;
+    }
+
     // Validate file size (2MB)
     if (file.size > 2 * 1024 * 1024) {
       showMessage("File size too large (max 2MB)", "error");
       return;
     }
 
+    if (!adminId) {
+      showMessage("Admin ID not found. Please refresh the page.", "error");
+      return;
+    }
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("adminId", adminId);
 
     try {
-      const response = await fetch("/api/upload", {
+      // Use the new admin upload-photo API that saves to MongoDB as base64
+      const response = await fetch("/api/admin/upload-photo", {
         method: "POST",
         body: formData,
       });
@@ -97,7 +111,19 @@ export default function PreferencesAdmin() {
 
       if (response.ok && data.success) {
         setProfileImg(data.url);
-        showMessage("Photo uploaded successfully. Don't forget to save!", "success");
+        
+        // Update local storage immediately
+        const storedUser = localStorage.getItem("admin_user");
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          parsed.photo = data.url;
+          localStorage.setItem("admin_user", JSON.stringify(parsed));
+        }
+        
+        // Trigger storage event to update sidebar
+        window.dispatchEvent(new Event("storage"));
+        
+        showMessage("Photo uploaded and saved successfully!", "success");
       } else {
         throw new Error(data.message || "Upload failed");
       }
@@ -315,6 +341,7 @@ export default function PreferencesAdmin() {
                       alt="Profile"
                       fill
                       className="object-cover"
+                      unoptimized={profileImg.startsWith("data:")}
                     />
                   ) : (
                     <span className="text-6xl font-bold text-(--primary)">

@@ -76,12 +76,27 @@ export default function Sidebar() {
     };
     fetchAdminData();
 
+    // Listen for storage changes to update profile photo in real-time
+    const handleStorageChange = () => {
+      try {
+        const storedUser = localStorage.getItem("admin_user") || sessionStorage.getItem("admin_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setAdminData(parsedUser);
+        }
+      } catch (error) {
+        console.error("Failed to update admin data from storage", error);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
       if (obs) obs.disconnect();
       root.removeEventListener(
         "sidebar-collapsed-change",
         onToggle as EventListener
       );
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -269,6 +284,7 @@ function ProfileAvatar({
           width={collapsed ? 40 : 44}
           height={collapsed ? 40 : 44}
           onError={() => setImgError(true)}
+          unoptimized={photo!.startsWith("data:")}
         />
       ) : (
         <div

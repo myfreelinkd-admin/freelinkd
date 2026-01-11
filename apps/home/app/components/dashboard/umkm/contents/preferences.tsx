@@ -123,22 +123,32 @@ export default function Preferences() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate type and size (optional but good practice)
-    if (!file.type.startsWith("image/")) {
-      setMessage({ type: "error", text: "Please upload an image file" });
+    // Validate file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage({ type: "error", text: "Invalid file type. Only JPG, PNG, GIF, and WebP are allowed" });
       return;
     }
-    if (file.size > 2 * 1024 * 1024) { // 2MB
+
+    // Validate size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
       setMessage({ type: "error", text: "Image size must be less than 2MB" });
+      return;
+    }
+
+    if (!formData.email) {
+      setMessage({ type: "error", text: "Email not found. Please refresh the page." });
       return;
     }
 
     setUploading(true);
     const formDataUpload = new FormData();
     formDataUpload.append("file", file);
+    formDataUpload.append("email", formData.email);
 
     try {
-      const res = await fetch("/api/upload", {
+      // Use the new UMKM upload-photo API that saves to AstraDB as base64
+      const res = await fetch("/api/umkm/upload-photo", {
         method: "POST",
         body: formDataUpload,
       });
@@ -147,7 +157,22 @@ export default function Preferences() {
       if (data.success) {
         setProfileImg(data.url);
         setFormData(prev => ({ ...prev, profile_image: data.url }));
-        setMessage({ type: "success", text: "Image uploaded! Click Save Changes to apply." });
+        
+        // Update local storage immediately
+        const storedUser = sessionStorage.getItem("umkm_user") || localStorage.getItem("umkm_user");
+        const storage = sessionStorage.getItem("umkm_user") ? sessionStorage : localStorage;
+        
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          if (!user.profile) user.profile = {};
+          user.profile.profile_image = data.url;
+          storage.setItem("umkm_user", JSON.stringify(user));
+        }
+        
+        // Trigger storage event to update sidebar
+        window.dispatchEvent(new Event("storage"));
+        
+        setMessage({ type: "success", text: "Image uploaded and saved successfully!" });
       } else {
         setMessage({ type: "error", text: data.message || "Upload failed" });
       }
@@ -368,6 +393,7 @@ export default function Preferences() {
                       alt="Profile"
                       fill
                       className="object-cover"
+                      unoptimized={profileImg.startsWith("data:")}
                     />
                   ) : (
                     <span className="text-6xl font-bold text-(--primary)">

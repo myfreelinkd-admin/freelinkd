@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Eye,
   XCircle,
@@ -8,19 +8,17 @@ import {
   ExternalLink,
   MessageCircle,
   Trash2,
+  Users,
 } from "lucide-react";
 import Tooltip from "./tooltip";
 import ProjectDetailModal from "../ux/modals-detail";
 import ProjectChatModal from "../ux/modals-chat";
 import ProjectRatingModal from "../ux/modals-rating";
+import TransferProjectModal from "../ux/modals-transfer";
 
 interface ProjectActionButtonProps {
   status: string;
   onViewDetails?: () => void;
-  // We can pass project data in if we want to handle modals here, 
-  // but if we lift state up to AllProjects, we might just use callbacks.
-  // However, ActionButton currently renders the Modals.
-  // We should modify ActionButton to accept 'project' prop and use it in modals.
   project?: any;
   projectId?: string;
   userId?: string;
@@ -36,20 +34,30 @@ export default function ProjectActionButton({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [freelancerId, setFreelancerId] = useState<string>("");
 
-  // Use passed project or fallback (though fallback shouldn't be needed with real data)
-  // Maps API data to Modal expected format
+  // Get freelancer ID from storage
+  useEffect(() => {
+    const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+    const storedUser = storage.getItem("freelancer_user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setFreelancerId(parsedUser.id || "");
+    }
+  }, []);
+
   const mappedProject = project ? {
     name: project.name,
-    status: status === "Canceled" ? "Cancelled" : status, // Modal matches "Cancelled"
-    priority: "Normal", // API doesn't have it yet, default
+    status: status === "Canceled" ? "Cancelled" : status,
+    priority: "Normal",
     client: {
       name: project.client,
       email: project.clientEmail || "client@example.com",
     },
     budget: project.amount,
     deadline: {
-      date: project.date, // or deadline
+      date: project.date,
       duration: project.deadlineDuration || "N/A",
     },
     description: project.description || "No description",
@@ -57,7 +65,7 @@ export default function ProjectActionButton({
     rating: project.rating ? {
        score: project.rating,
        review: project.review || "No review",
-       date: "N/A" // Date of review not in project list usually
+       date: "N/A"
     } : undefined
   } : undefined;
 
@@ -118,9 +126,17 @@ export default function ProjectActionButton({
             label: "View Detail",
             icon: <Eye className="w-4 h-4" />,
             color: "text-(--primary)",
-            onClick: handleOpenDetail, // Use callback if provided, else local modal
+            onClick: handleOpenDetail,
             tooltipPosition: "bottom" as const,
             tooltipAlign: "start" as const,
+          },
+          {
+            label: "Transfer to Group",
+            icon: <Users className="w-4 h-4" />,
+            color: "text-blue-600",
+            onClick: () => setIsTransferModalOpen(true),
+            tooltipPosition: "top" as const,
+            tooltipAlign: "center" as const,
           },
           {
             label: "Chat with UMKM",
@@ -193,6 +209,23 @@ export default function ProjectActionButton({
         onClose={() => setIsRatingModalOpen(false)}
         project={mappedProject}
       />
+      )}
+
+      {/* Transfer Modal */}
+      {project && freelancerId && (
+        <TransferProjectModal
+          isOpen={isTransferModalOpen}
+          onClose={() => setIsTransferModalOpen(false)}
+          project={{
+            id: project.id,
+            name: project.name,
+            client: project.client,
+          }}
+          freelancerId={freelancerId}
+          onSuccess={() => {
+            window.location.reload();
+          }}
+        />
       )}
     </>
   );

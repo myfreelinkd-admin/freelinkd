@@ -24,10 +24,8 @@ function ProfileAvatar({ collapsed = false, userData }: { collapsed?: boolean; u
   const fullName = userData?.name || "Freelancer";
   const initial = fullName?.trim()?.charAt(0)?.toUpperCase() || "?";
   
-  // Use fetched photoUrl or fallback
-  // Handle case where photoUrl might be from uploads (need /api prefix?) or external
-  // Assuming API returns a usable URL or we use default
-  const profileSrc = userData?.photoUrl || "/assets/img/profile.jpg";
+  // Use fetched photoUrl or null (fallback to initials)
+  const profileSrc = userData?.photoUrl || null;
   
   const [imgError, setImgError] = useState(false);
 
@@ -38,11 +36,14 @@ function ProfileAvatar({ collapsed = false, userData }: { collapsed?: boolean; u
     setImgError(false);
   }, [profileSrc]);
 
+  // Show image if profileSrc exists and no error
+  const showImage = profileSrc && !imgError;
+
   return (
     <div
       className={`${sizeClass} rounded-xl overflow-hidden flex items-center justify-center ring-2 ring-white/10 transition-all duration-300 bg-white/5`}
     >
-      {!imgError ? (
+      {showImage ? (
         <Image
           src={profileSrc}
           alt="Freelancer Profile"
@@ -50,6 +51,7 @@ function ProfileAvatar({ collapsed = false, userData }: { collapsed?: boolean; u
           width={collapsed ? 40 : 44}
           height={collapsed ? 40 : 44}
           onError={() => setImgError(true)}
+          unoptimized={profileSrc.startsWith("data:")}
         />
       ) : (
         <div
@@ -126,6 +128,27 @@ export default function Sidebar() {
     };
 
     fetchUserData();
+
+    // Listen for storage changes to update profile photo in real-time
+    const handleStorageChange = () => {
+      try {
+        const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+        const storedUser = storage.getItem("freelancer_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.photoUrl) {
+            setUserData(prev => prev ? { ...prev, photoUrl: parsedUser.photoUrl } : null);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to update user data from storage", error);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   const isActive = (href: string) => {

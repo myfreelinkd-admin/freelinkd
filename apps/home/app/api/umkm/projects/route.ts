@@ -15,6 +15,15 @@ interface JobFreelancerData {
   createdAt: string | Date;
   budgetFrom: string;
   budgetTo: string;
+  // Group assignment fields
+  groupAssignee?: {
+    freelancerId: string;
+    freelancerName: string;
+    groupId: string;
+    groupName: string;
+    isGroupProject: boolean;
+  };
+  freelancerDisplay?: string;
 }
 
 export async function GET(req: Request) {
@@ -68,13 +77,23 @@ export async function GET(req: Request) {
       // Handle _id safely
       const idString = job._id ? job._id.toString() : Math.random().toString();
 
+      // Determine freelancer display name
+      // If freelancerDisplay exists (from transfer), use it
+      // Otherwise use selectedFreelancer name
+      const freelancerName = job.freelancerDisplay 
+        || job.selectedFreelancer?.name 
+        || "Not assigned";
+
       return {
         id: idString,
         name: job.jobTitle || "Untitled Project",
-        freelancer: job.selectedFreelancer?.name || "Not assigned",
+        freelancer: freelancerName,
         date: date,
         status: statusMap,
         amount: `Rp ${parseInt(job.budgetTo || "0").toLocaleString("id-ID")}`,
+        // Additional group info for UI
+        isGroupProject: !!job.groupAssignee,
+        groupName: job.groupAssignee?.groupName || null,
       };
     });
 

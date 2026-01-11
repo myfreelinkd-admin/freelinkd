@@ -101,27 +101,51 @@ export default function Preferences() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Check file type
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+        setMessage({ type: 'error', text: "Invalid file type. Only JPG, PNG, GIF, and WebP are allowed" });
+        return;
+    }
+
     // Check size < 2MB
     if (file.size > 2 * 1024 * 1024) {
         setMessage({ type: 'error', text: "Image size must be less than 2MB" });
         return;
     }
 
+    if (!userId) {
+        setMessage({ type: 'error', text: "User ID not found. Please refresh the page." });
+        return;
+    }
+
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("freelancerId", userId);
 
     try {
-        const response = await fetch("/api/upload", {
+        // Use the new freelancer upload-photo API that saves to AstraDB as base64
+        const response = await fetch("/api/freelancer/upload-photo", {
             method: "POST",
             body: formData
         });
         const data = await response.json();
         
         if (data.success) {
-            setProfileImg(data.url); // Use the returned URL (or relative path)
-            setMessage({ type: 'success', text: "Image uploaded successfully" });
+            setProfileImg(data.url);
+            
+            // Update local storage immediately
+            const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
+            const storedUser = JSON.parse(storage.getItem("freelancer_user") || "{}");
+            storedUser.photoUrl = data.url;
+            storage.setItem("freelancer_user", JSON.stringify(storedUser));
+            
+            // Trigger storage event to update sidebar
+            window.dispatchEvent(new Event("storage"));
+            
+            setMessage({ type: 'success', text: "Image uploaded and saved successfully!" });
         } else {
-            setMessage({ type: 'error', text: data.error || "Upload failed" });
+            setMessage({ type: 'error', text: data.message || "Upload failed" });
         }
     } catch (err) {
         console.error("Upload error", err);
@@ -346,6 +370,7 @@ export default function Preferences() {
                     alt="Profile"
                     fill
                     className="object-cover"
+                    unoptimized={profileImg.startsWith("data:")}
                   />
                 ) : (
                   <span className="text-6xl font-bold text-(--primary)">

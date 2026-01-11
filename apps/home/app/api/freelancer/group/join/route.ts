@@ -63,9 +63,43 @@ export async function POST(req: Request) {
       { $addToSet: { members: freelancerId } } // Use $addToSet to prevent duplicates just in case
     );
 
+    // 5. Fetch updated group with member details
+    const updatedGroup = await collection.findOne({ _id: targetGroup._id });
+    
+    // 6. Get member details
+    const freelancerCollection = db.getCollectionFromKeyspace("freelancer", "data_freelancer") as any;
+    const memberDetails = [];
+    
+    // Get all member details including the new member
+    const allMemberIds = updatedGroup?.members || [];
+    for (const memberId of allMemberIds) {
+      try {
+        let member = await freelancerCollection.findOne({ _id: memberId });
+        if (!member && ObjectId.isValid(memberId)) {
+          member = await freelancerCollection.findOne({ _id: new ObjectId(memberId) });
+        }
+        if (member) {
+          memberDetails.push({
+            id: memberId,
+            name: member.username || member.name || member.fullname || "Member",
+            avatar: member.profile_image || member.photo_url || null,
+            role: memberId === freelancerId ? "Member (You)" : "Member",
+          });
+        }
+      } catch (e) {
+        // Skip failed member fetch
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: "Joined group successfully",
+      data: {
+        groupId: updatedGroup._id.toString(),
+        name: updatedGroup.name,
+        members: updatedGroup.members,
+        memberDetails,
+      }
     });
 
   } catch (error) {

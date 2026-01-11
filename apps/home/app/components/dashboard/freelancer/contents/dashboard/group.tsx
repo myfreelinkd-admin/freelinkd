@@ -97,9 +97,29 @@ export default function Group() {
                     </p>
                  </div>
               </div>
-              <p className="text-xs text-gray-400 z-10 line-clamp-2 mb-2">
-                 Collaborating on projects with your team.
-              </p>
+              
+              {/* Skills */}
+              {myGroup.skills && myGroup.skills.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5 z-10 mb-3">
+                  {myGroup.skills.slice(0, 3).map((skill: string) => (
+                    <span
+                      key={skill}
+                      className="text-[10px] px-2 py-1 bg-blue-50 text-blue-600 rounded-full font-medium"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                  {myGroup.skills.length > 3 && (
+                    <span className="text-[10px] px-2 py-1 bg-gray-100 text-gray-500 rounded-full font-medium">
+                      +{myGroup.skills.length - 3}
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <p className="text-xs text-gray-400 z-10 line-clamp-2 mb-2">
+                  Collaborating on projects with your team.
+                </p>
+              )}
                 <div className="flex -space-x-2 z-10 mt-auto">
                     {/* Me */}
                     {userId && (() => {

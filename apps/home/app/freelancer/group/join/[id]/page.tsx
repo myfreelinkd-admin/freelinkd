@@ -1,167 +1,287 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { Users, CheckCircle, AlertCircle, ArrowRight, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import InviteGroup from "../../../../components/invitation/invite-group";
+import JoinConfirmationModal from "@/app/components/invitation/modals/join-modals"; 
+import GroupChatModal from "../../../../components/dashboard/freelancer/contents/dashboard/modals/chat-group";
+
+interface GroupInfo {
+  id: string;
+  name: string;
+  icon?: string;
+  ownerId: string;
+  ownerName: string;
+  ownerAvatar?: string;
+  memberCount: number;
+  maxMembers: number;
+}
+
+interface Member {
+  id: string;
+  name: string;
+  avatar?: string;
+  role?: string;
+  isOnline?: boolean;
+}
 
 export default function JoinGroupPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id } = params;
+
+  // Check if user just logged in and should auto-join
+  const autoJoin = searchParams.get("auto_join") === "true";
+
+  const [status, setStatus] = useState<
+    "loading" | "pending" | "not_logged_in"
+  >("loading");
   
-  const [status, setStatus] = useState<"loading" | "ready" | "success" | "error">("loading");
+  const [modalStatus, setModalStatus] = useState<
+    "confirming" | "joining" | "success" | "error"
+  >("confirming");
+  
   const [errorMessage, setErrorMessage] = useState("");
-  const [groupInfo, setGroupInfo] = useState<any>(null);
+  const [groupInfo, setGroupInfo] = useState<GroupInfo | null>(null);
   const [user, setUser] = useState<any>(null);
+  
+  // Modal states
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
+  
+  // Members for chat modal
+  const [members, setMembers] = useState<Member[]>([]);
 
   useEffect(() => {
-    // 1. Get current user
-    const storage = localStorage.getItem("freelancer_user") ? localStorage : sessionStorage;
-    const storedUser = storage.getItem("freelancer_user");
-    
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
-        // Redirect to login if not logged in, passing return URL
-        // slightly separate flow, strictly redirecting for now
-        router.push(`/auth/login?returnUrl=/freelancer/group/join/${id}`);
+    const fetchData = async () => {
+      // 1. First, fetch group info (public - no auth required)
+      try {
+        const groupResponse = await fetch(`/api/freelancer/group/${id}`);
+        const groupData = await groupResponse.json();
+
+        if (groupData.success && groupData.data) {
+          setGroupInfo(groupData.data);
+        } else {
+          setStatus("loading"); // Keep loading to show error in modal
+          setModalStatus("error");
+          setErrorMessage(groupData.error || "Group not found");
+          setShowConfirmModal(true);
+          return;
+        }
+      } catch (e) {
+        setModalStatus("error");
+        setErrorMessage("Failed to load group information");
+        setShowConfirmModal(true);
         return;
+      }
+
+      // 2. Check if user is logged in
+      const storage = localStorage.getItem("freelancer_user")
+        ? localStorage
+        : sessionStorage;
+      const storedUser = storage.getItem("freelancer_user");
+
+      if (storedUser) {
+        try {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setStatus("pending");
+          
+          // If auto_join flag is present, automatically join the group
+          if (autoJoin) {
+            setShowConfirmModal(true);
+            setModalStatus("joining");
+            // Delay to show the modal first, then join
+            setTimeout(() => {
+              handleJoinGroup(parsedUser);
+            }, 500);
+          }
+        } catch (e) {
+          setStatus("not_logged_in");
+        }
+      } else {
+        setStatus("not_logged_in");
+      }
+    };
+
+    if (id) {
+      fetchData();
     }
+  }, [id, autoJoin]);
 
-    // 2. Fetch Group Info (Preview)
-    // We can reuse the group fetch API, assuming it allows fetching by ID or we just try to join directly.
-    // For better UX, let's fetch group details first. Using the existing GET /api/freelancer/group is tricky as it fetches BY freelancerId.
-    // We might need a GET /api/freelancer/group/[id] or similar.
-    // NOTE: Since we didn't make a "Get Group By ID" public endpoint, let's just use the Join action logic for specific error checking or blindly trust the UI.
-    // However, showing the group name is nice. 
-    // Let's implement a quick client-side fetch if possible, otherwise we skip to "Ready to Join".
-    // For now, let's simulates a fetch or just proceed to "Ready".
+  const handleJoinGroup = async (currentUser?: any) => {
+    const userToUse = currentUser || user;
+    if (!userToUse || !id || !groupInfo) return;
     
-    // Actually, asking to join blindly is bad. Let's assume we proceed to "Ready" state immediately if logged in.
-    setStatus("ready");
-
-  }, [id, router]);
-
-  const handleJoin = async () => {
-    if (!user || !id) return;
-    setStatus("loading");
+    setModalStatus("joining");
 
     try {
-        const response = await fetch("/api/freelancer/group/join", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                groupId: id,
-                freelancerId: user.id
-            })
-        });
+      const response = await fetch("/api/freelancer/group/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          groupId: id,
+          freelancerId: userToUse.id,
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.success) {
-            setStatus("success");
-            // Redirect after delay
-            setTimeout(() => {
-                router.push("/freelancer/dashboard");
-            }, 2000);
-        } else {
-            setStatus("error");
-            setErrorMessage(data.error || "Failed to join group");
+      if (data.success) {
+        setModalStatus("success");
+        
+        // Build members list for chat modal
+        if (data.data?.members) {
+          const membersList: Member[] = [];
+          
+          // Add owner
+          if (groupInfo.ownerName) {
+            membersList.push({
+              id: groupInfo.ownerId,
+              name: groupInfo.ownerName,
+              avatar: groupInfo.ownerAvatar,
+              role: "Owner",
+              isOnline: true,
+            });
+          }
+          
+          // Add other members
+          if (data.data.memberDetails) {
+            data.data.memberDetails.forEach((m: any) => {
+              membersList.push({
+                id: m.id,
+                name: m.name || "Member",
+                avatar: m.avatar,
+                role: "Member",
+                isOnline: false,
+              });
+            });
+          }
+          
+          setMembers(membersList);
         }
+      } else {
+        setModalStatus("error");
+        setErrorMessage(data.error || "Failed to join group");
+      }
     } catch (e) {
-        setStatus("error");
-        setErrorMessage("An unexpected error occurred");
+      setModalStatus("error");
+      setErrorMessage("An unexpected error occurred");
     }
   };
 
-  if (status === "loading") {
-      return (
-          <div className="flex h-screen w-screen items-center justify-center bg-gray-50 flex-col gap-4">
-              <Loader2 className="w-10 h-10 text-(--primary) animate-spin" />
-              <p className="text-gray-500 font-medium">Checking invitation...</p>
-          </div>
-      );
+  const handleAcceptClick = () => {
+    if (status === "not_logged_in") {
+      // Redirect to login with return URL that includes auto_join
+      const returnUrl = encodeURIComponent(`/freelancer/group/join/${id}?auto_join=true`);
+      router.push(`/freelancer/login?returnUrl=${returnUrl}`);
+    } else {
+      // Show confirmation modal
+      setShowConfirmModal(true);
+      setModalStatus("confirming");
+    }
+  };
+
+  const handleConfirmJoin = () => {
+    handleJoinGroup();
+  };
+
+  const handleCloseModal = () => {
+    if (modalStatus === "success") {
+      router.push("/freelancer/dashboard");
+    } else if (modalStatus === "error" && !groupInfo) {
+      router.push("/freelancer/dashboard");
+    } else {
+      setShowConfirmModal(false);
+      setModalStatus("confirming");
+    }
+  };
+
+  const handleOpenChat = () => {
+    setShowConfirmModal(false);
+    setShowChatModal(true);
+  };
+
+  const handleCloseChatAndRedirect = () => {
+    setShowChatModal(false);
+    router.push("/freelancer/dashboard");
+  };
+
+  const handleDecline = () => {
+    if (status === "not_logged_in") {
+      router.push("/");
+    } else {
+      router.push("/freelancer/dashboard");
+    }
+  };
+
+  // Loading state
+  if (status === "loading" && !showConfirmModal) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-[#0B1C46] animate-spin" />
+          <p className="text-gray-500 font-medium">Loading invitation...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gray-50 p-4">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 p-8 text-center">
-            
-            {status === "ready" && (
-                <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-300">
-                    <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-2">
-                        <Users className="w-10 h-10" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-(--primary) mb-2">Join Group</h1>
-                        <p className="text-gray-500">
-                            You have been invited to join a freelancer group. 
-                            Collaborate, chat, and manage projects together.
-                        </p>
-                    </div>
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      {/* Main Invitation Card */}
+      <div className="w-full max-w-md">
+        <InviteGroup
+          groupName={groupInfo?.name || "Loading..."}
+          inviterName={groupInfo?.ownerName || "Unknown"}
+          groupImageUrl={groupInfo?.icon || ""}
+          memberCount={groupInfo?.memberCount || 1}
+          maxMembers={groupInfo?.maxMembers || 5}
+          onAccept={handleAcceptClick}
+          onDecline={handleDecline}
+          status="pending"
+        />
+        
+        {/* Login hint for not logged in users */}
+        {status === "not_logged_in" && (
+          <p className="text-center text-gray-500 text-sm mt-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            You need to login first to accept this invitation
+          </p>
+        )}
+      </div>
 
-                    <div className="w-full bg-gray-50 p-4 rounded-2xl border border-gray-100 flex flex-col items-center gap-2">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">INVITATION CODE</p>
-                        <code className="text-sm font-mono bg-white px-3 py-1 rounded border border-gray-200 text-gray-600">
-                            {Array.isArray(id) ? id[0] : id}
-                        </code>
-                    </div>
+      {/* Confirmation Modal */}
+      <JoinConfirmationModal
+        isOpen={showConfirmModal}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmJoin}
+        onOpenChat={modalStatus === "success" ? handleOpenChat : undefined}
+        groupName={groupInfo?.name || "Group"}
+        groupImageUrl={groupInfo?.icon}
+        inviterName={groupInfo?.ownerName || "Unknown"}
+        memberCount={groupInfo?.memberCount || 1}
+        maxMembers={groupInfo?.maxMembers || 5}
+        status={modalStatus}
+        errorMessage={errorMessage}
+      />
 
-                    <div className="flex flex-col w-full gap-3 mt-4">
-                        <button 
-                            onClick={handleJoin}
-                            className="w-full py-3.5 bg-(--secondary) text-white rounded-xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-2"
-                        >
-                            Accept Invite
-                            <ArrowRight className="w-4 h-4" />
-                        </button>
-                        <Link 
-                            href="/freelancer/dashboard"
-                            className="w-full py-3.5 bg-white text-gray-500 rounded-xl font-bold hover:bg-gray-50 transition-all"
-                        >
-                            Cancel
-                        </Link>
-                    </div>
-                </div>
-            )}
-
-            {status === "success" && (
-                <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-300">
-                    <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-500 mb-2">
-                        <CheckCircle className="w-10 h-10" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-green-600 mb-2">Joined Successfully!</h1>
-                        <p className="text-gray-500">
-                            You are now a member of the group. Redirecting to your dashboard...
-                        </p>
-                    </div>
-                    <Loader2 className="w-6 h-6 text-gray-400 animate-spin mt-4" />
-                </div>
-            )}
-
-            {status === "error" && (
-                <div className="flex flex-col items-center gap-6 animate-in fade-in zoom-in duration-300">
-                    <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 mb-2">
-                        <AlertCircle className="w-10 h-10" />
-                    </div>
-                    <div>
-                        <h1 className="text-2xl font-bold text-red-600 mb-2">Unable to Join</h1>
-                        <p className="text-gray-500 mb-4">
-                            {errorMessage}
-                        </p>
-                    </div>
-                     <Link 
-                            href="/freelancer/dashboard"
-                            className="w-full py-3.5 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition-all"
-                    >
-                        Back to Dashboard
-                    </Link>
-                </div>
-            )}
-
-        </div>
+      {/* Group Chat Modal */}
+      {groupInfo && user && (
+        <GroupChatModal
+          isOpen={showChatModal}
+          onClose={handleCloseChatAndRedirect}
+          groupId={groupInfo.id}
+          userId={user.id}
+          group={{
+            id: groupInfo.id,
+            name: groupInfo.name,
+            icon: groupInfo.icon,
+          }}
+          members={members}
+        />
+      )}
     </div>
   );
 }

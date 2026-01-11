@@ -20,6 +20,7 @@ export interface FreelancerFormData {
   professionalExperience?: string;
   portfolioUrl?: string;
   resumeFileName?: string;
+  resumeData?: string; // Base64 data URL for resume storage
   status: "pending" | "approved" | "rejected";
   createdAt: string;
   updatedAt: string;
@@ -37,6 +38,7 @@ export interface CreateFreelancerFormRequest {
   professionalExperience?: string;
   portfolioUrl?: string;
   resumeFileName?: string;
+  resumeData?: string; // Base64 data URL for resume storage
 }
 
 /**

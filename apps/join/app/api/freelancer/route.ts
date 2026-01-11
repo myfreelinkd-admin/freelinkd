@@ -76,6 +76,10 @@ function validateFormData(data: unknown): {
       resumeFileName: formData.resumeFileName
         ? (formData.resumeFileName as string).trim()
         : undefined,
+      // Store resume as base64 data URL for deployment persistence
+      resumeData: formData.resumeData
+        ? (formData.resumeData as string)
+        : undefined,
     },
   };
 }

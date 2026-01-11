@@ -6,6 +6,7 @@ import {
   Activity,
   DollarSign,
   Calendar,
+  Users,
 } from "lucide-react";
 import ProjectActionButton from "./ui/action-button";
 import ProjectDetailModal from "./ux/modals-detail";
@@ -23,6 +24,10 @@ interface Project {
   assignedDate?: string;
   deadlineDuration?: string;
   rating?: number;
+  // Group info
+  isGroupProject?: boolean;
+  freelancerDisplay?: string;
+  groupAssignee?: any;
 }
 
 export default function AllProjects({ filter }: { filter?: string }) {
@@ -126,9 +131,17 @@ export default function AllProjects({ filter }: { filter?: string }) {
                 >
                   <td className="px-4 py-5 bg-(--alternative)/20 first:rounded-l-2xl group-hover:bg-transparent border-y border-l border-transparent group-hover:border-gray-100">
                     <div className="flex flex-col">
-                      <span className="font-bold text-(--primary) text-sm">
-                        {project.name}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-(--primary) text-sm">
+                          {project.name}
+                        </span>
+                        {project.isGroupProject && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-bold">
+                            <Users className="w-2.5 h-2.5" />
+                            Team
+                          </span>
+                        )}
+                      </div>
                       <span className="text-[10px] text-gray-400 font-medium mt-1 flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> Deadline:{" "}
                         {project.date}

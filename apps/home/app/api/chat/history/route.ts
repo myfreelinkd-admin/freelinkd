@@ -26,7 +26,26 @@ export async function POST(req: Request) {
       );
     }
 
-    const db = getChatHistoryDB();
+    // Check environment variables first
+    if (!process.env.ASTRA_DB_TOKEN_CHAT || !process.env.ASTRA_DB_ENDPOINT_CHAT) {
+      console.error("Chat history DB credentials missing");
+      return NextResponse.json(
+        { success: false, error: "Chat history database not configured" },
+        { status: 500 }
+      );
+    }
+
+    let db;
+    try {
+      db = getChatHistoryDB();
+    } catch (dbError: any) {
+      console.error("Failed to get chat history DB:", dbError.message);
+      return NextResponse.json(
+        { success: false, error: "Database connection failed" },
+        { status: 500 }
+      );
+    }
+
     const collection = db.getCollection("history") as any;
 
     const message = {
@@ -38,7 +57,9 @@ export async function POST(req: Request) {
       createdAt: new Date(),
     };
 
+    console.log(`Saving chat message to room ${roomId} from ${senderId}`);
     await collection.insertOne(message);
+    console.log("Chat message saved successfully");
 
     return NextResponse.json({
       success: true,
@@ -46,10 +67,10 @@ export async function POST(req: Request) {
       data: message,
     });
 
-  } catch (error) {
-    console.error("Save chat history error:", error);
+  } catch (error: any) {
+    console.error("Save chat history error:", error.message);
     return NextResponse.json(
-      { success: false, error: "Internal server error" },
+      { success: false, error: "Internal server error", details: error.message },
       { status: 500 }
     );
   }

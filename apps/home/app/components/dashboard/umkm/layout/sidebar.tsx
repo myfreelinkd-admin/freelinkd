@@ -58,6 +58,23 @@ export default function Sidebar() {
 
     fetchUserData();
 
+    // Listen for storage changes to update profile photo in real-time
+    const handleStorageChange = () => {
+      try {
+        const storedUser =
+          sessionStorage.getItem("umkm_user") || localStorage.getItem("umkm_user");
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.profile?.profile_image) {
+            setUser(prev => ({ ...prev, image: parsedUser.profile.profile_image }));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to update user data from storage", error);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
     // Sidebar collapse logic
     if (typeof document === "undefined") return;
     const root = document.documentElement;
@@ -82,6 +99,7 @@ export default function Sidebar() {
     return () => {
       if (obs) obs.disconnect();
       root.removeEventListener("sidebar-collapsed-change", onToggle as EventListener);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -282,6 +300,7 @@ function ProfileAvatar({
           width={collapsed ? 40 : 44}
           height={collapsed ? 40 : 44}
           onError={() => setImgError(true)}
+          unoptimized={image.startsWith("data:")}
         />
       ) : (
         <div

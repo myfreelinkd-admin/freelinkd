@@ -9,6 +9,7 @@ import {
   AlertCircle,
   Activity,
   Loader2,
+  Users,
 } from "lucide-react";
 import StatusBar from "../layout/status-bar";
 
@@ -19,6 +20,8 @@ interface Project {
   date: string;
   status: string;
   amount: string;
+  isGroupProject?: boolean;
+  groupName?: string;
 }
 
 export default function Projects() {
@@ -146,12 +149,20 @@ export default function Projects() {
                     </td>
                     <td className="px-4 py-4 bg-(--alternative)/20 group-hover:bg-transparent border-y border-transparent group-hover:border-gray-100">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-(--secondary)/20 flex items-center justify-center text-[10px] font-bold text-(--secondary)">
-                          {project.freelancer.charAt(0)}
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${project.isGroupProject ? 'bg-blue-100 text-blue-600' : 'bg-(--secondary)/20 text-(--secondary)'}`}>
+                          {project.isGroupProject ? <Users className="w-3 h-3" /> : project.freelancer.charAt(0)}
                         </div>
-                        <span className="text-sm text-gray-600 font-medium">
-                          {project.freelancer}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className="text-sm text-gray-600 font-medium">
+                            {project.freelancer}
+                          </span>
+                          {project.isGroupProject && (
+                            <span className="text-[10px] text-blue-600 font-medium flex items-center gap-1">
+                              <Users className="w-2.5 h-2.5" />
+                              Team Project
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-4 bg-(--alternative)/20 group-hover:bg-transparent border-y border-transparent group-hover:border-gray-100">

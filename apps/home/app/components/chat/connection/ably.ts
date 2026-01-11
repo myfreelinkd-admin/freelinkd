@@ -73,19 +73,32 @@ export function useProjectChat(projectId: string, userId: string) {
 
             // Save to database (save all messages including our own from the echo)
             try {
-              await fetch('/api/chat/history', {
+              console.log('[Chat] Saving message to history:', {
+                roomId,
+                senderId: incomingMsg.senderId,
+                text: incomingMsg.text.substring(0, 50) + '...'
+              });
+              
+              const saveResponse = await fetch('/api/chat/history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   roomId,
                   senderId: incomingMsg.senderId,
-                  senderName: incomingMsg.senderId, // Could enhance with actual name
+                  senderName: incomingMsg.senderId,
                   text: incomingMsg.text,
                   timestamp: incomingMsg.timestamp
                 })
               });
+              
+              const saveResult = await saveResponse.json();
+              if (saveResult.success) {
+                console.log('[Chat] Message saved to history successfully');
+              } else {
+                console.error('[Chat] Failed to save message:', saveResult.error, saveResult.details);
+              }
             } catch (err) {
-              console.error("Failed to save message to history:", err);
+              console.error("[Chat] Failed to save message to history:", err);
             }
         });
 
@@ -192,7 +205,13 @@ export function useGroupChat(groupId: string, userId: string) {
 
             // Save to database
             try {
-              await fetch('/api/chat/history', {
+              console.log('[GroupChat] Saving message to history:', {
+                roomId,
+                senderId: incomingMsg.senderId,
+                text: incomingMsg.text.substring(0, 50) + '...'
+              });
+              
+              const saveResponse = await fetch('/api/chat/history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -203,8 +222,15 @@ export function useGroupChat(groupId: string, userId: string) {
                   timestamp: incomingMsg.timestamp
                 })
               });
+              
+              const saveResult = await saveResponse.json();
+              if (saveResult.success) {
+                console.log('[GroupChat] Message saved to history successfully');
+              } else {
+                console.error('[GroupChat] Failed to save message:', saveResult.error, saveResult.details);
+              }
             } catch (err) {
-              console.error("Failed to save message to history:", err);
+              console.error("[GroupChat] Failed to save message to history:", err);
             }
         });
 

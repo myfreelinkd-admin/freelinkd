@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowRight,
   Eye,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import LoginBackground from "../design/background";
 import { sanitizeInput } from "../../../utils/sanitize";
 
@@ -29,6 +29,8 @@ interface ApiResponse {
 
 export default function FreelancerLogin() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPasswordField, setShowPasswordField] = useState(false);
@@ -105,13 +107,16 @@ export default function FreelancerLogin() {
       storage.setItem("freelancer_user", JSON.stringify(data.data));
       storage.setItem("freelancer_logged_in", "true");
 
+      // Determine redirect destination
+      const redirectTo = returnUrl ? decodeURIComponent(returnUrl) : "/freelancer/dashboard";
+      
       setSuccess(
-        `Welcome back, ${data.data?.username || "Freelancer"}! Redirecting to dashboard...`
+        `Welcome back, ${data.data?.username || "Freelancer"}! Redirecting...`
       );
 
-      // Redirect to dashboard after short delay
+      // Redirect after short delay
       setTimeout(() => {
-        router.push("/freelancer/dashboard");
+        router.push(redirectTo);
       }, 1500);
     } catch (err) {
       console.error("Login error:", err);

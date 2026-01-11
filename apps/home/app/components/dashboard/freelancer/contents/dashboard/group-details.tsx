@@ -4,17 +4,18 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   X,
   Send,
-  Share2,
-  Phone,
-  Video,
-  Paperclip,
-  Smile,
   Search,
   Users,
-  Circle,
-  Check
+  Check,
+  MoreVertical,
+  Settings,
+  UserPlus,
+  Link2,
 } from "lucide-react";
 import Image from "next/image";
+import EditGroupModal from "./edit-group";
+import InvitePeopleModal from "@/app/components/invitation/modals/invite-people";
+
 
 interface Member {
   id: string;
@@ -27,7 +28,7 @@ interface Member {
 interface GroupDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  group: any; // Using any for now, effectively matching the structure returned by API
+  group: any;
   onLeave?: () => void;
 }
 
@@ -42,6 +43,23 @@ export default function GroupDetailsModal({
   const [isCopied, setIsCopied] = useState(false);
   const [messages, setMessages] = useState<{id: number; senderId: string; text: string; time: string}[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Dropdown and modal states
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const optionsMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (optionsMenuRef.current && !optionsMenuRef.current.contains(event.target as Node)) {
+        setShowOptionsMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -92,7 +110,6 @@ export default function GroupDetailsModal({
   };
 
   const handleCopyLink = () => {
-    // Generate link (assuming localhost dev or deployed domain)
     const origin = window.location.origin;
     const link = `${origin}/freelancer/group/join/${group.id}`;
     
@@ -102,10 +119,8 @@ export default function GroupDetailsModal({
     });
   };
 
-  // Use real data from group.ownerDetails and group.memberDetails
   const members: Member[] = [];
 
-  // Add Owner
   if (group.ownerDetails) {
     members.push({
       id: group.ownerDetails.id,
@@ -116,14 +131,13 @@ export default function GroupDetailsModal({
     });
   }
 
-  // Add Members
   if (group.memberDetails) {
     group.memberDetails.forEach((m: any, i: number) => {
       members.push({
         id: m.id,
         name: m.name || `Member ${i + 1}`,
         role: m.role || "Member",
-        isOnline: false, // In real app, check online status
+        isOnline: false,
         avatar: m.avatar,
       });
     });
@@ -249,27 +263,74 @@ export default function GroupDetailsModal({
             </div>
 
             <div className="flex items-center gap-2">
-              <button className="p-2.5 rounded-xl hover:bg-gray-50 text-gray-400 hover:text-(--secondary) transition-colors cursor-pointer">
-                <Phone className="w-5 h-5" />
-              </button>
-              <button className="p-2.5 rounded-xl hover:bg-gray-50 text-gray-400 hover:text-(--secondary) transition-colors cursor-pointer">
-                <Video className="w-5 h-5" />
-              </button>
-              <div className="h-6 w-px bg-gray-200 mx-1"></div>
-              
-              <div className="relative group/share">
-                  <button 
-                    onClick={handleCopyLink}
-                    className={`p-2.5 rounded-xl transition-all cursor-pointer ${isCopied ? 'bg-green-50 text-green-500' : 'hover:bg-gray-50 text-gray-400 hover:text-(--secondary)'}`}
-                  >
-                    {isCopied ? <Check className="w-5 h-5" /> : <Share2 className="w-5 h-5" />}
-                  </button>
-                  {/* Tooltip */}
-                  <div className={`absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-[10px] rounded opacity-0 transition-opacity whitespace-nowrap ${isCopied ? 'opacity-100' : 'group-hover/share:opacity-100'}`}>
-                    {isCopied ? 'Copied!' : 'Copy Invite Link'}
+              {/* Options Menu */}
+              <div className="relative" ref={optionsMenuRef}>
+                <button
+                  onClick={() => setShowOptionsMenu(!showOptionsMenu)}
+                  className="p-2.5 rounded-xl hover:bg-gray-50 text-gray-400 hover:text-(--secondary) transition-all cursor-pointer"
+                >
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {showOptionsMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    {/* Group Preferences */}
+                    <button
+                      onClick={() => {
+                        setShowOptionsMenu(false);
+                        setShowEditModal(true);
+                      }}
+                      className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                        <Settings className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <span className="font-medium text-gray-700">Preferences</span>
+                    </button>
+
+                    <div className="h-px bg-gray-100" />
+
+                    {/* Invite People */}
+                    <button
+                      onClick={() => {
+                        setShowOptionsMenu(false);
+                        setShowInviteModal(true);
+                      }}
+                      className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-green-50 flex items-center justify-center">
+                        <UserPlus className="w-4 h-4 text-green-600" />
+                      </div>
+                      <span className="font-medium text-gray-700">Invite People</span>
+                    </button>
+
+                    <div className="h-px bg-gray-100" />
+
+                    {/* Share Link Group */}
+                    <button
+                      onClick={() => {
+                        setShowOptionsMenu(false);
+                        handleCopyLink();
+                      }}
+                      className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-gray-50 transition-colors cursor-pointer text-left"
+                    >
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${isCopied ? 'bg-green-50' : 'bg-purple-50'}`}>
+                        {isCopied ? (
+                          <Check className="w-4 h-4 text-green-600" />
+                        ) : (
+                          <Link2 className="w-4 h-4 text-purple-600" />
+                        )}
+                      </div>
+                      <span className="font-medium text-gray-700">
+                        {isCopied ? "Link Copied!" : "Share Link Group"}
+                      </span>
+                    </button>
                   </div>
+                )}
               </div>
 
+              <div className="h-6 w-px bg-gray-200 mx-1"></div>
               <button
                 onClick={onClose}
                 className="p-2.5 rounded-xl hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors ml-2 cursor-pointer"
@@ -327,12 +388,6 @@ export default function GroupDetailsModal({
               onSubmit={handleSendMessage}
               className="flex items-end gap-2 bg-gray-50 p-2 rounded-[24px] border border-gray-200 focus-within:border-(--secondary) focus-within:ring-4 focus-within:ring-(--secondary)/5 transition-all"
             >
-              <button
-                type="button"
-                className="p-3 text-gray-400 hover:text-(--secondary) hover:bg-white rounded-full transition-all shrink-0 cursor-pointer"
-              >
-                <Paperclip className="w-5 h-5" />
-              </button>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -347,12 +402,6 @@ export default function GroupDetailsModal({
                 rows={1}
               />
               <button
-                type="button"
-                className="p-3 text-gray-400 hover:text-(--secondary) hover:bg-white rounded-full transition-all shrink-0 cursor-pointer"
-              >
-                <Smile className="w-5 h-5" />
-              </button>
-              <button
                 type="submit"
                 disabled={!message.trim()}
                 className="p-3 bg-(--secondary) text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shrink-0 mb-0.5 mr-0.5 cursor-pointer"
@@ -363,6 +412,24 @@ export default function GroupDetailsModal({
           </div>
         </div>
       </div>
+
+      {/* Edit Group Modal */}
+      <EditGroupModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        group={group}
+        onSuccess={onLeave}
+      />
+
+      {/* Invite People Modal */}
+      <InvitePeopleModal
+        isOpen={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        groupId={group?.id || group?._id || ""}
+        groupName={group?.name || "Group"}
+        currentMembers={[group?.ownerId, ...(group?.members || [])]}
+        onSuccess={onLeave}
+      />
     </div>
   );
 }

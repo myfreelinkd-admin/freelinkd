@@ -71,7 +71,11 @@ export async function GET(req: Request) {
             description: p.description || "",
             clientEmail: p.client_email || "",
             assignedDate: p.assignedDate ? new Date(p.assignedDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : "N/A",
-            deadlineDuration: p.duration || "N/A"
+            deadlineDuration: p.duration || "N/A",
+            // Group assignment info
+            groupAssignee: p.groupAssignee || null,
+            freelancerDisplay: p.freelancerDisplay || null,
+            isGroupProject: !!p.groupAssignee,
         };
     });
 

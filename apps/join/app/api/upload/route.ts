@@ -37,24 +37,34 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = path.join(process.cwd(), "public", "uploads", "resumes");
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
+    // Convert file to buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
     // Generate unique filename
     const timestamp = Date.now();
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
     const fileName = `resume-${timestamp}-${sanitizedName}`;
-    const filePath = path.join(uploadsDir, fileName);
 
-    // Convert file to buffer and save
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
+    // Try to save to filesystem for local development/backup
+    try {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads", "resumes");
+      if (!existsSync(uploadsDir)) {
+        await mkdir(uploadsDir, { recursive: true });
+      }
+      const filePath = path.join(uploadsDir, fileName);
+      await writeFile(filePath, buffer);
+      console.log("✅ Resume saved to filesystem:", filePath);
+    } catch (fsError) {
+      // Log but don't fail - filesystem save is optional for deployment
+      console.warn("⚠️ Could not save to filesystem (expected in serverless):", fsError);
+    }
 
-    // Return the URL that can be accessed
+    // Always generate base64 data URL for database storage
+    const base64 = buffer.toString("base64");
+    const resumeDataUrl = `data:${file.type};base64,${base64}`;
+
+    // Return the URL path (for display) and base64 data (for database storage)
     const fileUrl = `/uploads/resumes/${fileName}`;
 
     console.log("✅ Resume uploaded successfully:", fileUrl);
@@ -66,6 +76,9 @@ export async function POST(request: Request) {
         url: fileUrl,
         fileName: file.name,
         size: file.size,
+        // Include base64 data URL for database storage
+        // This ensures resume is accessible after deployment
+        resumeData: resumeDataUrl,
       },
     });
 
@@ -77,3 +90,4 @@ export async function POST(request: Request) {
     );
   }
 }
+
