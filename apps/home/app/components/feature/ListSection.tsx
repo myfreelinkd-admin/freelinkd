@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
 
 const features = [
@@ -115,14 +116,20 @@ export default function ListSection() {
               </div>
 
               <div className="z-10 opacity-100 visible">
-                <a
+                <Link
                   href={feature.link}
-                  target={feature.link.startsWith("http") ? "_blank" : "_self"}
-                  rel="noopener noreferrer"
+                  target={
+                    feature.link.startsWith("http") ? "_blank" : undefined
+                  }
+                  rel={
+                    feature.link.startsWith("http")
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
                   className="bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-5 py-2 text-sm rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer"
                 >
                   Get Started
-                </a>
+                </Link>
               </div>
             </div>
           </motion.div>
