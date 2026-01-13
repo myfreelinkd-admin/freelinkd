@@ -15,6 +15,8 @@ import {
   DollarSign,
   Star,
   Briefcase,
+  Download,
+  Users,
 } from "lucide-react";
 
 interface ProjectDetails {
@@ -199,179 +201,170 @@ export default function SubmitAssignmentModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-999 flex items-center justify-center p-4 md:p-8">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-(--primary)/40 backdrop-blur-md transition-opacity"
         onClick={onClose}
       ></div>
 
-      {/* Modal */}
-      <div className="relative bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300 max-h-[90vh]">
+      {/* Modal Content */}
+      <div className="relative bg-white w-full max-w-2xl max-h-[90vh] rounded-[40px] shadow-2xl overflow-hidden flex flex-col animate-in fade-in zoom-in duration-300">
         {/* Header */}
-        <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-linear-to-r from-green-50 to-emerald-50">
-          <div className="flex items-center gap-4">
-            {isReadOnly ? (
-              <div className="p-3 bg-green-100 rounded-2xl">
-                <CheckCircle2 className="w-7 h-7 text-green-600" />
-              </div>
-            ) : (
-              <div className="p-3 bg-blue-100 rounded-2xl">
-                <Send className="w-7 h-7 text-blue-600" />
-              </div>
+        <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-bold text-(--primary) flex items-center gap-2">
+              <Send className="w-6 h-6 text-blue-600" />
+              {isReadOnly ? "Submission Details" : "Submit Assignment"}
+            </h2>
+            {isReadOnly && projectDetails?.submission?.submittedAt && (
+              <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border bg-green-50 text-green-600 border-green-100 flex items-center gap-1 w-fit">
+                <CheckCircle2 className="w-3 h-3" /> Submitted:{" "}
+                {formatDate(projectDetails.submission.submittedAt)}
+              </span>
             )}
-            <div>
-              <h2 className="text-2xl font-bold text-(--primary)">
-                {isReadOnly ? "Submission Completed" : "Submit Assignment"}
-              </h2>
-              {isReadOnly && projectDetails?.submission?.submittedAt && (
-                <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  Submitted: {formatDate(projectDetails.submission.submittedAt)}
-                </p>
-              )}
-            </div>
           </div>
           <button
             onClick={onClose}
-            className="p-3 rounded-2xl bg-white text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer shadow-sm"
+            className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer"
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {fetchingDetails ? (
-          <div className="p-8 flex items-center justify-center">
-            <div className="animate-spin w-8 h-8 border-3 border-gray-200 border-t-green-500 rounded-full"></div>
-            <span className="ml-3 text-gray-500 font-medium">
-              Loading details...
-            </span>
+          <div className="flex-1 p-8 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-(--primary)"></div>
           </div>
         ) : (
-          <div className="overflow-y-auto">
-            {/* Project Info Card - Only show in read-only mode */}
+          <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar">
+            {/* Project Info Section - Read Only Mode */}
             {isReadOnly && projectDetails && (
-              <div className="p-6 bg-linear-to-br from-gray-50 to-white border-b border-gray-100">
-                <div className="flex items-center gap-2 mb-4">
-                  <Briefcase className="w-4 h-4 text-(--secondary)" />
-                  <span className="text-sm font-bold text-(--primary)">
-                    Project Information
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-2 text-gray-400 text-xs font-bold mb-2">
-                      <FileText className="w-3.5 h-3.5" />
-                      PROJECT NAME
+              <>
+                {/* Header Information Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Project Name & Client */}
+                  <div className="p-6 bg-gray-50/50 rounded-4xl border border-gray-100 hover:border-(--secondary)/30 transition-all">
+                    <div className="flex items-center gap-3 mb-3 text-(--primary)">
+                      <div className="p-2 bg-white rounded-lg shadow-sm">
+                        <Briefcase className="w-4 h-4 text-(--primary)" />
+                      </div>
+                      <span className="text-xs font-bold uppercase tracking-widest opacity-60">
+                        Project
+                      </span>
                     </div>
-                    <p className="text-sm font-bold text-(--primary)">
+                    <p className="font-bold text-(--primary) mb-1">
                       {projectDetails.name || "N/A"}
                     </p>
-                  </div>
-                  <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-2 text-gray-400 text-xs font-bold mb-2">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
                       <User className="w-3.5 h-3.5" />
-                      CLIENT
+                      {projectDetails.client || "No Client"}
                     </div>
-                    <p className="text-sm font-bold text-(--primary)">
-                      {projectDetails.client || "N/A"}
-                    </p>
                   </div>
-                  <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-2 text-gray-400 text-xs font-bold mb-2">
-                      <DollarSign className="w-3.5 h-3.5" />
-                      BUDGET RANGE
+
+                  {/* Budget */}
+                  <div className="p-6 bg-gray-50/50 rounded-4xl border border-gray-100 hover:border-(--secondary)/30 transition-all">
+                    <div className="flex items-center gap-3 mb-3 text-(--primary)">
+                      <div className="p-2 bg-white rounded-lg shadow-sm">
+                        <DollarSign className="w-4 h-4 text-green-600" />
+                      </div>
+                      <span className="text-xs font-bold uppercase tracking-widest opacity-60">
+                        Budget
+                      </span>
                     </div>
                     {projectDetails.budgetFrom && projectDetails.budgetTo ? (
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500">Min:</span>
-                          <span className="text-sm font-bold text-green-600">
-                            Rp{" "}
-                            {Number(projectDetails.budgetFrom).toLocaleString(
-                              "id-ID"
-                            )}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500">Max:</span>
-                          <span className="text-sm font-bold text-green-600">
-                            Rp{" "}
-                            {Number(projectDetails.budgetTo).toLocaleString(
-                              "id-ID"
-                            )}
-                          </span>
-                        </div>
+                      <div>
+                        <p className="text-sm text-gray-500">Range:</p>
+                        <p className="text-sm font-bold text-green-600">
+                          {Number(projectDetails.budgetFrom).toLocaleString(
+                            "id-ID"
+                          )}{" "}
+                          -{" "}
+                          {Number(projectDetails.budgetTo).toLocaleString(
+                            "id-ID"
+                          )}
+                        </p>
                       </div>
                     ) : (
-                      <p className="text-sm font-bold text-green-600">
+                      <p className="text-lg font-bold text-green-600">
                         {projectDetails.amount || "N/A"}
                       </p>
                     )}
                   </div>
-                  <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-2 text-gray-400 text-xs font-bold mb-2">
-                      <Calendar className="w-3.5 h-3.5" />
-                      DEADLINE
-                    </div>
-                    <p className="text-sm font-bold text-(--primary)">
+                </div>
+
+                {/* Deadline Section */}
+                <div className="p-6 bg-orange-50/50 rounded-4xl border border-orange-100 relative overflow-hidden">
+                  <div className="flex items-center gap-3 mb-4">
+                    <Clock className="w-5 h-5 text-(--secondary)" />
+                    <h3 className="font-bold text-(--primary)">
+                      Project Deadline
+                    </h3>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-(--primary)">
+                      Due Date:
+                    </span>
+                    <span className="text-sm text-gray-600">
                       {projectDetails.date || "N/A"}
-                    </p>
+                    </span>
                   </div>
                 </div>
 
-                {/* Rating Section */}
+                {/* Rating Section (Mirroring modals-detail style) */}
                 {projectDetails.rating && (
-                  <div className="mt-4 bg-linear-to-r from-amber-50 to-yellow-50 p-4 rounded-2xl border border-amber-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-                        <span className="text-sm font-bold text-(--primary)">
-                          Client Rating
-                        </span>
+                  <div className="p-6 bg-amber-50/50 rounded-4xl border border-amber-100">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-white rounded-lg shadow-sm">
+                        <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
                       </div>
+                      <h3 className="font-bold text-(--primary)">
+                        Client Rating
+                      </h3>
+                    </div>
+
+                    <div className="space-y-3">
                       <div className="flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
                             key={star}
-                            className={`w-4 h-4 ${
+                            className={`w-6 h-6 ${
                               star <= (projectDetails.rating || 0)
                                 ? "text-amber-400 fill-amber-400"
                                 : "text-gray-200"
                             }`}
                           />
                         ))}
-                        <span className="ml-2 text-sm font-bold text-amber-600">
+                        <span className="ml-2 font-bold text-amber-600">
                           {projectDetails.rating}/5
                         </span>
                       </div>
+                      {projectDetails.review && (
+                        <p className="text-sm text-gray-600 italic">
+                          "{projectDetails.review}"
+                        </p>
+                      )}
                     </div>
-                    {projectDetails.review && (
-                      <p className="mt-2 text-sm text-gray-600 italic">
-                        &ldquo;{projectDetails.review}&rdquo;
-                      </p>
-                    )}
                   </div>
                 )}
-              </div>
+              </>
             )}
 
-            <div className="p-8 space-y-6">
-              {/* Submission Section Header */}
-              {isReadOnly && (
-                <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-                  <Send className="w-4 h-4 text-(--secondary)" />
-                  <span className="text-sm font-bold text-(--primary)">
-                    Your Submission
-                  </span>
+            {/* Submission Form Section */}
+            <div className="p-6 bg-green-50/50 rounded-4xl border border-green-100 relative overflow-hidden">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <Send className="w-5 h-5 text-green-600" />
                 </div>
-              )}
+                <h3 className="font-bold text-(--primary)">
+                  {isReadOnly ? "Your Submission" : "Submission Form"}
+                </h3>
+              </div>
 
-              <div className="space-y-5">
+              <div className="space-y-5 relative z-10">
                 {/* Link Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-(--primary) flex items-center gap-2">
-                    <LinkIcon className="w-4 h-4 text-(--secondary)" />
                     Project Link
                   </label>
                   {isReadOnly && link ? (
@@ -379,10 +372,14 @@ export default function SubmitAssignmentModal({
                       href={link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full px-5 py-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-sm font-medium text-blue-600 hover:bg-blue-100 transition-all flex items-center justify-between group"
+                      className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-gray-100 hover:shadow-md transition-all group"
                     >
-                      <span className="truncate">{link}</span>
-                      <ExternalLink className="w-4 h-4 shrink-0 ml-2 group-hover:scale-110 transition-transform" />
+                      <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
+                        <ExternalLink className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <span className="truncate text-sm font-medium text-blue-600">
+                        {link}
+                      </span>
                     </a>
                   ) : (
                     <input
@@ -391,7 +388,7 @@ export default function SubmitAssignmentModal({
                       value={link}
                       onChange={(e) => setLink(e.target.value)}
                       readOnly={isReadOnly}
-                      className={`w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-(--secondary) focus:ring-4 focus:ring-(--secondary)/10 outline-none transition-all text-sm font-medium text-(--primary) ${isReadOnly ? "opacity-70 cursor-not-allowed" : ""}`}
+                      className={`w-full px-4 py-3 rounded-2xl bg-white border border-green-200 focus:border-green-400 focus:ring-4 focus:ring-green-500/10 outline-none transition-all text-sm text-(--primary) placeholder:text-gray-400 ${isReadOnly ? "opacity-70 cursor-not-allowed" : ""}`}
                     />
                   )}
                 </div>
@@ -399,7 +396,6 @@ export default function SubmitAssignmentModal({
                 {/* Note Input */}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-(--primary) flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-(--secondary)" />
                     Notes
                   </label>
                   <textarea
@@ -407,17 +403,14 @@ export default function SubmitAssignmentModal({
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     readOnly={isReadOnly}
-                    className={`w-full px-5 py-3.5 rounded-2xl bg-gray-50 border border-gray-200 focus:border-(--secondary) focus:ring-4 focus:ring-(--secondary)/10 outline-none transition-all text-sm font-medium min-h-[100px] text-(--primary) resize-none ${isReadOnly ? "opacity-70 cursor-not-allowed" : ""}`}
+                    className={`w-full px-4 py-3 rounded-2xl bg-white border border-green-200 focus:border-green-400 focus:ring-4 focus:ring-green-500/10 outline-none transition-all text-sm min-h-[100px] text-(--primary) resize-none placeholder:text-gray-400 ${isReadOnly ? "opacity-70 cursor-not-allowed" : ""}`}
                   />
                 </div>
 
                 {/* File Upload */}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-(--primary) flex items-center gap-2">
-                    <Upload className="w-4 h-4 text-(--secondary)" />
-                    {isReadOnly
-                      ? "Attached File"
-                      : "Attach File (PDF, PNG, JPG)"}
+                    {isReadOnly ? "Attached File" : "Attach File"}
                   </label>
 
                   {isReadOnly && existingFileUrl ? (
@@ -425,31 +418,28 @@ export default function SubmitAssignmentModal({
                       href={existingFileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full px-4 py-4 rounded-3xl bg-linear-to-r from-purple-50 to-indigo-50 border border-purple-100 hover:from-purple-100 hover:to-indigo-100 transition-all flex items-center justify-between group cursor-pointer"
+                      className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-green-100 hover:shadow-md transition-all group"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="p-3 bg-purple-100 rounded-xl shadow-sm">
-                          <FileText className="w-6 h-6 text-purple-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-(--primary)">
-                            {fileName}
-                          </p>
-                          <p className="text-xs text-purple-500 font-medium">
-                            Click to view or download
-                          </p>
-                        </div>
+                      <div className="p-2 bg-orange-50 rounded-lg group-hover:bg-orange-100 transition-colors">
+                        <Download className="w-5 h-5 text-orange-600" />
                       </div>
-                      <div className="p-2 bg-white rounded-xl shadow-sm group-hover:shadow-md transition-all">
-                        <ExternalLink className="w-5 h-5 text-purple-400 group-hover:text-purple-600" />
+                      <div className="overflow-hidden">
+                        <p className="text-sm font-bold text-(--primary)">
+                          {fileName || "Download"}
+                        </p>
+                        <p className="text-xs text-purple-500 font-medium">
+                          Click to download
+                        </p>
                       </div>
                     </a>
                   ) : isReadOnly && !existingFileUrl ? (
-                    <div className="w-full px-4 py-6 rounded-3xl bg-gray-50 border border-gray-200 text-center">
-                      <FileText className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-                      <p className="text-sm text-gray-400 font-medium">
-                        No file attached
-                      </p>
+                    <div className="flex items-center gap-3 p-4 bg-white/60 rounded-2xl border border-gray-200 opacity-60">
+                      <div className="p-2 bg-gray-200 rounded-lg">
+                        <FileText className="w-5 h-5 text-gray-400" />
+                      </div>
+                      <span className="text-sm font-bold text-gray-500">
+                        No File Attached
+                      </span>
                     </div>
                   ) : (
                     <div
@@ -462,10 +452,10 @@ export default function SubmitAssignmentModal({
                         disabled={isReadOnly}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
-                      <div className="w-full px-4 py-8 rounded-3xl bg-gray-50 border-2 border-dashed border-gray-300 group-hover:border-(--secondary) group-hover:bg-(--secondary)/5 transition-all flex flex-col items-center justify-center text-center">
+                      <div className="w-full px-4 py-8 rounded-3xl bg-white border-2 border-dashed border-green-200 group-hover:border-green-400 group-hover:bg-green-50/30 transition-all flex flex-col items-center justify-center text-center">
                         {file ? (
                           <>
-                            <FileText className="w-10 h-10 text-(--primary) mb-3" />
+                            <FileText className="w-10 h-10 text-green-600 mb-3" />
                             <span className="text-sm font-bold text-(--primary)">
                               {file.name}
                             </span>
@@ -475,9 +465,9 @@ export default function SubmitAssignmentModal({
                           </>
                         ) : (
                           <>
-                            <Upload className="w-10 h-10 text-gray-300 mb-3 group-hover:scale-110 group-hover:text-(--secondary) transition-all" />
-                            <span className="text-sm text-gray-500 font-bold group-hover:text-(--primary) transition-colors">
-                              Click to upload or drag and drop
+                            <Upload className="w-10 h-10 text-gray-300 mb-3 group-hover:scale-110 group-hover:text-green-500 transition-all" />
+                            <span className="text-sm text-gray-500 font-bold group-hover:text-green-600 transition-colors">
+                              Click to upload or drag & drop
                             </span>
                             <span className="text-xs text-gray-400 mt-1 font-medium">
                               PDF, PNG, JPG up to 5MB
@@ -493,10 +483,10 @@ export default function SubmitAssignmentModal({
           </div>
         )}
 
-        <div className="p-8 border-t border-gray-100 bg-linear-to-r from-gray-50 to-white flex justify-end gap-3">
+        <div className="p-8 border-t border-gray-100 bg-white flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-8 py-3.5 bg-white text-gray-600 rounded-2xl font-bold text-sm hover:bg-gray-100 transition-all cursor-pointer border border-gray-200 shadow-sm"
+            className="px-8 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold text-sm hover:bg-gray-200 transition-all cursor-pointer"
             disabled={loading}
           >
             {isReadOnly ? "Close" : "Cancel"}
@@ -505,7 +495,7 @@ export default function SubmitAssignmentModal({
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-8 py-3.5 rounded-2xl font-bold text-sm text-white bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 shadow-lg shadow-green-200 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="px-8 py-3.5 rounded-2xl font-bold text-sm text-white bg-(--secondary) hover:opacity-90 shadow-lg shadow-(--secondary)/20 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? "Submitting..." : "Submit Assignment"}
               {!loading && <Send className="w-4 h-4" />}

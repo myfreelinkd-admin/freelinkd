@@ -124,7 +124,7 @@ export default function ProjectActionButton({
         return [
           {
             label: "View Submission",
-            icon: <Eye className="w-4 h-4" />,
+            icon: <ExternalLink className="w-4 h-4" />,
             color: "text-green-600",
             onClick: () => setIsSubmitModalOpen(true),
             tooltipPosition: "top" as const,
@@ -132,7 +132,7 @@ export default function ProjectActionButton({
           },
           {
             label: "View Project Details",
-            icon: <ExternalLink className="w-4 h-4" />,
+            icon: <Eye className="w-4 h-4" />,
             color: "text-(--primary)",
             onClick: () => setIsModalOpen(true),
             tooltipPosition: "top" as const,
