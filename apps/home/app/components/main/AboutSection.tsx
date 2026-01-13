@@ -53,7 +53,6 @@ export default function AboutSection() {
   return (
     <section id="about" className="py-12 md:py-20 bg-(--background)">
       <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
         <motion.div
           className="text-center max-w-5xl mx-auto mb-12 md:mb-24"
           initial={{ opacity: 0, y: 30 }}
@@ -76,7 +75,6 @@ export default function AboutSection() {
           </p>
         </motion.div>
 
-        {/* Features Grid */}
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-16 gap-y-10 md:gap-y-16 max-w-6xl mx-auto"
           variants={containerVariants}

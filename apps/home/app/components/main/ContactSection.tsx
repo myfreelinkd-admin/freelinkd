@@ -20,7 +20,7 @@ export default function ContactSection() {
     {
       icon: Mail,
       text: "info@freelinkd.com",
-      href: "mailto:info@freelinkd.com",
+      href: "mailto:info.freelinkd@gmail.com",
       label: "Email us",
     },
     {
