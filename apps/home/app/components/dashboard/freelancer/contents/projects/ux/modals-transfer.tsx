@@ -42,19 +42,23 @@ export default function TransferProjectModal({
 }: TransferProjectModalProps) {
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState<"idle" | "transferring" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "transferring" | "success" | "error"
+  >("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch user's group
   useEffect(() => {
     const fetchGroup = async () => {
       if (!isOpen || !freelancerId) return;
-      
+
       setLoading(true);
       try {
-        const response = await fetch(`/api/freelancer/group?freelancerId=${freelancerId}`);
+        const response = await fetch(
+          `/api/freelancer/group?freelancerId=${freelancerId}`
+        );
         const data = await response.json();
-        
+
         if (data.success && data.data) {
           setGroup({
             id: data.data.id || data.data._id,
@@ -163,8 +167,8 @@ export default function TransferProjectModal({
                   Transfer Successful!
                 </h2>
                 <p className="text-gray-500 text-sm">
-                  Project "{project.name}" has been transferred to {group?.name}.
-                  All group members can now collaborate on this project.
+                  Project "{project.name}" has been transferred to {group?.name}
+                  . All group members can now collaborate on this project.
                 </p>
               </div>
             </div>
@@ -200,17 +204,17 @@ export default function TransferProjectModal({
           {(status === "idle" || status === "transferring") && (
             <>
               {/* Header */}
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center">
                     <Users className="w-5 h-5 text-blue-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-[#0B1C46]">
+                    <h2 className="text-lg font-bold text-gray-900">
                       Transfer to Group
                     </h2>
-                    <p className="text-xs text-gray-400">
-                      Share this project with your team
+                    <p className="text-xs text-gray-500">
+                      Collaborate with your team
                     </p>
                   </div>
                 </div>
@@ -224,134 +228,155 @@ export default function TransferProjectModal({
               </div>
 
               {/* Body */}
-              <div className="p-6 space-y-6">
-                {/* Project Info */}
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <p className="text-xs text-gray-400 uppercase tracking-wider font-bold mb-2">
-                    Project
+              <div className="p-6 space-y-8">
+                {/* Project Info - Cleaner Look */}
+                <div className="text-center space-y-1">
+                  <div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 tracking-wider uppercase mb-2">
+                    Project to Transfer
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    {project.name}
+                  </h3>
+                  <p className="text-sm text-gray-500 font-medium">
+                    Client: {project.client}
                   </p>
-                  <p className="font-bold text-[#0B1C46] text-lg">{project.name}</p>
-                  <p className="text-sm text-gray-500">Client: {project.client}</p>
                 </div>
 
                 {/* Loading */}
                 {loading && (
-                  <div className="flex items-center justify-center py-8">
-                    <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+                  <div className="flex flex-col items-center justify-center py-8 text-gray-400 space-y-2">
+                    <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                    <span className="text-xs font-medium">
+                      Fetching group info...
+                    </span>
                   </div>
                 )}
 
-                {/* No Group */}
+                {/* No Group Warning */}
                 {!loading && !group && (
-                  <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-                    <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                  <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-start gap-4 mx-4">
+                    <div className="p-2 bg-amber-100 rounded-lg">
+                      <AlertTriangle className="w-5 h-5 text-amber-600" />
+                    </div>
                     <div>
-                      <p className="font-bold text-amber-800 text-sm">No Group Found</p>
-                      <p className="text-amber-700 text-xs mt-1">
-                        You need to create or join a group before you can transfer projects.
+                      <p className="font-bold text-amber-900 text-sm">
+                        No Group Found
+                      </p>
+                      <p className="text-amber-700/80 text-xs mt-1 leading-relaxed">
+                        You need to create or join a group before you can
+                        transfer projects to a team.
                       </p>
                       <button
                         onClick={onClose}
-                        className="mt-3 text-xs font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1 cursor-pointer"
+                        className="mt-3 text-xs font-bold bg-amber-100 text-amber-800 px-4 py-2 rounded-lg hover:bg-amber-200 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
                       >
-                        <UserPlus className="w-3 h-3" />
-                        Create a Group
+                        <UserPlus className="w-3.5 h-3.5" />
+                        Create or Join Group
                       </button>
                     </div>
                   </div>
                 )}
 
-                {/* Group Info */}
+                {/* Group Info Visual */}
                 {!loading && group && (
-                  <>
-                    <div className="flex items-center gap-4">
-                      {/* From */}
-                      <div className="flex-1 bg-gray-50 rounded-2xl p-4 text-center">
-                        <div className="w-12 h-12 rounded-full bg-[#0B1C46] mx-auto flex items-center justify-center text-white font-bold text-lg mb-2">
-                          You
-                        </div>
-                        <p className="text-sm text-gray-500">Individual</p>
-                      </div>
+                  <div className="relative">
+                    {/* Connecting Line */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent border-t border-dashed border-gray-300 z-0"></div>
 
-                      {/* Arrow */}
-                      <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center">
-                        <ArrowRight className="w-5 h-5 text-blue-600" />
-                      </div>
-
-                      {/* To */}
-                      <div className="flex-1 bg-blue-50 rounded-2xl p-4 text-center">
-                        <div className="w-12 h-12 rounded-full bg-blue-600 mx-auto flex items-center justify-center text-white font-bold text-lg mb-2">
-                          <Users className="w-6 h-6" />
-                        </div>
-                        <p className="text-sm font-bold text-[#0B1C46]">{group.name}</p>
-                        <p className="text-xs text-gray-500">
-                          {group.memberCount} member(s)
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* What happens */}
-                    <div className="bg-blue-50 rounded-2xl p-4">
-                      <p className="text-blue-800 text-sm font-medium mb-2">
-                        What happens after transfer:
-                      </p>
-                      <ul className="space-y-1.5 text-blue-700 text-xs">
-                        <li className="flex items-start gap-2">
-                          <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0" />
-                          All group members can view and work on this project
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0" />
-                          UMKM will see "Your Name + {group.name}" as the assignee
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="w-1 h-1 bg-blue-500 rounded-full mt-1.5 shrink-0" />
-                          You can revoke this transfer anytime
-                        </li>
-                      </ul>
-                    </div>
-
-                    {group.skills && group.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {group.skills.slice(0, 5).map((skill: string) => (
-                          <span
-                            key={skill}
-                            className="text-[10px] px-2 py-1 bg-gray-100 text-gray-600 rounded-full"
-                          >
-                            {skill}
+                    <div className="relative z-10 flex items-center justify-center gap-12">
+                      {/* From: You */}
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-16 h-16 rounded-2xl bg-white border-2 border-gray-100 shadow-sm flex items-center justify-center relative group-hover:border-blue-100 transition-colors">
+                          <span className="text-2xl font-bold text-gray-700">
+                            You
                           </span>
-                        ))}
+                          <div className="absolute -bottom-1.5 px-2 py-0.5 bg-gray-800 text-white text-[9px] font-bold rounded-full">
+                            Owner
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </>
+
+                      {/* Arrow Icon */}
+                      <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center ring-4 ring-white">
+                        <ArrowRight className="w-4 h-4 text-blue-600" />
+                      </div>
+
+                      {/* To: Group */}
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-16 h-16 rounded-2xl bg-blue-600 shadow-lg shadow-blue-200 flex items-center justify-center relative">
+                          <Users className="w-8 h-8 text-white" />
+                          <div className="absolute -bottom-1.5 px-2 py-0.5 bg-blue-700 text-white text-[9px] font-bold rounded-full border border-blue-500">
+                            {group.memberCount} Mbrs
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between px-10 mt-3 text-center">
+                      <p className="text-xs text-center w-20 text-gray-500 font-medium">
+                        Individual Ownership
+                      </p>
+                      <p className="text-xs text-center w-20 text-blue-700 font-bold">
+                        {group.name}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Important Notes */}
+                {!loading && group && (
+                  <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+                    <p className="text-[10px] items-center text-blue-700 font-bold tracking-widest uppercase mb-3 flex gap-2">
+                      <span className="w-1 h-1 bg-blue-500 rounded-full"></span>
+                      What changes?
+                    </p>
+                    <div className="grid grid-cols-1 gap-2.5">
+                      <div className="flex items-start gap-3 text-xs text-gray-600 bg-white/60 p-2.5 rounded-lg border border-blue-100/50">
+                        <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                        <span>
+                          <strong className="text-gray-900">
+                            Shared Access:
+                          </strong>{" "}
+                          All {group.memberCount} group members can view and
+                          collaborate.
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-3 text-xs text-gray-600 bg-white/60 p-2.5 rounded-lg border border-blue-100/50">
+                        <Users className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                        <span>
+                          <strong className="text-gray-900">
+                            Client View:
+                          </strong>{" "}
+                          Assigned to "You + {group.name}".
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 )}
               </div>
 
               {/* Footer */}
               {!loading && group && (
-                <div className="p-6 border-t border-gray-100 flex gap-3">
+                <div className="p-6 border-t border-gray-100 bg-gray-50/30 flex gap-3">
                   <button
                     onClick={handleClose}
                     disabled={status === "transferring"}
-                    className="flex-1 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-2xl transition-all cursor-pointer disabled:opacity-50"
+                    className="flex-1 py-3 px-4 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-semibold rounded-xl text-sm transition-all focus:ring-2 focus:ring-gray-100 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleTransfer}
                     disabled={status === "transferring"}
-                    className="flex-1 py-3 bg-[#0B1C46] hover:bg-[#152c66] text-white font-medium rounded-2xl transition-all cursor-pointer disabled:opacity-70 flex items-center justify-center gap-2"
+                    className="flex-[2] py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-70 disabled:translate-y-0 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {status === "transferring" ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        Transferring...
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Transferring Project...
                       </>
                     ) : (
-                      <>
-                        <Users className="w-5 h-5" />
-                        Transfer to Group
-                      </>
+                      <>Confirm Transfer</>
                     )}
                   </button>
                 </div>

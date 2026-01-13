@@ -160,10 +160,12 @@ export default function AllProjects({ filter }: { filter?: string }) {
                             {project.name}
                           </span>
                           {project.isGroupProject && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-bold">
-                              <Users className="w-2.5 h-2.5" />
-                              Team
-                            </span>
+                            <div className="flex flex-col">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-[9px] font-bold border border-blue-100">
+                                <Users className="w-2.5 h-2.5" />
+                                {project.groupAssignee?.groupName || "Team"}
+                              </span>
+                            </div>
                           )}
                         </div>
                         <span className="text-[10px] text-gray-400 font-medium mt-1 flex items-center gap-1">

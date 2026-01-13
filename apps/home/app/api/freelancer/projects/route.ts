@@ -10,7 +10,10 @@ export async function GET(req: Request) {
 
     const query: any = {};
     if (freelancerId) {
-      query.freelancerId = freelancerId;
+      query.$or = [
+        { freelancerId: freelancerId },
+        { "groupAssignee.groupMembers": freelancerId },
+      ];
     }
 
     if (status) {

@@ -194,7 +194,7 @@ export default function ProjectActionButton({
                 tooltipAlign: "start" as const,
               };
 
-        return [
+        const actions = [
           primaryAction,
           {
             label: "View Detail",
@@ -204,14 +204,21 @@ export default function ProjectActionButton({
             tooltipPosition: "top" as const,
             tooltipAlign: "center" as const,
           },
-          {
+        ];
+
+        // Only show Transfer option if NOT already a group project
+        if (!project?.isGroupProject) {
+          actions.push({
             label: "Transfer to Group",
             icon: <Users className="w-4 h-4" />,
             color: "text-blue-600",
             onClick: () => setIsTransferModalOpen(true),
             tooltipPosition: "top" as const,
             tooltipAlign: "center" as const,
-          },
+          });
+        }
+
+        actions.push(
           {
             label: "Chat with UMKM",
             icon: <MessageCircle className="w-4 h-4" />,
@@ -226,9 +233,11 @@ export default function ProjectActionButton({
             color: "text-red-600",
             onClick: () => {},
             tooltipPosition: "top" as const,
-            tooltipAlign: "end" as const,
-          },
-        ];
+            tooltipAlign: "center" as const,
+          }
+        );
+
+        return actions;
     }
   };
 
