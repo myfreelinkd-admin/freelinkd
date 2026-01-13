@@ -25,10 +25,10 @@ export default function ProjectRatingModal({
   onClose,
   project,
 }: ProjectRatingModalProps) {
-  if (!isOpen || !project || !project.rating) return null;
+  if (!isOpen || !project) return null;
 
   return (
-    <div className="fixed inset-0 z-999 flex items-center justify-center p-4 md:p-8">
+    <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 md:p-8">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-(--primary)/40 backdrop-blur-md transition-opacity"
@@ -61,59 +61,73 @@ export default function ProjectRatingModal({
 
         <div className="flex-1 overflow-y-auto p-8 pt-4 space-y-8 custom-scrollbar">
           {/* Score Section */}
-          <div className="flex flex-col items-center justify-center py-8 bg-amber-50/50 rounded-4xl border border-amber-100 relative overflow-hidden">
-            <div className="text-6xl font-black text-amber-400 mb-2 tracking-tighter drop-shadow-sm">
-              {project.rating.score.toFixed(1)}
+          {!project.rating ? (
+            <div className="flex flex-col items-center justify-center py-12 bg-gray-50 rounded-4xl border border-gray-100 text-center">
+              <Star className="w-12 h-12 text-gray-300 mb-3" />
+              <p className="text-gray-500 font-bold">
+                No rating available yet.
+              </p>
+              <p className="text-xs text-gray-400">
+                The client hasn't submitted a review for this project.
+              </p>
             </div>
-            <div className="flex gap-1.5 mb-3 relative z-10">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  className={`w-6 h-6 ${star <= project.rating!.score ? "fill-amber-400 text-amber-400" : "text-gray-300"}`}
-                />
-              ))}
-            </div>
-            <p className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-white px-3 py-1 rounded-full shadow-sm border border-amber-100">
-              {project.rating.score >= 4.5
-                ? "Excellent Work!"
-                : project.rating.score >= 4
-                  ? "Great Job!"
-                  : "Good Work"}
-            </p>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 bg-amber-50/50 rounded-4xl border border-amber-100 relative overflow-hidden">
+              <div className="text-6xl font-black text-amber-400 mb-2 tracking-tighter drop-shadow-sm">
+                {project.rating.score.toFixed(1)}
+              </div>
+              <div className="flex gap-1.5 mb-3 relative z-10">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-6 h-6 ${star <= project.rating!.score ? "fill-amber-400 text-amber-400" : "text-gray-300"}`}
+                  />
+                ))}
+              </div>
+              <p className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-white px-3 py-1 rounded-full shadow-sm border border-amber-100">
+                {project.rating.score >= 4.5
+                  ? "Excellent Work!"
+                  : project.rating.score >= 4
+                    ? "Great Job!"
+                    : "Good Work"}
+              </p>
 
-            {/* Decorative */}
-            <Star className="absolute -left-6 -bottom-6 w-32 h-32 text-amber-400 opacity-10 rotate-12" />
-            <Star className="absolute -right-6 -top-6 w-24 h-24 text-amber-400 opacity-10 -rotate-12" />
-          </div>
+              {/* Decorative */}
+              <Star className="absolute -left-6 -bottom-6 w-32 h-32 text-amber-400 opacity-10 rotate-12" />
+              <Star className="absolute -right-6 -top-6 w-24 h-24 text-amber-400 opacity-10 -rotate-12" />
+            </div>
+          )}
 
           {/* Review Section */}
-          <div className="space-y-5">
-            <div className="flex items-center gap-4 px-2">
-              <div className="w-14 h-14 rounded-full bg-(--primary) flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200 border-2 border-white">
-                {project.client.name.charAt(0)}
+          {project.rating && (
+            <div className="space-y-5">
+              <div className="flex items-center gap-4 px-2">
+                <div className="w-14 h-14 rounded-full bg-(--primary) flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-200 border-2 border-white">
+                  {project.client.name.charAt(0)}
+                </div>
+                <div>
+                  <h3 className="font-bold text-(--primary) text-lg">
+                    {project.client.name}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider rounded-md">
+                      UMKM
+                    </span>
+                    <span className="text-xs text-gray-400 font-medium">
+                      • {project.rating.date}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-bold text-(--primary) text-lg">
-                  {project.client.name}
-                </h3>
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold uppercase tracking-wider rounded-md">
-                    UMKM
-                  </span>
-                  <span className="text-xs text-gray-400 font-medium">
-                    • {project.rating.date}
-                  </span>
+
+              <div className="relative pt-2">
+                <Quote className="absolute -top-5 left-6 w-10 h-10 text-(--secondary)/30 rotate-180 z-20" />
+                <div className="p-6 bg-gray-50 rounded-4xl text-gray-600 leading-relaxed border border-gray-100 italic relative z-10 text-sm">
+                  &quot;{project.rating.review}&quot;
                 </div>
               </div>
             </div>
-
-            <div className="relative pt-2">
-              <Quote className="absolute -top-1 left-4 w-8 h-8 text-(--secondary) opacity-20 rotate-180" />
-              <div className="p-6 bg-gray-50 rounded-4xl text-gray-600 leading-relaxed border border-gray-100 italic relative z-10 text-sm">
-                &quot;{project.rating.review}&quot;
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Footer Action */}

@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react";
 import { motion } from "motion/react";
+import Image from "next/image";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,6 +24,7 @@ interface RatingCardProps {
   category: string;
   testimonial: string;
   rating: number;
+  image: string;
 }
 
 const RatingCard = ({
@@ -30,6 +32,7 @@ const RatingCard = ({
   category,
   testimonial,
   rating,
+  image,
 }: RatingCardProps) => {
   return (
     <motion.div
@@ -37,7 +40,9 @@ const RatingCard = ({
       className="bg-white rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-100 flex flex-col h-full transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 group cursor-default"
     >
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-full bg-[#081f5c] shrink-0" />
+        <div className="w-12 h-12 rounded-full bg-white shrink-0 overflow-hidden relative border border-gray-100 p-1">
+          <Image src={image} alt={name} fill className="object-contain p-1" />
+        </div>
         <div>
           <h4 className="font-bold text-gray-900 text-sm">{name}</h4>
           <p className="text-xs text-gray-500">{category}</p>
@@ -81,20 +86,23 @@ export default function RatingSection() {
       testimonial:
         "Saya sangat puas dengan hasil kerja freelancer ini. Proyek website 7 Kegiatan Anak Indonesia Hebat dikerjakan dengan profesional, rapi, dan sesuai dengan kebutuhan sekolah. Komunikasi berjalan lancar, setiap revisi ditangani dengan cepat, dan hasil akhirnya melebihi ekspektasi saya. Desainnya menarik, fungsionalitasnya berjalan baik, serta sistemnya mudah digunakan oleh guru maupun siswa. Terima kasih atas kerja keras dan dedikasinya",
       rating: 5.0,
+      image: "/assets/img/smkn31.svg",
     },
     {
       name: "Sagawa Group",
       category: "SME's Partner",
       testimonial:
-        "Freelancer yang sangat kompeten dan komunikatif. Hasil kerja melebihi ekspektasi dan diselesaikan tepat waktu. Sangat direkomendasikan!",
+        "Kami sangat puas dengan hasil pembuatan website yang kami terima. Dalam waktu kurang dari dua bulan, kami tidak hanya mendapatkan sebuah website yang modern dan responsif, tetapi juga alat pemasaran yang sangat efektif. Desain yang menarik dan kemudahan akses melalui berbagai perangkat, ditambah dengan fitur pemesanan online yang praktis, semuanya memberikan nilai lebih untuk waralaba kami. Kami yakin bahwa dengan adanya website ini, kami bisa terus mengembangkan usaha dan mencapai audiens yang lebih luas dengan cara yang lebih efisien dan profesional.",
       rating: 5.0,
+      image: "/assets/img/sagawa_logo.svg",
     },
     {
       name: "AWA Construction",
       category: "SME's Partner",
       testimonial:
-        "Saya sangat puas dengan hasil kerja freelancer ini. Proyek website 7 Kegiatan Anak Indonesia Hebat dikerjakan dengan profesional, rapi, dan sesuai dengan kebutuhan sekolah. Komunikasi berjalan lancar, setiap revisi ditangani dengan cepat, dan hasil akhirnya melebihi ekspektasi saya. Desainnya menarik, fungsionalitasnya berjalan baik, serta sistemnya mudah digunakan oleh guru maupun siswa. Terima kasih atas kerja keras dan dedikasinya",
+        "Sebagai sebuah UMKM, sering kali kita menghadapi tantangan besar dalam memasarkan produk dan layanan, terutama ketika dana terbatas dan sumber daya terbatas. Namun, salah satu pelanggan kami, yang merupakan usaha kecil yang bergerak di bidang jasa konstruksi dan renovasi, telah merasakan manfaat besar setelah menggunakan platform Freelinkd.",
       rating: 5.0,
+      image: "/assets/img/awa_contruction_logo.svg",
     },
   ];
 
