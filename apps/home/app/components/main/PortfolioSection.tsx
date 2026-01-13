@@ -108,7 +108,7 @@ export default function PortfolioSection() {
     <section id="portfolio" className="py-12 md:py-20 bg-(--background)">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="text-center max-w-3xl mx-auto mb-10 md:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -126,7 +126,7 @@ export default function PortfolioSection() {
         </motion.div>
 
         {/* Carousel Container */}
-        <motion.div 
+        <motion.div
           className="relative group"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -159,7 +159,7 @@ export default function PortfolioSection() {
             {portfolios.map((item, index) => (
               <motion.div
                 key={index}
-                className="min-w-[85vw] md:min-w-95 bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 snap-center flex flex-col overflow-hidden border border-gray-100"
+                className="min-w-[85vw] md:min-w-96 bg-white rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 snap-center flex flex-col overflow-hidden border border-gray-100"
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
               >
@@ -181,7 +181,7 @@ export default function PortfolioSection() {
                 </div>
 
                 {/* Content */}
-                <div className="p-8 flex flex-col grow text-center">
+                <div className="p-6 md:p-8 flex flex-col grow text-center">
                   <h3 className="text-xl font-bold text-gray-900 mb-2">
                     {item.title}
                   </h3>

@@ -13,7 +13,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     const db = getMongoDB();
     const collection = await db.getCollection("rating_job");
     
-    // Find rating by projectId
     const rating = await collection.findOne({ projectId: id });
 
     if (!rating) {

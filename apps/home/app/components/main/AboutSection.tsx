@@ -15,10 +15,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeOut" as const } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" as const },
   },
 };
 
@@ -54,7 +54,7 @@ export default function AboutSection() {
     <section id="about" className="py-12 md:py-20 bg-(--background)">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="text-center max-w-5xl mx-auto mb-12 md:mb-24"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export default function AboutSection() {
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 md:mb-10">
             About Freelinkd
           </h2>
-          <p className="text-base md:text-lg text-gray-600 leading-relaxed text-justify md:text-center">
+          <p className="text-base md:text-lg text-gray-600 leading-relaxed text-center">
             Freelinkd offers students real-world work experience through a
             flexible framework designed to accommodate their academic schedules.
             This provides invaluable opportunities for building professional and
@@ -77,7 +77,7 @@ export default function AboutSection() {
         </motion.div>
 
         {/* Features Grid */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 gap-x-8 md:gap-x-16 gap-y-10 md:gap-y-16 max-w-6xl mx-auto"
           variants={containerVariants}
           initial="hidden"
@@ -85,7 +85,11 @@ export default function AboutSection() {
           viewport={{ once: true, margin: "-50px" }}
         >
           {features.map((feature, index) => (
-            <motion.div key={index} variants={itemVariants} className="flex items-start gap-6">
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              className="flex items-start gap-6"
+            >
               <div className="shrink-0">
                 <div className="w-16 h-16 rounded-full bg-(--primary) flex items-center justify-center shadow-lg transition-transform hover:scale-110 duration-300">
                   <feature.icon
@@ -98,7 +102,7 @@ export default function AboutSection() {
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed text-justify md:text-left">
+                <p className="text-gray-600 leading-relaxed text-left md:text-left">
                   {feature.description}
                 </p>
               </div>

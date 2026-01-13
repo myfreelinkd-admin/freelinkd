@@ -23,6 +23,7 @@ export interface JobFreelancerData {
     skills: string;
     matchPercentage: number;
   };
+  freelancerId?: string; // Root level reference for easier querying
   status: "pending" | "in-progress" | "completed" | "cancelled";
   createdAt: Date;
   updatedAt: Date;
@@ -42,6 +43,8 @@ interface JobInputData {
   budgetFrom?: string;
   budgetTo?: string;
   uploadDocument?: string;
+  jobStatus?: "general" | "assigned"; // Changed from status to jobStatus to match frontend
+  status?: string; // Keep status for backward compatibility if needed
   selectedFreelancer?: {
     id: string;
     name: string;
@@ -66,27 +69,11 @@ function validateJobData(data: JobInputData): {
     errors.push("Email is required");
   }
 
-  // All other fields are optional for now
-  // if (!data.phone || data.phone.trim().length < 8) {
-  //   errors.push("Valid phone number is required");
-  // }
-
-  // if (!data.jobTitle || data.jobTitle.trim().length < 3) {
-  //   errors.push("Job title must be at least 3 characters");
-  // }
-
-  // if (!data.skills || data.skills.trim().length < 2) {
-  //   errors.push("Skills are required");
-  // }
-
-  // if (!data.projectDescription || data.projectDescription.trim().length < 5) {
-  //   errors.push("Project description is required");
-  // }
-
-  // Make deadline optional
-  // if (!data.deadlineDate) {
-  //   errors.push("Deadline date is required");
-  // }
+  // Validate assignment consistency
+  const status = data.jobStatus || data.status;
+  if (status === "assigned" && !data.selectedFreelancer?.id) {
+    errors.push("Selected User is invalid or missing for assigned job");
+  }
 
   // Make budget optional or accept empty strings
   if (data.budgetFrom && isNaN(Number(data.budgetFrom))) {
@@ -138,6 +125,18 @@ export async function POST(request: NextRequest) {
     const db = await mongoManager.getDatabase();
     const collection = db.collection<JobFreelancerData>("job-freelancer");
 
+    // Determine status logic
+    // If jobStatus is explicitly 'general', use that.
+    // If selectedFreelancer is present, it's 'assigned' (pending acceptance usually, but here we might just map it)
+    // The frontend sends jobStatus: 'general' | 'assigned'
+
+    // If jobStatus provided use it, otherwise default to pending
+    // Note: The interface defines status as pending/in-progress etc.
+    // Ideally 'assigned' jobs start as 'pending' or 'in-progress' depending on business logic.
+    // Assuming 'pending' as default state for the system.
+
+    const initialStatus = "pending";
+
     // Prepare job data
     const jobData: Omit<JobFreelancerData, "_id"> = {
       name: body.name.trim(),
@@ -153,7 +152,9 @@ export async function POST(request: NextRequest) {
       budgetTo: body.budgetTo,
       uploadDocument: body.uploadDocument || "",
       selectedFreelancer: body.selectedFreelancer || undefined,
-      status: "pending",
+      // Explicitly adding freelancerId for easier querying
+      freelancerId: body.selectedFreelancer?.id || undefined,
+      status: initialStatus,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

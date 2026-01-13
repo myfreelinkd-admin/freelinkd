@@ -14,7 +14,6 @@ export default function UMKMProtectedRoute({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check both localStorage and sessionStorage
     const localAuth = localStorage.getItem("umkm_logged_in");
     const sessionAuth = sessionStorage.getItem("umkm_logged_in");
 
@@ -35,7 +34,7 @@ export default function UMKMProtectedRoute({
   }
 
   if (!isAuthenticated) {
-    return null; // Will redirect in useEffect
+    return null;
   }
 
   return <>{children}</>;

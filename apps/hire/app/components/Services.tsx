@@ -72,7 +72,7 @@ const features = [
 
 export default function Services() {
   return (
-    <section className="w-full py-24 px-6 lg:px-20 bg-[#f9fcff] relative overflow-hidden">
+    <section className="w-full py-16 lg:py-24 px-6 lg:px-20 bg-[#f9fcff] relative overflow-hidden">
       {/* Subtle Grid Background */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -83,14 +83,14 @@ export default function Services() {
       ></div>
 
       <div className="container mx-auto relative z-10">
-        <motion.div 
-          className="text-center max-w-3xl mx-auto mb-20"
+        <motion.div
+          className="text-center max-w-3xl mx-auto mb-12 lg:mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
+          <h2 className="text-3xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
             Our Services
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed">
@@ -100,7 +100,7 @@ export default function Services() {
           </p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
@@ -111,7 +111,7 @@ export default function Services() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group relative bg-white rounded-4xl p-10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_70px_-10px_rgba(8,31,92,0.15)] transition-all duration-500 ease-out cursor-pointer border border-gray-100 hover:border-blue-200 flex flex-col h-full overflow-hidden"
+              className="group relative bg-white rounded-4xl p-6 lg:p-10 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_30px_70px_-10px_rgba(8,31,92,0.15)] transition-all duration-500 ease-out cursor-pointer border border-gray-100 hover:border-blue-200 flex flex-col h-full overflow-hidden"
             >
               {/* Hover Gradient Overlay */}
               <div className="absolute inset-0 bg-linear-to-br from-transparent via-transparent to-blue-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -7,31 +7,31 @@ import { motion } from "motion/react";
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
+    <section className="relative w-full min-h-[100dvh] flex flex-col lg:flex-row overflow-hidden pt-16 lg:pt-0">
       {/* Left Content: Text & Buttons */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-20 py-12 lg:py-0 bg-(--background) z-10">
-        <motion.div 
-          className="max-w-xl flex flex-col gap-8 lg:-mt-16"
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 lg:px-20 py-8 lg:py-0 bg-(--background) z-10 order-1 lg:order-1">
+        <motion.div
+          className="max-w-xl flex flex-col gap-4 lg:gap-8 lg:-mt-16 text-center lg:text-left items-center lg:items-start"
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <motion.div 
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit"
+          <motion.div
+            className="inline-flex items-center gap-2 px-3 py-1.5 lg:px-4 lg:py-2 rounded-full bg-blue-50 text-[#081f5c] text-xs lg:text-sm font-semibold w-fit"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <Star className="w-4 h-4 fill-current" />
+            <Star className="w-3 h-3 lg:w-4 lg:h-4 fill-current" />
             <span>Exclusive Freelancer Network</span>
           </motion.div>
 
-          <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
+          <h1 className="text-3xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
             Unlock Your <br />
             <span className="relative inline-block">
               Skill
               <svg
-                className="absolute w-full h-3 -bottom-1 left-0 text-(--primary)"
+                className="absolute w-full h-2 lg:h-3 -bottom-1 left-0 text-(--primary)"
                 viewBox="0 0 100 10"
                 preserveAspectRatio="none"
               >
@@ -50,16 +50,16 @@ export default function HeroSection() {
             Potential
           </h1>
 
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-sm lg:text-lg text-gray-600 leading-relaxed max-w-sm lg:max-w-none">
             Join an exclusive network where top-tier talent collaborates with
             innovative companies on vetted, professionally managed projects.
           </p>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             {/* Join our Network */}
             <Link
               href="/form"
-              className="group relative px-8 py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all hover:shadow-lg cursor-pointer border border-[#ff6f00] bg-[#ff6f00]"
+              className="group relative px-6 py-3 lg:px-8 lg:py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all hover:shadow-lg cursor-pointer border border-[#ff6f00] bg-[#ff6f00] flex justify-center items-center w-full sm:w-auto"
             >
               <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
               <span className="relative z-10 flex items-center gap-2 text-white group-hover:text-[#ff6f00] transition-colors duration-500">
@@ -71,7 +71,7 @@ export default function HeroSection() {
             {/* Freelancer Benefits */}
             <Link
               href="#benefits"
-              className="group relative px-8 py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all cursor-pointer border border-[#081f5c] bg-transparent"
+              className="group relative px-6 py-3 lg:px-8 lg:py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all cursor-pointer border border-[#081f5c] bg-transparent flex justify-center items-center w-full sm:w-auto"
             >
               <div className="absolute inset-0 bg-[#081f5c] -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
               <span className="relative z-10 flex items-center gap-2 text-[#081f5c] group-hover:text-white transition-colors duration-500">
@@ -81,7 +81,7 @@ export default function HeroSection() {
           </div>
 
           {/* Professional Addition: Key Highlights */}
-          <div className="grid grid-cols-2 gap-4 mt-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-2 lg:gap-4 mt-2 lg:mt-4 text-left">
             {[
               "Vetted Projects",
               "Weekly Payments",
@@ -95,7 +95,7 @@ export default function HeroSection() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 + index * 0.1 }}
               >
-                <CheckCircle className="w-5 h-5 text-green-500" />
+                <CheckCircle className="w-4 h-4 lg:w-5 lg:h-5 text-green-500 shrink-0" />
                 <span className="text-sm font-medium">{item}</span>
               </motion.div>
             ))}
@@ -104,8 +104,8 @@ export default function HeroSection() {
       </div>
 
       {/* Right Content: Image */}
-      <motion.div 
-        className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen"
+      <motion.div
+        className="w-full lg:w-1/2 relative min-h-[40vh] lg:min-h-screen order-2 lg:order-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
@@ -119,11 +119,11 @@ export default function HeroSection() {
         />
 
         {/* Decorative Overlay */}
-        <div className="absolute inset-0 bg-linear-to-r from-(--background) via-transparent to-transparent lg:block hidden" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-(--background) lg:bg-linear-to-r lg:to-transparent lg:from-(--background) block" />
 
         {/* Bottom Floating Card */}
-        <motion.div 
-          className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs"
+        <motion.div
+          className="absolute bottom-6 left-6 right-6 lg:right-auto lg:bottom-24 lg:left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs mx-auto lg:mx-0"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.8 }}

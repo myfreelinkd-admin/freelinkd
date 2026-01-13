@@ -34,7 +34,7 @@ export default function Partner() {
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center gap-12">
           {/* Section Header */}
-          <motion.div 
+          <motion.div
             className="text-center space-y-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -50,8 +50,8 @@ export default function Partner() {
           </motion.div>
 
           {/* Partners Grid */}
-          <motion.div 
-            className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-70 hover:opacity-100 transition-opacity duration-500"
+          <motion.div
+            className="flex flex-wrap justify-center items-center gap-8 md:gap-24 opacity-70 hover:opacity-100 transition-opacity duration-500"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 0.7, y: 0 }}
             viewport={{ once: true }}
@@ -74,7 +74,7 @@ export default function Partner() {
                     alt={partner.name}
                     width={partner.width}
                     height={partner.height}
-                    className="object-contain h-12 md:h-16 w-auto"
+                    className="object-contain h-10 md:h-16 w-auto"
                   />
                 </div>
               </Link>

@@ -34,7 +34,7 @@ export default function CallAction() {
       </div>
 
       <div className="container mx-auto relative z-10">
-        <motion.div 
+        <motion.div
           className="max-w-4xl mx-auto text-center flex flex-col items-center gap-8"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function CallAction() {
           transition={{ duration: 0.6, staggerChildren: 0.2 }}
         >
           {/* Headline */}
-          <motion.h2 
+          <motion.h2
             className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -53,7 +53,7 @@ export default function CallAction() {
           </motion.h2>
 
           {/* Sub-headline */}
-          <motion.p 
+          <motion.p
             className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +66,7 @@ export default function CallAction() {
           </motion.p>
 
           {/* Button */}
-          <motion.div 
+          <motion.div
             className="flex justify-center mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

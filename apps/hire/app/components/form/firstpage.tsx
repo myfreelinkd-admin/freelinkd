@@ -23,7 +23,7 @@ export default function FirstPage({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  
+
   const skillInputRef = useRef<HTMLInputElement>(null);
   const suggestionRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +106,9 @@ export default function FirstPage({
 
   // Handle removing a skill
   const handleRemoveSkill = (skillToRemove: string) => {
-    setSelectedSkills(selectedSkills.filter((skill) => skill !== skillToRemove));
+    setSelectedSkills(
+      selectedSkills.filter((skill) => skill !== skillToRemove)
+    );
   };
 
   // Handle keyboard navigation
@@ -155,21 +157,21 @@ export default function FirstPage({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto py-12 px-4">
+    <div className="w-full max-w-3xl mx-auto py-8 md:py-12 px-2 md:px-4">
       {/* Header Text */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="text-center mb-8 md:mb-12">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
           Tell Us About Your Project
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm md:text-base text-gray-600">
           Help us understand your project requirements and business needs
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-10">
+      <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10">
         {/* Personal Information Section */}
         <section>
-          <h3 className="text-xl font-bold text-center mb-6">
+          <h3 className="text-lg md:text-xl font-bold text-center mb-4 md:mb-6">
             Personal Information
           </h3>
           <div className="space-y-4">
@@ -183,7 +185,7 @@ export default function FirstPage({
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                 placeholder="enter your full name or business name"
               />
             </div>
@@ -198,7 +200,7 @@ export default function FirstPage({
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder="your@email.com"
                 />
               </div>
@@ -212,7 +214,7 @@ export default function FirstPage({
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder="081234567890"
                 />
               </div>
@@ -222,7 +224,7 @@ export default function FirstPage({
 
         {/* Project Information Section */}
         <section>
-          <h3 className="text-xl font-bold text-center mb-6">
+          <h3 className="text-lg md:text-xl font-bold text-center mb-4 md:mb-6">
             Project Information
           </h3>
           <div className="space-y-4">
@@ -236,7 +238,7 @@ export default function FirstPage({
                 value={formData.jobTitle}
                 onChange={handleChange}
                 required
-                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                 placeholder="Enter Job Title (e.g. UI/UX Design)"
               />
             </div>
@@ -246,14 +248,14 @@ export default function FirstPage({
               <label className="block text-sm font-bold mb-2">
                 Skills <span className="text-red-500">*</span>
               </label>
-              
+
               {/* Selected Skills Tags */}
               {selectedSkills.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-3">
                   {selectedSkills.map((skill, index) => (
                     <span
                       key={index}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#081f5c] to-[#0a2a7a] text-white text-sm font-medium rounded-full shadow-sm hover:shadow-md transition-all duration-200"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 md:px-4 md:py-2 bg-gradient-to-r from-[#081f5c] to-[#0a2a7a] text-white text-xs md:text-sm font-medium rounded-full shadow-sm hover:shadow-md transition-all duration-200"
                     >
                       {skill}
                       <button
@@ -290,18 +292,21 @@ export default function FirstPage({
                   onChange={handleSkillInputChange}
                   onKeyDown={handleKeyDown}
                   onFocus={() => {
-                    if (skillInput.trim().length > 0 && skillSuggestions.length > 0) {
+                    if (
+                      skillInput.trim().length > 0 &&
+                      skillSuggestions.length > 0
+                    ) {
                       setShowSuggestions(true);
                     }
                   }}
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder={
                     selectedSkills.length > 0
                       ? "Add more skills..."
                       : "Search skills (e.g. UI, React, Python)"
                   }
                 />
-                
+
                 {/* Search Icon */}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg
@@ -378,9 +383,9 @@ export default function FirstPage({
                       </button>
                     ))}
                   </div>
-                  
+
                   {/* Footer hint */}
-                  <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100">
+                  <div className="px-4 py-2.5 bg-gray-50 border-t border-gray-100 hidden md:block">
                     <p className="text-xs text-gray-500 flex items-center gap-2">
                       <kbd className="px-1.5 py-0.5 bg-white border border-gray-200 rounded text-[10px] font-mono">
                         ↑↓
@@ -406,11 +411,12 @@ export default function FirstPage({
                 value={formData.skills}
                 required
               />
-              
+
               {/* Helper text */}
               {selectedSkills.length === 0 && (
                 <p className="mt-2 text-xs text-gray-500">
-                  Start typing to see skill suggestions, or press Enter to add custom skills
+                  Start typing to see skill suggestions, or press Enter to add
+                  custom skills
                 </p>
               )}
             </div>
@@ -425,7 +431,7 @@ export default function FirstPage({
                 onChange={handleChange}
                 rows={4}
                 required
-                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 resize-none"
+                className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 resize-none text-sm md:text-base"
                 placeholder="Describe your project requirements, goals, timeline, and any specific needs..."
               />
             </div>
@@ -438,7 +444,7 @@ export default function FirstPage({
                 value={formData.additionalRequirements}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 resize-none"
+                className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 resize-none text-sm md:text-base"
                 placeholder="Any additional information or special requirements..."
               />
             </div>
@@ -447,7 +453,7 @@ export default function FirstPage({
 
         {/* Submit Button */}
         <div className="flex justify-center pt-4">
-          <Button className="bg-[#ff6f00] hover:bg-[#e66400] text-white px-10 py-3 text-base font-semibold cursor-pointer">
+          <Button className="w-full md:w-auto bg-[#ff6f00] hover:bg-[#e66400] text-white px-10 py-3 text-base font-semibold cursor-pointer rounded-[10px_20px_10px_20px]">
             Continue to Review
           </Button>
         </div>

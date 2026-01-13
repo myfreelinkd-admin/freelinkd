@@ -40,7 +40,7 @@ export default function ContactSection() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="text-center max-w-3xl mx-auto mb-8 md:mb-10"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,7 +58,7 @@ export default function ContactSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 lg:gap-8 items-stretch">
           {/* Map Container */}
-          <motion.div 
+          <motion.div
             className="w-full h-64 lg:h-auto min-h-75 lg:min-h-87.5 rounded-3xl overflow-hidden shadow-lg border border-gray-100 relative group"
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -77,7 +77,7 @@ export default function ContactSection() {
           </motion.div>
 
           {/* Contact Info Card */}
-          <motion.div 
+          <motion.div
             className="bg-white rounded-3xl p-6 md:p-8 shadow-xl border border-gray-100 flex flex-col justify-center h-full"
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -93,11 +93,11 @@ export default function ContactSection() {
                 <a
                   key={index}
                   href={item.href}
-            target={
-              item.icon === Globe || item.icon === MapPin
-                ? "_blank"
-                : undefined
-            }
+                  target={
+                    item.icon === Globe || item.icon === MapPin
+                      ? "_blank"
+                      : undefined
+                  }
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 group p-3 rounded-2xl hover:bg-gray-50 transition-all duration-300 border border-transparent hover:border-gray-100"
                 >
@@ -105,7 +105,7 @@ export default function ContactSection() {
                     <item.icon className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-xs text-gray-500 font-medium mb-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-y-1 group-hover:translate-y-0 transform">
+                    <span className="text-xs text-gray-500 font-medium mb-0.5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 translate-y-0 md:-translate-y-1 md:group-hover:translate-y-0 transform">
                       {item.label}
                     </span>
                     <span className="text-gray-800 font-semibold text-base group-hover:text-(--primary) transition-colors duration-300">

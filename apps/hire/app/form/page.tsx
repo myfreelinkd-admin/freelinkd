@@ -59,14 +59,14 @@ export default function FormPage() {
   };
 
   return (
-    <motion.main 
+    <motion.main
       className="min-h-screen bg-[#f9fcff]"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
     >
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-2 pl-[1cm]">
+      <div className="max-w-5xl mx-auto px-4 py-4 md:py-8">
+        <div className="mb-4 md:mb-2 pl-0 md:pl-8">
           <Breadcrumbs />
         </div>
 

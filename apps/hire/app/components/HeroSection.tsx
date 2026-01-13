@@ -23,26 +23,32 @@ const itemVariants = {
 
 export default function HeroSection() {
   return (
-    <section className="relative w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
+    <section className="relative w-full min-h-[100dvh] flex flex-col lg:flex-row overflow-hidden pt-16 lg:pt-0">
       {/* Text Content */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-20 py-12 lg:py-0 bg-(--background) z-10">
-        <motion.div 
-          className="max-w-xl flex flex-col gap-8 lg:-mt-16"
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 lg:px-20 py-10 lg:py-0 bg-(--background) z-10 order-1 lg:order-1">
+        <motion.div
+          className="max-w-xl flex flex-col gap-6 lg:gap-8 lg:-mt-16 text-center lg:text-left items-center lg:items-start"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit">
+          <motion.div
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-[#081f5c] text-sm font-semibold w-fit"
+          >
             <Star className="w-4 h-4 fill-current" />
             <span>Results-Driven Talent</span>
           </motion.div>
-          
-          <motion.h1 variants={itemVariants} className="text-5xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight">
+
+          <motion.h1
+            variants={itemVariants}
+            className="text-4xl lg:text-7xl font-extrabold leading-tight text-gray-900 tracking-tight"
+          >
             Unlock Your <br />
             <span className="relative inline-block">
               Business
               <svg
-                className="absolute w-full h-3 -bottom-1 left-0 text-(--primary)"
+                className="absolute w-full h-2 lg:h-3 -bottom-1 left-0 text-(--primary)"
                 viewBox="0 0 100 10"
                 preserveAspectRatio="none"
               >
@@ -58,17 +64,23 @@ export default function HeroSection() {
             Potential
           </motion.h1>
 
-          <motion.p variants={itemVariants} className="text-lg text-gray-600 leading-relaxed">
+          <motion.p
+            variants={itemVariants}
+            className="text-base lg:text-lg text-gray-600 leading-relaxed max-w-md lg:max-w-none"
+          >
             Access a curated network of vetted professionals to deliver
             measurable results fast. Expert talent, flexible terms, clear
             outcomes.
           </motion.p>
 
-          <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+          >
             {/* Post a Project */}
             <Link
               href="/form"
-              className="group relative px-8 py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all hover:shadow-lg cursor-pointer border border-[#ff6f00] bg-white"
+              className="group relative px-6 py-3 lg:px-8 lg:py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all hover:shadow-lg cursor-pointer border border-[#ff6f00] bg-white flex justify-center items-center"
             >
               <div className="absolute inset-0 bg-[#ff6f00] translate-y-0 group-hover:-translate-y-full transition-transform duration-500 ease-in-out" />
               <span className="relative z-10 flex items-center gap-2 text-white group-hover:text-[#ff6f00] transition-colors duration-500">
@@ -80,7 +92,7 @@ export default function HeroSection() {
             {/* How it Works */}
             <Link
               href="#our-commitment"
-              className="group relative px-8 py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all cursor-pointer border border-[#081f5c] bg-transparent"
+              className="group relative px-6 py-3 lg:px-8 lg:py-4 font-semibold rounded-[10px_20px_10px_20px] overflow-hidden transition-all cursor-pointer border border-[#081f5c] bg-transparent flex justify-center items-center"
             >
               <div className="absolute inset-0 bg-[#081f5c] -translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
               <span className="relative z-10 flex items-center gap-2 text-[#081f5c] group-hover:text-white transition-colors duration-500">
@@ -91,7 +103,10 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Partners */}
-          <motion.div variants={itemVariants} className="flex items-center gap-4 text-sm text-gray-500">
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row items-center gap-4 text-sm text-gray-500 pt-2"
+          >
             <div className="flex -space-x-3">
               {[
                 { name: "Sagawa", logo: "/assets/img/sagawa_logo.svg" },
@@ -121,8 +136,8 @@ export default function HeroSection() {
       </div>
 
       {/* Right Image */}
-      <motion.div 
-        className="w-full lg:w-1/2 relative min-h-[50vh] lg:min-h-screen"
+      <motion.div
+        className="w-full lg:w-1/2 relative min-h-[40vh] lg:min-h-screen order-2 lg:order-2"
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -135,11 +150,11 @@ export default function HeroSection() {
           priority
         />
         {/* Decorative Overlay */}
-        <div className="absolute inset-0 bg-linear-to-r from-(--background) via-transparent to-transparent lg:block hidden" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-(--background) lg:bg-linear-to-r lg:to-transparent lg:from-(--background) block" />
 
         {/* Floating Card Overlay */}
-        <motion.div 
-          className="absolute bottom-24 left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs"
+        <motion.div
+          className="absolute bottom-6 left-6 right-6 lg:right-auto lg:bottom-24 lg:left-12 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 max-w-xs mx-auto lg:mx-0"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}

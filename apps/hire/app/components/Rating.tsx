@@ -33,8 +33,8 @@ const RatingCard = ({
 }: RatingCardProps) => {
   return (
     <motion.div
-      variants={itemVariants} 
-      className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 flex flex-col h-full transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 group cursor-default"
+      variants={itemVariants}
+      className="bg-white rounded-2xl p-6 lg:p-8 shadow-lg border border-gray-100 flex flex-col h-full transition-all duration-500 ease-in-out hover:shadow-2xl hover:-translate-y-2 group cursor-default"
     >
       <div className="flex items-center gap-4 mb-6">
         <div className="w-12 h-12 rounded-full bg-[#081f5c] shrink-0" />
@@ -99,17 +99,17 @@ export default function RatingSection() {
   ];
 
   return (
-    <section className="w-full py-20 px-6 lg:px-20 bg-(--background) overflow-hidden">
+    <section className="w-full py-16 lg:py-20 px-6 lg:px-20 bg-(--background) overflow-hidden">
       <div className="container mx-auto">
         {/* Header */}
-        <motion.div 
-          className="text-center max-w-3xl mx-auto mb-20"
+        <motion.div
+          className="text-center max-w-3xl mx-auto mb-12 lg:mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
+          <h2 className="text-3xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
             SME&apos;s Rating
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed">
@@ -120,7 +120,7 @@ export default function RatingSection() {
         </motion.div>
 
         {/* Cards Grid */}
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
           variants={containerVariants}
           initial="hidden"
@@ -133,7 +133,7 @@ export default function RatingSection() {
         </motion.div>
 
         {/* Carousel Indicator */}
-        <motion.div 
+        <motion.div
           className="flex justify-center mt-12"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}

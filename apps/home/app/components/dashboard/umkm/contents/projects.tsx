@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import StatusBar from "../layout/status-bar";
+import ButtonAction from "./ui/button-action";
 
 interface Project {
   id: string;
@@ -66,17 +67,38 @@ export default function Projects() {
   const filteredProjects =
     activeTab === "All"
       ? projectsData
-      : projectsData.filter((p) => p.status === activeTab);
+      : projectsData.filter((p) => {
+          if (
+            activeTab === "Done" &&
+            (p.status === "Completed" || p.status === "Done")
+          )
+            return true;
+          if (
+            activeTab === "Progress" &&
+            (p.status === "In Progress" || p.status === "Progress")
+          )
+            return true;
+          if (
+            activeTab === "Canceled" &&
+            (p.status === "Cancelled" || p.status === "Canceled")
+          )
+            return true;
+          return p.status === activeTab;
+        });
 
   const getStatusStyle = (status: string) => {
     switch (status) {
       case "Done":
+      case "Completed":
         return "bg-green-500/10 text-green-600 border-green-200";
       case "Progress":
+      case "In Progress":
         return "bg-blue-500/10 text-blue-600 border-blue-200";
       case "Pending":
+      case "pending":
         return "bg-amber-500/10 text-amber-600 border-amber-200";
       case "Canceled":
+      case "Cancelled":
         return "bg-red-500/10 text-red-600 border-red-200";
       default:
         return "bg-gray-500/10 text-gray-600 border-gray-200";
@@ -86,16 +108,20 @@ export default function Projects() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "Done":
+      case "Completed":
         return <CheckCircle2 className="w-3 h-3 mr-1.5" />;
       case "Progress":
+      case "In Progress":
         return <Activity className="w-3 h-3 mr-1.5" />;
       case "Pending":
+      case "pending":
         return <Clock className="w-3 h-3 mr-1.5" />;
       case "Canceled":
+      case "Cancelled":
         return <XCircle className="w-3 h-3 mr-1.5" />;
       default:
         return <AlertCircle className="w-3 h-3 mr-1.5" />;
-      }
+    }
   };
 
   return (
@@ -149,8 +175,14 @@ export default function Projects() {
                     </td>
                     <td className="px-4 py-4 bg-(--alternative)/20 group-hover:bg-transparent border-y border-transparent group-hover:border-gray-100">
                       <div className="flex items-center gap-2">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${project.isGroupProject ? 'bg-blue-100 text-blue-600' : 'bg-(--secondary)/20 text-(--secondary)'}`}>
-                          {project.isGroupProject ? <Users className="w-3 h-3" /> : project.freelancer.charAt(0)}
+                        <div
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${project.isGroupProject ? "bg-blue-100 text-blue-600" : "bg-(--secondary)/20 text-(--secondary)"}`}
+                        >
+                          {project.isGroupProject ? (
+                            <Users className="w-3 h-3" />
+                          ) : (
+                            project.freelancer.charAt(0)
+                          )}
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm text-gray-600 font-medium">
@@ -184,9 +216,10 @@ export default function Projects() {
                       </span>
                     </td>
                     <td className="px-4 py-4 bg-(--alternative)/20 last:rounded-r-2xl group-hover:bg-transparent border-y border-r border-transparent group-hover:border-gray-100 text-right">
-                      <button className="p-2 hover:bg-white rounded-lg transition-colors text-gray-400 hover:text-(--primary) shadow-sm border border-transparent hover:border-gray-100 cursor-pointer">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
+                      <ButtonAction
+                        projectId={project.id}
+                        status={project.status}
+                      />
                     </td>
                   </tr>
                 ))}

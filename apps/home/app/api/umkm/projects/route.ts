@@ -51,21 +51,30 @@ export async function GET(req: Request) {
     // Map to project format
     const projects = jobs.map((job) => {
       let statusMap = "Pending";
-      switch (job.status) {
-        case "completed":
-        case "done":
-          statusMap = "Done";
-          break;
-        case "in-progress":
-        case "progress":
-          statusMap = "Progress";
-          break;
-        case "cancelled":
-        case "canceled":
-          statusMap = "Canceled";
-          break;
-        default:
-          statusMap = "Pending";
+      const lowerStatus = (job.status || "").toLowerCase();
+
+      if (
+        lowerStatus === "completed" ||
+        lowerStatus === "complete" ||
+        lowerStatus === "done"
+      ) {
+        statusMap = "Completed";
+      } else if (
+        [
+          "in-progress",
+          "process",
+          "progress",
+          "in progress",
+          "active",
+        ].includes(lowerStatus)
+      ) {
+        statusMap = "In Progress";
+      } else if (["cancelled", "canceled", "cancel"].includes(lowerStatus)) {
+        statusMap = "Cancelled";
+      } else if (lowerStatus === "pending") {
+        statusMap = "Pending";
+      } else {
+        statusMap = job.status || "Pending";
       }
 
       const date = new Date(job.createdAt).toLocaleDateString("en-GB", {
@@ -80,9 +89,8 @@ export async function GET(req: Request) {
       // Determine freelancer display name
       // If freelancerDisplay exists (from transfer), use it
       // Otherwise use selectedFreelancer name
-      const freelancerName = job.freelancerDisplay 
-        || job.selectedFreelancer?.name 
-        || "Not assigned";
+      const freelancerName =
+        job.freelancerDisplay || job.selectedFreelancer?.name || "Not assigned";
 
       return {
         id: idString,
@@ -90,7 +98,14 @@ export async function GET(req: Request) {
         freelancer: freelancerName,
         date: date,
         status: statusMap,
-        amount: `Rp ${parseInt(job.budgetTo || "0").toLocaleString("id-ID")}`,
+        amount:
+          job.budgetFrom && job.budgetTo
+            ? `Rp ${parseInt(job.budgetFrom).toLocaleString(
+                "id-ID"
+              )} - Rp ${parseInt(job.budgetTo).toLocaleString("id-ID")}`
+            : `Rp ${parseInt(
+                job.budgetTo || job.budgetFrom || "0"
+              ).toLocaleString("id-ID")}`,
         // Additional group info for UI
         isGroupProject: !!job.groupAssignee,
         groupName: job.groupAssignee?.groupName || null,

@@ -78,7 +78,7 @@ export default function ListSection() {
       </motion.div>
 
       <motion.div
-        className="h-100 md:h-125 overflow-y-auto pr-4 space-y-4 overscroll-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500"
+        className="h-auto md:h-125 md:overflow-y-auto pr-0 md:pr-4 space-y-4 md:space-y-4 overscroll-contain [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-200 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-gray-500"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -88,9 +88,8 @@ export default function ListSection() {
           <motion.div
             key={index}
             variants={itemVariants}
-            className="group relative w-full h-24 md:h-28 rounded-[10px_20px_10px_20px] overflow-hidden shadow-md transition-all duration-300 shrink-0"
+            className="group relative w-full min-h-[140px] h-auto md:h-28 md:min-h-0 rounded-[10px_20px_10px_20px] overflow-hidden shadow-md transition-all duration-300 shrink-0"
           >
-            {/* Background Image */}
             <div className="absolute inset-0">
               <Image
                 src={feature.image}
@@ -98,24 +97,22 @@ export default function ListSection() {
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
               />
-              {/* Overlay - Gradient for professional text readability */}
-              <div className="absolute inset-0 bg-linear-to-r from-black/70 via-black/40 to-transparent opacity-90 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-black/50 md:bg-linear-to-r md:from-black/70 md:via-black/40 md:to-transparent opacity-90 transition-opacity duration-300" />
             </div>
 
-            {/* Content */}
-            <div className="absolute inset-0 flex items-center justify-between px-6 md:px-12 z-20 pointer-events-none">
-              <div className="flex flex-col justify-center h-full text-white z-10 max-w-[70%] md:max-w-[60%] pointer-events-auto">
-                <h3 className="text-xl md:text-3xl font-bold drop-shadow-lg mb-1 transition-transform duration-300 group-hover:-translate-y-1">
+            <div className="absolute inset-0 flex items-center justify-between px-5 md:px-12 z-20 pointer-events-none">
+              <div className="flex flex-col justify-center h-full text-white z-10 max-w-[65%] md:max-w-[60%] pointer-events-auto py-4 md:py-0">
+                <h3 className="text-xl md:text-3xl font-bold drop-shadow-lg mb-2 md:mb-1 transition-transform duration-300 md:group-hover:-translate-y-1">
                   {feature.title}
                 </h3>
-                <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-out">
-                  <p className="overflow-hidden text-xs md:text-sm text-gray-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-75 line-clamp-2">
+                <div className="grid grid-rows-[1fr] md:grid-rows-[0fr] md:group-hover:grid-rows-[1fr] transition-all duration-300 ease-out">
+                  <p className="overflow-hidden text-xs md:text-sm text-gray-200 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 delay-75 line-clamp-3 md:line-clamp-2 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
               </div>
 
-              <div className="z-10 opacity-100 visible pointer-events-auto">
+              <div className="z-10 opacity-100 visible pointer-events-auto pl-2">
                 <Link
                   href={feature.link}
                   target={
@@ -126,7 +123,7 @@ export default function ListSection() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-5 py-2 text-sm rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer relative z-30"
+                  className="bg-(--secondary) hover:bg-orange-600 text-white font-semibold px-4 py-2 md:px-5 md:py-2 text-xs md:text-sm rounded-[10px_20px_10px_20px] transition-colors duration-300 flex items-center gap-2 cursor-pointer relative z-30 whitespace-nowrap"
                 >
                   Get Started
                 </Link>

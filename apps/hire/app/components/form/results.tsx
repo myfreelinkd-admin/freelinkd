@@ -32,17 +32,17 @@ export default function ReviewPage({ data }: ReviewPageProps) {
   const [orderId, setOrderId] = useState("ORD-GENERATING...");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  
+
   const hasSubmittedRef = useRef(false);
 
   useEffect(() => {
     if (hasSubmittedRef.current) {
       return;
     }
-    
+
     const submitToDatabase = async () => {
       hasSubmittedRef.current = true;
-      
+
       setIsSubmitting(true);
       setSubmitError(null);
 
@@ -93,13 +93,13 @@ export default function ReviewPage({ data }: ReviewPageProps) {
   });
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-12 px-4">
-      <div className="space-y-10">
+    <div className="w-full max-w-4xl mx-auto py-8 md:py-12 px-2 md:px-4">
+      <div className="space-y-6 md:space-y-10">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             {isSubmitting ? "Submitting..." : "Submission Confirmed"}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
             {isSubmitting
               ? "Please wait while we process your request..."
               : "Your hiring request has been logged successfully. An email confirmation will be sent after admin review (within 48 hours)."}
@@ -116,25 +116,29 @@ export default function ReviewPage({ data }: ReviewPageProps) {
         </div>
 
         {/* Application Summary */}
-        <div className="bg-white border border-[#081f5c] rounded-3xl p-8 shadow-sm">
-          <div className="text-center mb-8">
-            <p className="text-gray-500 font-medium">Order ID</p>
-            <h2 className="text-2xl font-bold text-[#081f5c]">{orderId}</h2>
-            <p className="text-gray-500 mt-1">Submitted on {submissionDate}</p>
+        <div className="bg-white border border-[#081f5c] rounded-2xl md:rounded-3xl p-4 md:p-8 shadow-sm">
+          <div className="text-center mb-6 md:mb-8">
+            <p className="text-sm font-medium text-gray-500">Order ID</p>
+            <h2 className="text-xl md:text-2xl font-bold text-[#081f5c]">
+              {orderId}
+            </h2>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
+              Submitted on {submissionDate}
+            </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6 md:space-y-8">
             {/* Personal Information */}
             <div>
-              <h3 className="text-lg font-bold mb-4 text-[#081f5c] border-b pb-2">
+              <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 text-[#081f5c] border-b pb-2">
                 Personal Information
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Name / Business
                   </p>
-                  <p className="text-gray-900 font-semibold mt-1">
+                  <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base break-words">
                     {data.name}
                   </p>
                 </div>
@@ -142,7 +146,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Email Address
                   </p>
-                  <p className="text-gray-900 font-semibold mt-1">
+                  <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base break-all">
                     {data.email}
                   </p>
                 </div>
@@ -150,7 +154,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Phone Number
                   </p>
-                  <p className="text-gray-900 font-semibold mt-1">
+                  <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base">
                     {data.phone}
                   </p>
                 </div>
@@ -159,7 +163,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
 
             {/* Project Information */}
             <div>
-              <h3 className="text-lg font-bold mb-4 text-[#081f5c] border-b pb-2">
+              <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 text-[#081f5c] border-b pb-2">
                 Project Information
               </h3>
               <div className="space-y-4">
@@ -167,7 +171,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Job Title
                   </p>
-                  <p className="text-gray-900 font-semibold mt-1">
+                  <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base">
                     {data.jobTitle}
                   </p>
                 </div>
@@ -175,7 +179,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Skills
                   </p>
-                  <p className="text-gray-900 font-semibold mt-1">
+                  <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base">
                     {data.skills}
                   </p>
                 </div>
@@ -183,7 +187,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Description
                   </p>
-                  <p className="text-gray-900 mt-1 whitespace-pre-wrap">
+                  <p className="text-gray-900 mt-1 whitespace-pre-wrap text-sm md:text-base">
                     {data.projectDescription}
                   </p>
                 </div>
@@ -192,7 +196,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                       Additional Requirements
                     </p>
-                    <p className="text-gray-900 mt-1 whitespace-pre-wrap">
+                    <p className="text-gray-900 mt-1 whitespace-pre-wrap text-sm md:text-base">
                       {data.additionalRequirements}
                     </p>
                   </div>
@@ -202,16 +206,16 @@ export default function ReviewPage({ data }: ReviewPageProps) {
 
             {/* More Details */}
             <div>
-              <h3 className="text-lg font-bold mb-4 text-[#081f5c] border-b pb-2">
+              <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 text-[#081f5c] border-b pb-2">
                 More Details
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                <div className="space-y-4 md:space-y-6">
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                       Due Time & Deadline
                     </p>
-                    <p className="text-gray-900 font-semibold mt-1">
+                    <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base">
                       {data.dueTime} - {data.deadlineDate}
                     </p>
                   </div>
@@ -219,7 +223,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                       Budget Range
                     </p>
-                    <p className="text-gray-900 font-semibold mt-1">
+                    <p className="text-gray-900 font-semibold mt-1 text-sm md:text-base">
                       Rp {data.budgetFrom} - Rp {data.budgetTo}
                     </p>
                   </div>
@@ -228,7 +232,7 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
                     Uploaded Documents
                   </p>
-                  <p className="text-gray-900 mt-1 italic">
+                  <p className="text-gray-900 mt-1 italic text-sm md:text-base break-all">
                     {data.uploadDocument
                       ? data.uploadDocument.name
                       : "No documents uploaded"}
@@ -238,50 +242,59 @@ export default function ReviewPage({ data }: ReviewPageProps) {
             </div>
 
             {/* Job Status & Freelancer Assignment */}
-            <div className={`rounded-2xl p-6 shadow-lg ${
-              data.jobStatus === "general" 
-                ? "bg-blue-600 text-white" 
-                : "bg-[#081f5c] text-white"
-            }`}>
-              <h3 className="text-lg font-bold mb-4 border-b border-white/20 pb-2">
-                {data.jobStatus === "general" ? "Job Status" : "Selected Freelancer"}
+            <div
+              className={`rounded-xl md:rounded-2xl p-4 md:p-6 shadow-lg ${
+                data.jobStatus === "general"
+                  ? "bg-blue-600 text-white"
+                  : "bg-[#081f5c] text-white"
+              }`}
+            >
+              <h3 className="text-base md:text-lg font-bold mb-3 md:mb-4 border-b border-white/20 pb-2">
+                {data.jobStatus === "general"
+                  ? "Job Status"
+                  : "Selected Freelancer"}
               </h3>
-              
+
               {data.jobStatus === "general" ? (
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <h4 className="text-xl font-bold">Open to All Freelancers</h4>
-                    <p className="text-sm opacity-70 mt-1">
-                      This job will be visible to all freelancers with matching skills.
+                    <h4 className="text-lg md:text-xl font-bold">
+                      Open to All Freelancers
+                    </h4>
+                    <p className="text-xs md:text-sm opacity-70 mt-1">
+                      This job will be visible to all freelancers with matching
+                      skills.
                     </p>
-                    <p className="text-sm mt-2">
+                    <p className="text-xs md:text-sm mt-2">
                       Required Skills: {data.skills || "Any"}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="bg-white/10 px-4 py-2 rounded-2xl">
-                      <p className="text-sm font-bold">Status</p>
-                      <p className="text-xl font-black">GENERAL</p>
+                  <div className="text-right self-end md:self-auto">
+                    <div className="bg-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-xl md:rounded-2xl">
+                      <p className="text-xs md:text-sm font-bold">Status</p>
+                      <p className="text-lg md:text-xl font-black">GENERAL</p>
                     </div>
                   </div>
                 </div>
               ) : data.selectedFreelancer ? (
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
-                    <h4 className="text-xl font-bold">
+                    <h4 className="text-lg md:text-xl font-bold">
                       {data.selectedFreelancer.name}
                     </h4>
-                    <p className="text-sm opacity-70">
+                    <p className="text-xs md:text-sm opacity-70">
                       ID: {data.selectedFreelancer.id}
                     </p>
-                    <p className="text-sm mt-2">
+                    <p className="text-xs md:text-sm mt-2">
                       Skills: {data.selectedFreelancer.skills}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <div className="bg-white/10 px-4 py-2 rounded-2xl">
-                      <p className="text-sm font-bold">Match Score</p>
-                      <p className="text-3xl font-black">
+                  <div className="text-right self-end md:self-auto">
+                    <div className="bg-white/10 px-3 py-1.5 md:px-4 md:py-2 rounded-xl md:rounded-2xl">
+                      <p className="text-xs md:text-sm font-bold">
+                        Match Score
+                      </p>
+                      <p className="text-2xl md:text-3xl font-black">
                         {data.selectedFreelancer.matchPercentage}%
                       </p>
                     </div>
@@ -289,17 +302,19 @@ export default function ReviewPage({ data }: ReviewPageProps) {
                 </div>
               ) : (
                 <div className="text-center py-4">
-                  <p className="text-sm opacity-70">No freelancer selected yet</p>
+                  <p className="text-xs md:text-sm opacity-70">
+                    No freelancer selected yet
+                  </p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-10 flex justify-end">
+        <div className="mt-8 md:mt-10 flex justify-center md:justify-end">
           <Button
             onClick={() => (window.location.href = "/")}
-            className="bg-[#ff6f00] hover:bg-[#e66400] text-white px-10 py-3 font-semibold rounded-[10px_20px_10px_20px] cursor-pointer"
+            className="w-full md:w-auto bg-[#ff6f00] hover:bg-[#e66400] text-white px-8 py-3 md:px-10 font-semibold rounded-[10px_20px_10px_20px] cursor-pointer"
           >
             Back to Home
           </Button>

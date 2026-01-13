@@ -29,28 +29,27 @@ export default function Step() {
   ];
 
   return (
-    <section className="py-24 bg-(--background) overflow-hidden">
-      <div className="container mx-auto px-6">
-        <motion.div 
-          className="text-center max-w-3xl mx-auto mb-20"
+    <section className="py-12 lg:py-24 bg-(--background) overflow-hidden">
+      <div className="container mx-auto px-4 lg:px-6">
+        <motion.div
+          className="text-center max-w-3xl mx-auto mb-8 lg:mb-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-[#081f5c] mb-6">
+          <h2 className="text-2xl lg:text-5xl font-extrabold text-[#081f5c] mb-4 lg:mb-6">
             Your Path to Premium Projects
           </h2>
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-sm lg:text-lg text-gray-600 leading-relaxed max-w-xl mx-auto lg:max-w-none">
             Follow our simple three-step process to join our exclusive network
             of professional freelancers and start your journey today.
           </p>
         </motion.div>
 
         <div className="relative">
-          {/* Connecting Line (Desktop) */}
-          <motion.div 
-            className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0" 
+          <motion.div
+            className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -translate-y-1/2 z-0"
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             viewport={{ once: true }}

@@ -72,8 +72,7 @@ const StatItem = ({ target, label, suffix = "" }: StatItemProps) => {
 
 export default function CallAction() {
   return (
-    <section className="relative w-full py-24 px-6 lg:px-20 bg-(--primary) overflow-hidden">
-      {/* Decorative Background Elements */}
+    <section className="relative w-full py-12 lg:py-24 px-4 lg:px-20 bg-(--primary) overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
 
@@ -100,26 +99,26 @@ export default function CallAction() {
       </div>
 
       <div className="container mx-auto relative z-10 text-center">
-        <motion.div 
-          className="max-w-4xl mx-auto mb-16 flex flex-col items-center gap-8"
+        <motion.div
+          className="max-w-4xl mx-auto mb-8 lg:mb-16 flex flex-col items-center gap-4 lg:gap-8"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded">
+          <h2 className="text-3xl md:text-6xl font-black text-white tracking-tight leading-tight font-unbounded">
             Freelance. Flex.
             <span className="text-[#ff6f00]"> Repeat.</span>
           </h2>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed">
+          <p className="text-sm md:text-2xl text-gray-300 max-w-xl lg:max-w-2xl leading-relaxed">
             Turn your skills into real impact and your side hustle into a
             career.
           </p>
         </motion.div>
 
         {/* Stats Grid */}
-        <motion.div 
-          className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-16"
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12 lg:mb-16"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -132,8 +131,8 @@ export default function CallAction() {
         </motion.div>
 
         {/* CTA Button */}
-        <motion.div 
-          className="flex justify-center mb-12"
+        <motion.div
+          className="flex justify-center mb-0 lg:mb-12"
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -141,18 +140,18 @@ export default function CallAction() {
         >
           <Link
             href="/form"
-            className="group relative px-10 py-5 font-bold rounded-[10px_25px_10px_25px] overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(255,111,0,0.4)] cursor-pointer border border-[#ff6f00] bg-[#ff6f00]"
+            className="group relative px-8 py-4 lg:px-10 lg:py-5 font-bold rounded-[10px_25px_10px_25px] overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(255,111,0,0.4)] cursor-pointer border border-[#ff6f00] bg-[#ff6f00]"
           >
             <div className="absolute inset-0 bg-white translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out" />
-            <span className="relative z-10 flex items-center gap-3 text-white group-hover:text-[#ff6f00] text-lg transition-colors duration-500">
+            <span className="relative z-10 flex items-center gap-3 text-white group-hover:text-[#ff6f00] text-base lg:text-lg transition-colors duration-500">
               Join our Network
-              <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-2" />
+              <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 transition-transform group-hover:translate-x-2" />
             </span>
           </Link>
         </motion.div>
 
         {/* Terms & Conditions */}
-        <motion.div 
+        <motion.div
           className="pt-8 border-t border-white/10"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

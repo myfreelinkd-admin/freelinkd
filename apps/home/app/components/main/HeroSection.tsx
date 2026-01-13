@@ -23,10 +23,10 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.6, ease: "easeOut" as const } 
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" as const },
   },
 };
 
@@ -34,10 +34,10 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative h-screen w-full flex items-end pb-20 md:pb-32"
+      className="relative min-h-[100dvh] w-full flex items-end pb-20 md:pb-32"
     >
       {/* Background Image */}
-      <motion.div 
+      <motion.div
         className="absolute inset-0 z-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -56,7 +56,7 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6">
-        <motion.div 
+        <motion.div
           className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8"
           variants={containerVariants}
           initial="hidden"

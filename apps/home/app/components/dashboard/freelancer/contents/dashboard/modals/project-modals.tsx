@@ -57,7 +57,7 @@ function formatBudget(amount: number): string {
 // Format relative time
 function getRelativeTime(dateString: string | null): string {
   if (!dateString) return "Recently";
-  
+
   const date = new Date(dateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -67,7 +67,11 @@ function getRelativeTime(dateString: string | null): string {
   if (diffHours < 1) return "Just now";
   if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-  return date.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
@@ -77,35 +81,57 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Fetch projects from API
-  const fetchProjects = useCallback(async (page: number = 1) => {
-    setLoading(true);
-    setError(null);
+  // Get user info on mount
+  useEffect(() => {
     try {
-      const response = await fetch(
-        `/api/freelancer/projects/general?page=${page}&limit=10&sortBy=createdAt&sortOrder=desc`
-      );
-      
-      if (!response.ok) {
-        throw new Error("Failed to fetch projects");
+      const userStr =
+        localStorage.getItem("freelancer_user") ||
+        sessionStorage.getItem("freelancer_user");
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user && user.id) {
+          setUserId(user.id);
+        }
       }
-
-      const data = await response.json();
-      
-      if (data.success) {
-        setProjects(data.data);
-        setPagination(data.pagination);
-      } else {
-        throw new Error(data.error || "Failed to fetch projects");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-      console.error("Error fetching projects:", err);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      console.error("Error loading user info", e);
     }
   }, []);
+
+  // Fetch projects from API
+  const fetchProjects = useCallback(
+    async (page: number = 1) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const userParam = userId ? `&userId=${userId}` : "";
+        const response = await fetch(
+          `/api/freelancer/projects/general?page=${page}&limit=10&sortBy=createdAt&sortOrder=desc${userParam}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setProjects(data.data);
+          setPagination(data.pagination);
+        } else {
+          throw new Error(data.error || "Failed to fetch projects");
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching projects:", err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [userId]
+  );
 
   // Fetch projects when modal opens
   useEffect(() => {
@@ -221,7 +247,8 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <span className="text-[10px] text-gray-400 font-medium flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {getRelativeTime(project.createdAt)}
+                        <Clock className="w-3 h-3" />{" "}
+                        {getRelativeTime(project.createdAt)}
                       </span>
                       {project.category && (
                         <span className="px-2 py-0.5 rounded-lg bg-(--secondary)/10 text-(--secondary) text-[10px] font-bold">
@@ -283,11 +310,14 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
           {pagination && (
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <p className="text-xs text-gray-400">
-                Showing {filteredProjects.length} of {pagination.totalItems} available projects.
+                Showing {filteredProjects.length} of {pagination.totalItems}{" "}
+                available projects.
               </p>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
                   disabled={!pagination.hasPrevPage || loading}
                   className="px-4 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-(--primary) hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >

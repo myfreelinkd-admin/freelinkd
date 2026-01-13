@@ -133,8 +133,8 @@ export default function FormPage() {
 
   return (
     <main className="min-h-screen bg-[--background]">
-      <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="mb-2 pl-[1cm]">
+      <div className="max-w-5xl mx-auto px-4 py-4 md:py-8">
+        <div className="mb-4 md:mb-2 pl-0 md:pl-8">
           <Breadcrumbs />
         </div>
 

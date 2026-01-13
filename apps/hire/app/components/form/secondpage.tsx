@@ -102,13 +102,13 @@ export default function SecondPage({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto py-12 px-4">
+    <div className="w-full max-w-3xl mx-auto py-8 md:py-12 px-2 md:px-4">
       {/* Header Text */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="text-center mb-8 md:mb-12">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
           Review Your Project Details
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm md:text-base text-gray-600">
           Please review your information before submitting your hiring request.
         </p>
       </div>
@@ -116,10 +116,12 @@ export default function SecondPage({
       {/* Review Section from Page 1 */}
       <ReviewSection data={formData} />
 
-      <form onSubmit={handleSubmit} className="space-y-10">
+      <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10">
         {/* More Details Section */}
         <section>
-          <h3 className="text-xl font-bold text-center mb-6">More Details</h3>
+          <h3 className="text-lg md:text-xl font-bold text-center mb-4 md:mb-6">
+            More Details
+          </h3>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -132,7 +134,7 @@ export default function SecondPage({
                   value={formData.dueTime}
                   onChange={handleChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder="e.g. 2 Weeks"
                 />
               </div>
@@ -160,7 +162,7 @@ export default function SecondPage({
                   value={formData.budgetFrom}
                   onChange={handleChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder="From (Rp)"
                 />
                 <input
@@ -169,7 +171,7 @@ export default function SecondPage({
                   value={formData.budgetTo}
                   onChange={handleChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400"
+                  className="w-full px-4 py-3 md:px-6 md:py-4 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl focus:bg-white focus:border-[#081f5c] focus:ring-4 focus:ring-[#081f5c]/10 outline-none transition-all duration-300 placeholder:text-gray-400 text-sm md:text-base"
                   placeholder="To (Rp)"
                 />
               </div>
@@ -185,7 +187,7 @@ export default function SecondPage({
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
-                  className={`relative group transition-all duration-300 ease-in-out border-2 border-dashed rounded-4xl p-10 text-center flex flex-col items-center justify-center bg-[#f8faff] ${
+                  className={`relative group transition-all duration-300 ease-in-out border-2 border-dashed rounded-3xl md:rounded-4xl p-6 md:p-10 text-center flex flex-col items-center justify-center bg-[#f8faff] ${
                     isDragging
                       ? "border-[#ff6f00] bg-[#fff4ed] scale-[1.01]"
                       : "border-gray-300 hover:border-[#081f5c] hover:bg-[#f0f4ff]"
@@ -201,9 +203,9 @@ export default function SecondPage({
                   />
 
                   {/* Icon Container */}
-                  <div className="w-16 h-16 bg-[#081f5c] rounded-full flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-[#081f5c] rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
                     <svg
-                      className="w-8 h-8 text-white"
+                      className="w-6 h-6 md:w-8 md:h-8 text-white"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -218,17 +220,17 @@ export default function SecondPage({
                     </svg>
                   </div>
 
-                  <div className="space-y-2">
-                    <h4 className="text-xl font-bold text-gray-900">
+                  <div className="space-y-1 md:space-y-2">
+                    <h4 className="text-lg md:text-xl font-bold text-gray-900">
                       Drag & drop your CV or tap to browse
                     </h4>
-                    <p className="text-sm text-gray-500 font-medium">
+                    <p className="text-xs md:text-sm text-gray-500 font-medium">
                       PDF/Word/XLSX/PNG/JPG - Up to 2MB
                     </p>
                   </div>
 
-                  <div className="mt-6">
-                    <span className="text-[#081f5c] font-bold text-lg hover:underline decoration-2 underline-offset-4">
+                  <div className="mt-4 md:mt-6">
+                    <span className="text-[#081f5c] font-bold text-base md:text-lg hover:underline decoration-2 underline-offset-4">
                       {formData.uploadDocument ? "Replace File" : "Choose File"}
                     </span>
                   </div>
@@ -236,11 +238,11 @@ export default function SecondPage({
 
                 {/* File Preview Card */}
                 {formData.uploadDocument && (
-                  <div className="flex items-center justify-between p-6 bg-white border border-gray-200 rounded-3xl shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#081f5c] rounded-2xl flex items-center justify-center shadow-inner">
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 md:p-6 bg-white border border-gray-200 rounded-2xl md:rounded-3xl shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300 gap-4">
+                    <div className="flex items-center gap-4 w-full md:w-auto overflow-hidden">
+                      <div className="w-12 h-12 md:w-14 md:h-14 bg-[#081f5c] rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner shrink-0">
                         <svg
-                          className="w-7 h-7 text-white"
+                          className="w-6 h-6 md:w-7 md:h-7 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -254,11 +256,11 @@ export default function SecondPage({
                           />
                         </svg>
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-gray-900 truncate max-w-50 md:max-w-xs">
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-bold text-gray-900 truncate text-sm md:text-base">
                           {formData.uploadDocument.name}
                         </span>
-                        <span className="text-sm text-gray-500 font-medium">
+                        <span className="text-xs md:text-sm text-gray-500 font-medium">
                           {formData.uploadDocument.type
                             .split("/")[1]
                             ?.toUpperCase() || "FILE"}{" "}
@@ -269,7 +271,7 @@ export default function SecondPage({
                     <button
                       type="button"
                       onClick={removeFile}
-                      className="text-gray-400 hover:text-red-500 font-bold transition-colors p-2 hover:bg-red-50 rounded-xl"
+                      className="text-gray-400 hover:text-red-500 font-bold transition-colors p-2 hover:bg-red-50 rounded-xl text-sm md:text-base self-end md:self-auto"
                     >
                       Remove
                     </button>
@@ -290,7 +292,7 @@ export default function SecondPage({
 
         {/* Submit Button */}
         <div className="flex flex-col items-center gap-4 pt-4">
-          <Button className="bg-[#ff6f00] hover:bg-[#e66400] text-white px-10 py-3 text-base font-semibold cursor-pointer">
+          <Button className="w-full md:w-auto bg-[#ff6f00] hover:bg-[#e66400] text-white px-10 py-3 text-base font-semibold cursor-pointer rounded-xl md:rounded-[10px_20px_10px_20px]">
             Post Project
           </Button>
 
@@ -298,7 +300,7 @@ export default function SecondPage({
             <button
               type="button"
               onClick={onBack}
-              className="text-[#081f5c] font-bold hover:underline cursor-pointer"
+              className="text-[#081f5c] font-bold hover:underline cursor-pointer text-sm md:text-base"
             >
               Back to Edit
             </button>

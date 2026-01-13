@@ -2,19 +2,23 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MoreHorizontal, Eye, Activity, X } from "lucide-react";
+import SubmitAssignmentModal from "../../projects/ui/submit";
 
 interface ButtonProjectsProps {
   isFirst: boolean;
   isLast: boolean;
   totalItems: number;
+  projectId?: string;
 }
 
 export default function ButtonProjects({
   isFirst,
   isLast,
   totalItems,
+  projectId = "",
 }: ButtonProjectsProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close on click outside
@@ -78,7 +82,10 @@ export default function ButtonProjects({
             <div className="flex flex-col bg-white rounded-xl border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden min-w-42.5 animate-in fade-in slide-in-from-top-2 zoom-in-95 duration-200">
               <TextButton
                 label="Detail Projects"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsSubmitModalOpen(true);
+                }}
               />
               <div className="h-px bg-gray-50 mx-2"></div>
               <TextButton
@@ -95,6 +102,12 @@ export default function ButtonProjects({
           )}
         </div>
       )}
+
+      <SubmitAssignmentModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
+        projectId={projectId}
+      />
     </div>
   );
 }
@@ -142,6 +155,23 @@ function TextButton({
           ? "text-(--primary) hover:text-red-600 hover:bg-red-50"
           : "text-(--primary) hover:text-blue-600 hover:bg-blue-50"
       }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+export function AcceptProjectButton({
+  onClick,
+  label = "Accept Project",
+}: {
+  onClick?: () => void;
+  label?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="px-5 py-2.5 bg-[#FF6F00] text-white rounded-xl text-xs font-bold hover:bg-orange-500 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:shadow-sm cursor-pointer mr-2"
     >
       {label}
     </button>

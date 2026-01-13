@@ -24,12 +24,15 @@ interface ProjectDetailModalProps {
       email: string;
     };
     budget: string;
+    budgetFrom?: string | number | null;
+    budgetTo?: string | number | null;
     deadline: {
       date: string;
       duration: string;
     };
     description: string;
     assignedDate: string;
+    document?: string | null;
   };
 }
 
@@ -103,12 +106,38 @@ export default function ProjectDetailModal({
                   <DollarSign className="w-4 h-4 text-green-600" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-widest opacity-60">
-                  Budget
+                  Budget Range
                 </span>
               </div>
-              <p className="text-lg font-bold text-green-600">
-                {project.budget}
-              </p>
+              {project.budgetFrom && project.budgetTo ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">
+                      Min Budget:
+                    </span>
+                    <span className="text-sm font-bold text-green-600">
+                      Rp {Number(project.budgetFrom).toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">
+                      Max Budget:
+                    </span>
+                    <span className="text-sm font-bold text-green-600">
+                      Rp {Number(project.budgetTo).toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="pt-2 border-t border-gray-100 mt-2">
+                    <p className="text-[10px] text-gray-400 italic">
+                      Negotiate within this budget range
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-lg font-bold text-green-600">
+                  {project.budget}
+                </p>
+              )}
             </div>
           </div>
 
@@ -152,6 +181,37 @@ export default function ProjectDetailModal({
             <div className="p-6 bg-gray-50/50 rounded-4xl text-sm text-gray-600 leading-relaxed border border-gray-100">
               {project.description}
             </div>
+          </div>
+
+          {/* Document Section */}
+          <div className="p-5 bg-purple-50/50 rounded-3xl flex items-center justify-between border border-purple-100/50">
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <FileText className="w-4 h-4 text-purple-600" />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold text-purple-600 uppercase tracking-widest block">
+                  Attached Document
+                </span>
+                <span className="text-sm font-bold text-(--primary) truncate max-w-[200px] block">
+                  {project.document ? "View Document" : "No Document"}
+                </span>
+              </div>
+            </div>
+            {project.document ? (
+              <a
+                href={project.document}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-white text-purple-600 font-bold text-xs rounded-xl shadow-sm hover:bg-purple-600 hover:text-white transition-all border border-purple-100"
+              >
+                Open
+              </a>
+            ) : (
+              <span className="text-xs text-gray-400 italic px-2">
+                Not Available
+              </span>
+            )}
           </div>
 
           {/* Assigned Date */}
