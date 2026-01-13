@@ -7,6 +7,7 @@ interface UmkmUser {
   id: string;
   username: string;
   email: string;
+  phone?: string;
   profile?: {
     nama_umkm: string;
     industry: string;
@@ -132,6 +133,7 @@ export default function Greetings() {
                 const name = user.profile?.nama_umkm || user.username;
                 if (name) params.append("name", name);
                 if (user.email) params.append("email", user.email);
+                if (user.phone) params.append("phone", user.phone);
 
                 window.location.href = `http://hire.freelinkd.com/form?${params.toString()}`;
               } else {
