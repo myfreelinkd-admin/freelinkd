@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { LogIn, Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -120,10 +121,13 @@ export default function Navbar() {
 
             {/* Desktop Sign-in Button */}
             <div className="hidden md:block">
-              <button className="group bg-(--secondary) hover:opacity-90 text-white font-semibold px-6 py-2 rounded-[10px_20px_10px_20px] flex items-center gap-2 transition-colors duration-200 cursor-pointer">
+              <Link
+                href="/welcome"
+                className="group bg-(--secondary) hover:opacity-90 text-white font-semibold px-6 py-2 rounded-[10px_20px_10px_20px] flex items-center gap-2 transition-colors duration-200 cursor-pointer"
+              >
                 Sign-in
                 <LogIn className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -170,10 +174,13 @@ export default function Navbar() {
           ))}
 
           <div className="mt-4 pt-4 border-t border-white/10">
-            <button className="w-full bg-(--secondary) hover:opacity-90 text-white font-semibold px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer">
+            <Link
+              href="/welcome"
+              className="w-full bg-(--secondary) hover:opacity-90 text-white font-semibold px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors duration-200 cursor-pointer"
+            >
               SignIn
               <LogIn className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
