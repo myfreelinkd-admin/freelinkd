@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Header from "../components/form/layout/header";
 import Breadcrumbs from "../components/form/layout/breadcrumbs";
@@ -57,6 +57,24 @@ export default function FormPage() {
   const updateFormData = (newData: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...newData }));
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const name = searchParams.get("name");
+      const email = searchParams.get("email");
+      const phone = searchParams.get("phone");
+
+      if (name || email || phone) {
+        setFormData((prev) => ({
+          ...prev,
+          name: name || prev.name,
+          email: email || prev.email,
+          phone: phone || prev.phone,
+        }));
+      }
+    }
+  }, []);
 
   return (
     <motion.main

@@ -53,7 +53,11 @@ export default function Greetings() {
             <h1 className="text-3xl font-bold text-(--primary) tracking-tight">
               Welcome Back,{" "}
               <span className="text-(--secondary)">
-                {loading ? "..." : user?.username || user?.profile?.nama_umkm || "Sagawa Group"}
+                {loading
+                  ? "..."
+                  : user?.username ||
+                    user?.profile?.nama_umkm ||
+                    "Sagawa Group"}
               </span>
             </h1>
             <p className="text-gray-400 mt-1 font-medium">
@@ -84,7 +88,9 @@ export default function Greetings() {
                 <p className="text-[10px] uppercase tracking-wider text-gray-400 font-bold">
                   Joined Since
                 </p>
-                <p className="text-sm font-bold text-(--primary)">{joinedDate}</p>
+                <p className="text-sm font-bold text-(--primary)">
+                  {joinedDate}
+                </p>
               </div>
             </div>
 
@@ -119,7 +125,21 @@ export default function Greetings() {
             </p>
           </div>
 
-          <button className="w-full py-4 bg-(--secondary) hover:bg-(--secondary)/90 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-(--secondary)/20 mt-6 cursor-pointer flex items-center justify-center gap-2 group">
+          <button
+            onClick={() => {
+              if (user) {
+                const params = new URLSearchParams();
+                const name = user.profile?.nama_umkm || user.username;
+                if (name) params.append("name", name);
+                if (user.email) params.append("email", user.email);
+
+                window.location.href = `http://hire.freelinkd.com/form?${params.toString()}`;
+              } else {
+                window.location.href = "http://hire.freelinkd.com/form";
+              }
+            }}
+            className="w-full py-4 bg-(--secondary) hover:bg-(--secondary)/90 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-(--secondary)/20 mt-6 cursor-pointer flex items-center justify-center gap-2 group"
+          >
             <PlusCircle className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
             Post Project
           </button>
