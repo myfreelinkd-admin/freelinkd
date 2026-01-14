@@ -16,7 +16,11 @@ export async function GET(req: Request) {
     const skip = (page - 1) * limit;
 
     const db = getMongoDB();
+    console.log(
+      "Attempting to connect to MongoDB and get job-freelancer collection..."
+    );
     const collection = await db.getCollection("job-freelancer");
+    console.log("Successfully connected to collection.");
 
     const query: any = {
       selectedFreelancer: null,
@@ -63,7 +67,13 @@ export async function GET(req: Request) {
       }
     }
 
+    console.log(
+      "Fetching general projects with query:",
+      JSON.stringify(query, null, 2)
+    );
+
     const totalCount = await collection.countDocuments(query);
+    console.log("Total general projects found:", totalCount);
 
     const projects = await collection
       .find(query)

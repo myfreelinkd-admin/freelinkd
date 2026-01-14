@@ -252,12 +252,23 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
               Browse through hundreds of available opportunities.
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => fetchProjects(currentPage)}
+              className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-(--secondary) transition-all cursor-pointer group"
+              title="Refresh Projects"
+            >
+              <Loader2
+                className={`w-6 h-6 ${loading ? "animate-spin" : "group-hover:rotate-180 transition-transform duration-500"}`}
+              />
+            </button>
+            <button
+              onClick={onClose}
+              className="p-3 rounded-2xl bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-all cursor-pointer"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Search & Filter Bar */}
