@@ -22,8 +22,8 @@ export interface JobFreelancerData {
     name: string;
     skills: string;
     matchPercentage: number;
-  };
-  freelancerId?: string; // Root level reference for easier querying
+  } | null;
+  freelancerId?: string | null; // Root level reference for easier querying
   status: "pending" | "in-progress" | "completed" | "cancelled";
   createdAt: Date;
   updatedAt: Date;
@@ -151,9 +151,15 @@ export async function POST(request: NextRequest) {
       budgetFrom: body.budgetFrom,
       budgetTo: body.budgetTo,
       uploadDocument: body.uploadDocument || "",
-      selectedFreelancer: body.selectedFreelancer || undefined,
+      selectedFreelancer:
+        body.jobStatus === "general" || body.status === "general"
+          ? null
+          : body.selectedFreelancer || undefined,
       // Explicitly adding freelancerId for easier querying
-      freelancerId: body.selectedFreelancer?.id || undefined,
+      freelancerId:
+        body.jobStatus === "general" || body.status === "general"
+          ? null
+          : body.selectedFreelancer?.id || undefined,
       status: initialStatus,
       createdAt: new Date(),
       updatedAt: new Date(),

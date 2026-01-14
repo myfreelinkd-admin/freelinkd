@@ -19,11 +19,8 @@ export async function GET(req: Request) {
     const collection = await db.getCollection("job-freelancer");
 
     const query: any = {
-      $or: [
-        { selectedFreelancer: null },
-        { selectedFreelancer: { $exists: false } },
-        { selectedFreelancer: "" },
-      ],
+      selectedFreelancer: null,
+      freelancerId: null,
     };
 
     if (userId) {

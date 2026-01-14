@@ -31,7 +31,7 @@ export interface JobData {
     name: string;
     skills: string;
     matchPercentage: number;
-  };
+  } | null;
   status?: string;
   createdAt?: string;
   updatedAt?: string;

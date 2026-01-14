@@ -12,7 +12,7 @@ import {
   Loader2,
   AlertCircle,
 } from "lucide-react";
-
+import ProjectDetailModal from "../../projects/ux/modals-detail";
 interface Project {
   id: string;
   name: string;
@@ -20,6 +20,8 @@ interface Project {
   client: string;
   clientEmail: string;
   budget: number;
+  budgetFrom?: number;
+  budgetTo?: number;
   deadline: string;
   duration: string;
   skills: string[];
@@ -83,6 +85,18 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
 
+  const [user, setUser] = useState<{
+    id: string;
+    name: string;
+    skills: string | string[];
+  } | null>(null);
+  const [confirmProject, setConfirmProject] = useState<Project | null>(null);
+  const [viewDetailsProject, setViewDetailsProject] = useState<Project | null>(
+    null
+  );
+  const [isAccepting, setIsAccepting] = useState(false);
+  const [acceptSuccess, setAcceptSuccess] = useState(false);
+
   // Get user info on mount
   useEffect(() => {
     try {
@@ -90,9 +104,10 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
         localStorage.getItem("freelancer_user") ||
         sessionStorage.getItem("freelancer_user");
       if (userStr) {
-        const user = JSON.parse(userStr);
-        if (user && user.id) {
-          setUserId(user.id);
+        const userData = JSON.parse(userStr);
+        if (userData && userData.id) {
+          setUserId(userData.id);
+          setUser(userData);
         }
       }
     } catch (e) {
@@ -137,6 +152,7 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
   useEffect(() => {
     if (isOpen) {
       fetchProjects(currentPage);
+      setAcceptSuccess(false);
     }
   }, [isOpen, currentPage, fetchProjects]);
 
@@ -151,6 +167,68 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
       project.skills.some((skill) => skill.toLowerCase().includes(query))
     );
   });
+
+  const handleAcceptClick = (project: Project) => {
+    setConfirmProject(project);
+  };
+
+  const handleViewDetails = (project: Project) => {
+    setViewDetailsProject(project);
+  };
+
+  const handleConfirmAccept = async () => {
+    if (!confirmProject || !user) return;
+
+    setIsAccepting(true);
+    try {
+      // Format skills to string if it's an array, or keep as string
+      let skillsStr = "";
+      if (Array.isArray(user.skills)) {
+        skillsStr = user.skills.join(", ");
+      } else if (typeof user.skills === "string") {
+        skillsStr = user.skills;
+      }
+
+      const response = await fetch(
+        `/api/freelancer/projects/${confirmProject.id}/accept`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            freelancerId: user.id,
+            name: user.name,
+            skills: skillsStr,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAcceptSuccess(true);
+        // Refresh list after short delay
+        setTimeout(() => {
+          setConfirmProject(null);
+          setAcceptSuccess(false);
+          fetchProjects(currentPage);
+          onClose(); // Optional: close modal on success
+        }, 2000);
+      } else {
+        throw new Error(data.message || "Failed to accept project");
+      }
+    } catch (err) {
+      console.error("Error accepting project:", err);
+      alert(
+        err instanceof Error
+          ? err.message
+          : "Failed to accept project. Please try again."
+      );
+    } finally {
+      setIsAccepting(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -293,10 +371,16 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
                   </div>
 
                   <div className="flex flex-col gap-2 min-w-35">
-                    <button className="w-full py-3 bg-(--secondary) text-white rounded-2xl text-sm font-bold hover:bg-(--secondary)/90 transition-all shadow-lg shadow-(--secondary)/10 cursor-pointer">
+                    <button
+                      onClick={() => handleAcceptClick(project)}
+                      className="w-full py-3 bg-(--secondary) text-white rounded-2xl text-sm font-bold hover:bg-(--secondary)/90 transition-all shadow-lg shadow-(--secondary)/10 cursor-pointer"
+                    >
                       Accept Project
                     </button>
-                    <button className="w-full py-3 bg-white text-(--primary) border border-gray-200 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all cursor-pointer">
+                    <button
+                      onClick={() => handleViewDetails(project)}
+                      className="w-full py-3 bg-white text-(--primary) border border-gray-200 rounded-2xl text-sm font-bold hover:bg-gray-50 transition-all cursor-pointer"
+                    >
                       View Details
                     </button>
                   </div>
@@ -338,6 +422,113 @@ export default function ProjectModals({ isOpen, onClose }: ProjectModalsProps) {
           )}
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {viewDetailsProject && (
+        <ProjectDetailModal
+          isOpen={!!viewDetailsProject}
+          onClose={() => setViewDetailsProject(null)}
+          project={{
+            name: viewDetailsProject.name,
+            status: viewDetailsProject.status || "Open",
+            client: {
+              name: viewDetailsProject.client,
+              email: viewDetailsProject.clientEmail,
+            },
+            budget: formatBudget(viewDetailsProject.budget),
+            budgetFrom: viewDetailsProject.budgetFrom,
+            budgetTo: viewDetailsProject.budgetTo,
+            deadline: {
+              date: viewDetailsProject.deadline,
+              duration: viewDetailsProject.duration,
+            },
+            description: viewDetailsProject.description,
+            assignedDate: getRelativeTime(viewDetailsProject.createdAt),
+            document: null,
+          }}
+        />
+      )}
+
+      {/* Confirmation Modal */}
+      {confirmProject && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() =>
+              !isAccepting && !acceptSuccess && setConfirmProject(null)
+            }
+          ></div>
+          <div className="relative bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-300">
+            {acceptSuccess ? (
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <svg
+                    className="w-8 h-8 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Project Accepted!
+                </h3>
+                <p className="text-gray-500 text-sm">
+                  You have successfully accepted the project. Best of luck!
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-(--secondary)/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Briefcase className="w-8 h-8 text-(--secondary)" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    Accept this Project?
+                  </h3>
+                  <p className="text-gray-500 text-sm">
+                    Are you sure you want to accept "
+                    <span className="font-bold text-gray-900">
+                      {confirmProject.name}
+                    </span>
+                    "? This will assign the project to you instantly.
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setConfirmProject(null)}
+                    disabled={isAccepting}
+                    className="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleConfirmAccept}
+                    disabled={isAccepting}
+                    className="flex-1 py-3 px-4 bg-(--secondary) text-white font-bold rounded-xl hover:bg-(--secondary)/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isAccepting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Accepting...
+                      </>
+                    ) : (
+                      "Confirm Accept"
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
