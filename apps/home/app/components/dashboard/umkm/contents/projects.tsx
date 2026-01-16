@@ -163,7 +163,7 @@ export default function Projects() {
                 </tr>
               </thead>
               <tbody>
-                {filteredProjects.map((project) => (
+                {filteredProjects.map((project, index) => (
                   <tr
                     key={project.id}
                     className="group hover:bg-(--alternative)/30 transition-colors"
@@ -219,6 +219,9 @@ export default function Projects() {
                       <ButtonAction
                         projectId={project.id}
                         status={project.status}
+                        isFirst={index === 0}
+                        isLast={index === filteredProjects.length - 1}
+                        totalItems={filteredProjects.length}
                       />
                     </td>
                   </tr>
