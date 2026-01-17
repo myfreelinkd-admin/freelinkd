@@ -24,7 +24,7 @@ const features = [
     description:
       "Expand your skills with our curated courses. Learn from industry experts at your own pace.",
     image: "/assets/img/e-learning.jpg",
-    link: "/maintenance",
+    link: "https://e-learning.freelinkd.com",
   },
   {
     title: "Events",

@@ -18,7 +18,7 @@ export default function FeedbackQuestionModal({
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [suggestion, setSuggestion] = useState("");
   const [existingFeedbackId, setExistingFeedbackId] = useState<string | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -30,13 +30,9 @@ export default function FeedbackQuestionModal({
           const data = await res.json();
 
           if (data.success && data.data) {
-            // Populate form
             const feedback = data.data;
             setExistingFeedbackId(feedback._id);
             setSuggestion(feedback.suggestion || "");
-
-            // Map ratings object back to answers array
-            // ratings: { deliverables: 5, communication: 4 ... }
             if (feedback.ratings) {
               setAnswers({
                 1: feedback.ratings.deliverables || 0,

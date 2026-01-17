@@ -1,0 +1,48 @@
+@import 'tailwindcss';
+
+@theme {
+	--font-sans: 'Poppins', sans-serif;
+	--font-unbounded: 'Unbounded', sans-serif;
+}
+
+:root {
+	--background: #f9fcff;
+	--primary: #081f5c;
+	--secondary: #ff6f00;
+	--font-poppins: 'Poppins', sans-serif;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+body {
+	background: var(--background);
+	color: var(--foreground);
+	font-family: var(--font-poppins), sans-serif;
+}
+
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.animate-fade-in-up {
+	animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-200 {
+	animation-delay: 200ms;
+}
